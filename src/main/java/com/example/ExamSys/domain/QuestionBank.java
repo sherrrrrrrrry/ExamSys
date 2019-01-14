@@ -31,6 +31,9 @@ public class QuestionBank implements Serializable{
 
 	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
 	private Set<QuestionShort> shortQuestions = new HashSet<>();
+
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<QuestionChoice_multi> multi_choiceQuestions = new HashSet<>();
 	
 	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
 	private Set<QuestionShow> showQuestions = new HashSet<>();
@@ -58,6 +61,14 @@ public class QuestionBank implements Serializable{
 	public void setChoiceQuestions(Set<QuestionChoice> choiceQuestions) {
 		this.choiceQuestions = choiceQuestions;
 	}
+
+    public Set<QuestionChoice_multi> getMulti_choiceQuestions() {
+        return  multi_choiceQuestions;
+    }
+
+    public void setMulti_choiceQuestions(Set<QuestionChoice_multi> multi_choiceQuestions) {
+        this.multi_choiceQuestions = multi_choiceQuestions;
+    }
 
 	public Set<QuestionShort> getShortQuestions() {
 		return shortQuestions;

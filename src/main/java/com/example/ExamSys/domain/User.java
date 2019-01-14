@@ -48,8 +48,7 @@ public class User implements Serializable{
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@OneToMany(mappedBy = "user", orphanRemoval = true)
-	private Set<Production> productions = new HashSet<>();
+
 
 	@ManyToMany
 	@JoinTable(
@@ -91,13 +90,6 @@ public class User implements Serializable{
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Set<Production> getProductions() {
-		return productions;
-	}
-
-	public void setProductions(Set<Production> productions) {
-		this.productions = productions;
-	}
 
 	public Set<Authority> getAuthorities() {
 		return authorities;
