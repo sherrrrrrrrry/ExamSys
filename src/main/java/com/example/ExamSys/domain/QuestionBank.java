@@ -26,8 +26,14 @@ public class QuestionBank implements Serializable{
 	@Column(name = "level")
 	private int level;
 	
-	@OneToMany(mappedBy = "question_bank", orphanRemoval = true)
-	private Set<Production> productions = new HashSet<>();
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<QuestionChoice> choiceQuestions = new HashSet<>();
+
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<QuestionShort> shortQuestions = new HashSet<>();
+	
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<QuestionShow> showQuestions = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -43,6 +49,30 @@ public class QuestionBank implements Serializable{
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public Set<QuestionChoice> getChoiceQuestions() {
+		return choiceQuestions;
+	}
+
+	public void setChoiceQuestions(Set<QuestionChoice> choiceQuestions) {
+		this.choiceQuestions = choiceQuestions;
+	}
+
+	public Set<QuestionShort> getShortQuestions() {
+		return shortQuestions;
+	}
+
+	public void setShortQuestions(Set<QuestionShort> shortQuestions) {
+		this.shortQuestions = shortQuestions;
+	}
+
+	public Set<QuestionShow> getShowQuestions() {
+		return showQuestions;
+	}
+
+	public void setShowQuestions(Set<QuestionShow> showQuestions) {
+		this.showQuestions = showQuestions;
 	}
 	
 	

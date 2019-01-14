@@ -12,9 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "choice")
-public class Choice implements Serializable {
-
+@Table(name = "question_short")
+public class QuestionShort implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -22,13 +22,13 @@ public class Choice implements Serializable {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	private QuestionChoice questionChoice;
+	private QuestionBank questionBank;
 	
 	@Column(name = "content")
 	private String content;
 	
-	@Column(name = "image_url")
-	private String imageUrl;
+	@Column(name = "type")
+	private String type;
 
 	public Long getId() {
 		return id;
@@ -37,13 +37,21 @@ public class Choice implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public QuestionChoice getQuestionChoice() {
-		return questionChoice;
+
+	public QuestionBank getQuestionBank() {
+		return questionBank;
 	}
 
-	public void setQuestionChoice(QuestionChoice questionChoice) {
-		this.questionChoice = questionChoice;
+	public void setQuestionBank(QuestionBank questionBank) {
+		this.questionBank = questionBank;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getContent() {
@@ -53,15 +61,6 @@ public class Choice implements Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-	
 	
 	
 }
