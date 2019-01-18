@@ -27,7 +27,7 @@ public class Production implements Serializable{
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
+	private Student student;
 
 	@Size(max = 50)
 	@Column(name = "name", length = 50, nullable = false)
@@ -45,12 +45,10 @@ public class Production implements Serializable{
 		this.id = id;
 	}
 
-	public User getUser() {
-		return user;
-	}
+	public Student getStudent() { return student; }
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	public String getName() {
