@@ -78,6 +78,9 @@ public class Student implements Serializable{
 	@OneToMany(mappedBy = "student", orphanRemoval = true)
 	private Set<Production> productions = new HashSet<>();
 
+	@OneToMany(mappedBy = "student", orphanRemoval = true)
+	private Set<Exam_sum> exam_sums = new HashSet<>();
+
 	public Long getId() {
 		return id;
 	}
@@ -198,4 +201,7 @@ public class Student implements Serializable{
 		this.productions = productions;
 	}
 
+	public Set<Exam_sum> getExam_sums() {return exam_sums;}
+
+	public void setExam_sums(Set<Exam_sum> exam_sums) {this.exam_sums = exam_sums;}
 }

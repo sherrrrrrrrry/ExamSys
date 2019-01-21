@@ -38,6 +38,9 @@ public class QuestionBank implements Serializable{
 	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
 	private Set<QuestionShow> showQuestions = new HashSet<>();
 
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = false)
+	private Set<Exam_sum> exam_sums = new HashSet<>();
+
 	public Long getId() {
 		return id;
 	}
