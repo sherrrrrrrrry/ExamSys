@@ -401,7 +401,6 @@ display: inline-block;
 /* --- flexslider --- */
 #main-slider:before {content: '';width: 100%;height: 100%;/* background: rgba(255, 255, 255, 0.37); */z-index: 1;position: absolute;}
 .flex-direction-nav a{
-display:none;
 }
 .flexslider {
 	padding:0;
@@ -1399,6 +1398,21 @@ ul.social-network li {
 	text-align: center;
 	height: 32px;
 	vertical-align: baseline;
+}
+
+ul.social-network li a {
+	position:relative;
+}
+
+ul.social-network li a img{
+	display:none;
+}
+
+ul.social-network li a:hover img{
+	display:block;
+	position: absolute; 
+	left: -20px; 
+	top: -80px;
 }
 
 #sub-footer{
