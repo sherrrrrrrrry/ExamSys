@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,16 +29,32 @@ public class QuestionBank implements Serializable{
 	@Column(name = "level")
 	private int level;
 	
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name = "bank_choice",
+			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+				inverseJoinColumns = {@JoinColumn(name = "question_choice_id", referencedColumnName = "id")})
 	private Set<QuestionChoice> choiceQuestions = new HashSet<>();
 
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name = "bank_short",
+			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+				inverseJoinColumns = {@JoinColumn(name = "question_short_id", referencedColumnName = "id")})
 	private Set<QuestionShort> shortQuestions = new HashSet<>();
 
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name = "bank_choice_multi",
+			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+				inverseJoinColumns = {@JoinColumn(name = "question_choice_multi_id", referencedColumnName = "id")})
 	private Set<QuestionChoice_multi> multi_choiceQuestions = new HashSet<>();
 	
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(
+			name = "bank_show",
+			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+				inverseJoinColumns = {@JoinColumn(name = "question_show_id", referencedColumnName = "id")})
 	private Set<QuestionShow> showQuestions = new HashSet<>();
 
 	@OneToMany(mappedBy = "questionBank", orphanRemoval = false)
