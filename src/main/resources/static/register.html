@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<!-- css -->
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/fancybox/jquery.fancybox.css" rel="stylesheet">
+<link href="css/flexslider.css" rel="stylesheet" />
+<link href="css/style.css" rel="stylesheet" />
+
+<script src="js/jquery.js"></script>
+<script src="js/jquery.easing.1.3.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.fancybox.pack.js"></script>
+<script src="js/jquery.fancybox-media.js"></script>
+<script src="js/jquery.flexslider.js"></script>
+<script src="js/animate.js"></script>
+<!-- Vendor Scripts -->
+<script src="js/modernizr.custom.js"></script>
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/animate.js"></script>
+<script src="js/custom.js"></script>
+<script type="text/javascript" src="js/province.js"></script>
+<script src="js/uploadImg.js"></script>
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body onload="setup();promptinfo();ageinfo()">
+	<div id="wrapper">
+		<!-- start header -->
+		<header>
+			<div class="navbar navbar-default navbar-static-top">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target=".navbar-collapse">
+							<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="index.html">
+							<img src="img/logo.png" alt="logo" />
+						</a>
+
+					</div>
+
+				</div>
+			</div>
+		</header>
+		<section id="inner-headline">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<h2 class="pageTitle">用户注册</h2>
+					</div>
+					<div class="col-md-12">
+						<p class="pull-right">
+							<i class="fa fa-sign-in" style="color: #fdd428;"></i>
+							<a href="index.html">用户登录</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="content">
+			<div class="container">
+				<!-- Form itself -->
+				<form name="sentMessage" id="loginForm" style="width: 80%; margin: 0 auto" novalidate action=""
+					method="post">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="control-group">
+								<div class="controls">
+									注册类型：
+									<select class="form-control">
+										<option value="student">学生</option>
+										<option value="teacher">教师</option>
+									</select>
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									姓名：
+									<input type="text" class="form-control" id="name" required
+										data-validation-required-message="Please enter your name" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									昵称：
+									<input type="text" class="form-control" id="nickname" required
+										data-validation-required-message="Please enter your nickname" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									性别：
+									<select class="form-control" id="gender" required
+										data-validation-required-message="Please choose your gender">
+										<option value="male">男</option>
+										<option value="female">女</option>
+									</select>
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									年龄:
+									<select class="form-control" id="age" required
+										data-validation-required-message="Please choose your age">
+									</select>
+									<p class="help-block"></p>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<div class="controls">
+									联系电话：
+									<input type="tel" class="form-control" id="phone" required
+										data-validation-required-message="Please enter your phone number" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="control-group">
+								<div class="controls">
+									邮箱：
+									<input type="email" class="form-control" id="email" required
+										data-validation-required-message="Please enter your email" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									<span style="display: block">学校所在地：</span>
+									<select class="form-control" style="width: 32.5%; display: inline" name="province" id="s1">
+										<option></option>
+									</select>
+									<select class="form-control" style="width: 32.5%; display: inline" name="city" id="s2">
+										<option></option>
+									</select>
+									<select class="form-control" style="width: 32.5%; display: inline" name="town" id="s3">
+										<option></option>
+									</select>
+									<input id="schoollacation" name="address" type="hidden" value="" />
+									<p class="help-block"></p>
+									<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									学校名称：
+									<input type="text" class="form-control" id="school" required
+										data-validation-required-message="Please enter your school" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									培训机构名称：
+									<input type="text" class="form-control" id="trainingagency" required
+										data-validation-required-message="Please enter your training agency" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									座右铭：
+									<input type="text" class="form-control" id="motto" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									上传生活照：
+									<input type="file" id="test-image-file" name="test"
+										accept="image/gif, image/jpeg, image/png, image/jpg" required
+										data-validation-required-message="请上传生活照" />
+									<p class="help-block"></p>
+									<div id="test-image-preview"></div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="pricing-action">
+						<button type="submit" class="btn btn-primary"
+							style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">注册</button>
+					</div>
+				</form>
+
+
+			</div>
+
+		</section>
+	</div>
+	<a href="#" class="scrollup">
+		<i class="fa fa-angle-up active"></i>
+	</a>
+
+	<script>
+		function promptinfo() {
+			var schoollacation = document.getElementById('schoollacation').value;
+			var s1 = document.getElementById('s1').value;
+			var s2 = document.getElementById('s2').value;
+			var s3 = document.getElementById('s3').value;
+			schoollacation = "" + s1 + s2 + s3;
+			console.log(schoollacation);
+			//return schoollacation;
+		}
+
+		function ageinfo() {
+			var select = document.getElementById("age");
+			for (var i = 1; i <= 100; i++) {
+				var opt = document.createElement("option");
+				opt.value = i;
+				opt.innerHTML = i;
+				select.appendChild(opt);
+			}
+		}
+	</script>
+
+
+</body>
+</html>
