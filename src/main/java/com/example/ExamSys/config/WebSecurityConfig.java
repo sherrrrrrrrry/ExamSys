@@ -20,7 +20,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -33,19 +33,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
 	}
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception{
 		auth.inMemoryAuthentication()
-			.withUser("admin").password("admin").roles("ADMIN", "USER", "DBA");
+			.withUser("admin").password("123").roles("ADMIN", "USER", "DBA");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests()
-			.antMatchers("/js/**","/css/**","/images/*","/fonts/**","/**/*.png","/**/*.jpg").permitAll()
+			.antMatchers("/js/**","/css/**","/img/**","/fonts/**","/**/*.png","/**/*.jpg").permitAll()
 			.antMatchers("/login/**")
 			.hasRole("ADMIN")
 //			.antMatchers("/user/**")
@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //			.antMatchers("/db/**")
 //			.access("hasRole('ADMIN') and hasRole('DBA')")
 //			.antMatchers("/api/**").hasRole("ADMIN")
-			.antMatchers("/", "/login.html", "register.html").permitAll()
+			.antMatchers("/*").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
