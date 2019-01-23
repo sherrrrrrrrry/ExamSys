@@ -48,8 +48,6 @@ public class User implements Serializable{
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-
-
 	@ManyToMany
 	@JoinTable(
 			name = "user_authority", 

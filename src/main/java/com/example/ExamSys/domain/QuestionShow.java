@@ -21,9 +21,6 @@ public class QuestionShow implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private QuestionBank questionBank;
-	
 	@Column(name = "function_introduction")
 	private String functionIntroduction;
 	
@@ -45,14 +42,6 @@ public class QuestionShow implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public QuestionBank getQuestionBank() {
-		return questionBank;
-	}
-
-	public void setQuestionBank(QuestionBank questionBank) {
-		this.questionBank = questionBank;
 	}
 
 	public String getFunctionIntroduction() {

@@ -21,9 +21,6 @@ public class QuestionShort implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private QuestionBank questionBank;
-	
 	@Column(name = "content")
 	private String content;
 	
@@ -36,14 +33,6 @@ public class QuestionShort implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public QuestionBank getQuestionBank() {
-		return questionBank;
-	}
-
-	public void setQuestionBank(QuestionBank questionBank) {
-		this.questionBank = questionBank;
 	}
 
 	public String getType() {

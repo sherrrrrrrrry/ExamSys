@@ -24,9 +24,6 @@ public class QuestionChoice implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private QuestionBank questionBank;
-	
 	@OneToMany(mappedBy = "questionChoice", orphanRemoval = true)
 	private Set<Choice> choices = new HashSet<>();
 	
@@ -45,14 +42,6 @@ public class QuestionChoice implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public QuestionBank getQuestionBank() {
-		return questionBank;
-	}
-
-	public void setQuestionBank(QuestionBank questionBank) {
-		this.questionBank = questionBank;
 	}
 
 	public Set<Choice> getChoices() {
