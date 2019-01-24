@@ -1,30 +1,36 @@
 package com.example.ExamSys.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.BatchSize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.ExamSys.config.Constants;
 
 @Entity
 @Table(name = "user")
-public class User implements Serializable{
+public class User implements Serializable, UserDetails{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -47,8 +53,11 @@ public class User implements Serializable{
 	@Size(min = 5, max = 50)
 	@Column(name = "phone_number")
 	private String phoneNumber;
+	
+	@Column(name = "enabled")
+	private Boolean enabled;
 
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(
 			name = "user_authority", 
 			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, 
@@ -88,9 +97,16 @@ public class User implements Serializable{
 		this.phoneNumber = phoneNumber;
 	}
 
+//	public Set<Authority> getAuthorities() {
+//		return authorities;
+//	}
 
-	public Set<Authority> getAuthorities() {
-		return authorities;
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public void setAuthorities(Set<Authority> authorities) {
@@ -106,4 +122,44 @@ public class User implements Serializable{
         this.authorities.remove(authority);
         return this;
     }
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.login;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return enabled;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		List<SimpleGrantedAuthority> authorites = new ArrayList<>();
+		for(Authority authority : this.authorities) {
+			authorites.add(new SimpleGrantedAuthority(authority.getName()));
+		}
+		return authorites;
+	}
 }

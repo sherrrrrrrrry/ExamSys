@@ -13,7 +13,7 @@ public class LoginController {
 		return "login.html";
 	}
 	
-	@RequestMapping(value="/login/qw", method = RequestMethod.GET)
+	@RequestMapping(value="/admin/qw", method = RequestMethod.GET)
 	@ResponseBody
 	public String ok() {
 		return "qw";

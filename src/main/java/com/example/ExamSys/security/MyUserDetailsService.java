@@ -1,8 +1,6 @@
 package com.example.ExamSys.security;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -13,13 +11,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.example.ExamSys.dao.UserRepository;
-import com.example.ExamSys.domain.Authority;
 import com.example.ExamSys.domain.User;
 
-//@Component("userDetailsService")
+@Service
 public class MyUserDetailsService implements UserDetailsService{
 	
 	private final Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
@@ -30,8 +27,7 @@ public class MyUserDetailsService implements UserDetailsService{
 		this.userRepository = userRepository;
 	}
 
-//	@Override
-//	@Transactional
+	@Override
 	public UserDetails loadUserByUsername(String login){
 		// TODO Auto-generated method stub
 		log.debug("Authenticating {}", login);
@@ -39,12 +35,15 @@ public class MyUserDetailsService implements UserDetailsService{
 		if(user == null) {
 			throw new UsernameNotFoundException("user + " + login + "not found.");
 		}
-		Set<Authority> authorityList = user.getAuthorities();
-		List<GrantedAuthority> authorities = 
-				authorityList.stream().map(e -> new SimpleGrantedAuthority(e.getName())).collect(Collectors.toList());
-		UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getLogin(),user.getPassword(),authorities);
+//		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>) user.getAuthorities();
+////		List<GrantedAuthority> authorities = 
+////				authorityList.stream().map(e -> new SimpleGrantedAuthority(e.getName())).collect(Collectors.toList());
+//		UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+//                user.getLogin(),user.getPassword(),authorities);
+//		System.out.println("login:" + user.getLogin() + "  password:" + user.getPassword());
+//		for(GrantedAuthority aut: user.getAuthorities())
+//			System.out.println(aut.getAuthority() + "1111111111111111111");
 		
-		return userDetails;
+		return user;
 	}
 }
