@@ -60,11 +60,11 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		BCryptPasswordEncoder encoder2 = new BCryptPasswordEncoder();
 		String encodePassword2 = encoder2.encode("admin");
 		user2.setPassword(encodePassword2);
+		user2.setPhoneNumber("15901010102");
 		user2.setEnabled(true);
 		userRepository.save(user2);
 		System.out.println("Authority save ok");
 		} catch(Exception e) {
-			
 		}
 	}
 	

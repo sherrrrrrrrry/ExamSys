@@ -162,4 +162,13 @@ public class User implements Serializable, UserDetails{
 		}
 		return authorites;
 	}
+	
+    @Override
+    public String toString() {
+        return "User{" +
+            "login='" + login + '\'' +
+            ", phoneNumber='" + phoneNumber + '\'' +
+            ", enabled='" + enabled + '\'' +
+            "}";
+    }
 }
