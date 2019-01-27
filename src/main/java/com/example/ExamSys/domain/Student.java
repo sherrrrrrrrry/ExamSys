@@ -4,12 +4,21 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
 
 import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.domain.enumeration.Gender;
@@ -65,11 +74,6 @@ public class Student implements Serializable{
 	@Size(min = 5, max = 50)
 	@Column(name = "phone_number")
 	private String phoneNumber;
-	
-	@Email
-	@Size(min = 5,max = 100)
-	@Column(length = 100)
-	private String email;
 	
 	@Column(name = "motto")
 	private String motto;
@@ -176,15 +180,7 @@ public class Student implements Serializable{
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	
 	public String getMotto() {
 		return motto;
 	}

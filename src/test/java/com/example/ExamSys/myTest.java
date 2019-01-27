@@ -1,5 +1,8 @@
 package com.example.ExamSys;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.mail.HtmlEmail;
 
 public class myTest {
@@ -20,7 +23,8 @@ public class myTest {
 	}
 	
 	public static void main(String[] args) {
-		myTest m = new myTest();
-		m.test();
+		Map<String, Object> p = new HashMap<String, Object>();
+		Object x = p.get("123").toString();
+		System.out.println(x);
 	}
 }

@@ -46,7 +46,7 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		BCryptPasswordEncoder encoder1 = new BCryptPasswordEncoder();
 		String encodePassword1 = encoder1.encode("123456");
 		user1.setPassword(encodePassword1);
-		user1.setPhoneNumber("15901010101");
+		user1.setEmail("554220979@qq.com");
 		user1.setEnabled(true);
 		userRepository.save(user1);
 		
@@ -60,7 +60,7 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		BCryptPasswordEncoder encoder2 = new BCryptPasswordEncoder();
 		String encodePassword2 = encoder2.encode("admin");
 		user2.setPassword(encodePassword2);
-		user2.setPhoneNumber("15901010102");
+		user2.setEmail("554220969@qq.com");;
 		user2.setEnabled(true);
 		userRepository.save(user2);
 		System.out.println("Authority save ok");

@@ -22,6 +22,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,10 +50,10 @@ public class User implements Serializable, UserDetails{
 	@Column(name = "password_hash", length = 60, nullable = false)
 	private String password;
 	
-	@Pattern(regexp = Constants.PHONE_REGEX)
-	@Size(min = 5, max = 50)
-	@Column(name = "phone_number")
-	private String phoneNumber;
+	@Email
+	@Size(min = 5,max = 100)
+	@Column(length = 100, unique = true)
+	private String email;
 	
 	@Column(name = "enabled")
 	private Boolean enabled;
@@ -89,17 +90,13 @@ public class User implements Serializable, UserDetails{
 		this.password = password;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-
-//	public Set<Authority> getAuthorities() {
-//		return authorities;
-//	}
 
 	public Boolean getEnabled() {
 		return enabled;
@@ -167,7 +164,7 @@ public class User implements Serializable, UserDetails{
     public String toString() {
         return "User{" +
             "login='" + login + '\'' +
-            ", phoneNumber='" + phoneNumber + '\'' +
+            ", email='" + email + '\'' +
             ", enabled='" + enabled + '\'' +
             "}";
     }

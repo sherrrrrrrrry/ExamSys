@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.ExamSys.dao.UserRepository;
@@ -21,11 +22,18 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 	
-	public User createUser(String login, String password, String phoneNumber) {
+	public User createUser(String login, String password, String email, Boolean enabled) {
 		User user = new User();
 		user.setLogin(login);
-		user.setPassword(password);
-		user.setPhoneNumber(phoneNumber);
+		user.setPassword(getHashPassword(password));
+		user.setEmail(email);
+		user.setEnabled(enabled);
 		return user;
+	}
+	
+	private String getHashPassword(String password) {
+		BCryptPasswordEncoder encoder1 = new BCryptPasswordEncoder();
+		String hash = encoder1.encode(password);
+		return hash;
 	}
 }

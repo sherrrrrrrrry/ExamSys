@@ -1,3 +1,0 @@
-2019-01-26 12:05:42,048 [main] ERROR o.h.e.jdbc.spi.SqlExceptionHelper 129 - Duplicate entry 'user1' for key 'UK_ew1hvam8uwaknuaellwhqchhb'
-2019-01-26 12:06:23,784 [http-nio-8080-exec-9] ERROR c.e.E.controller.LoginController 25 - wqeqwewqe
-2019-01-26 12:06:59,272 [main] ERROR o.h.e.jdbc.spi.SqlExceptionHelper 129 - Duplicate entry 'user1' for key 'UK_ew1hvam8uwaknuaellwhqchhb'
