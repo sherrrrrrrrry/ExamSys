@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -57,8 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests()
 			.antMatchers("/js/**","/css/**","/img/**","/fonts/**","/**/*.png","/**/*.jpg").permitAll()
-			.antMatchers("/admin/**")
-			.hasAuthority(AuthoritiesConstants.ADMIN)
+			.antMatchers("/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
 			.antMatchers("/*").permitAll()
 			.antMatchers("/api/**").permitAll()
 			.antMatchers("/account/**").permitAll()
@@ -66,12 +66,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.authenticated()
 			.and()
 			.formLogin()
-			.loginPage("/login.go")
+			.loginPage("/account/login.go")
 			.loginProcessingUrl("/login")
 			.defaultSuccessUrl("/")
-			.failureUrl("/login?error")
-//			.successHandler(getSuccessHandler())
-//			.failureHandler(getFailureHandler())
+			.failureUrl("/login?error=true")
+			.successHandler(getSuccessHandler())
+			.failureHandler(getFailureHandler())
 //			.usernameParameter("loginname")
 //			.passwordParameter("password")
 			.permitAll()
