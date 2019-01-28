@@ -21,7 +21,7 @@ public class VerifyService {
 		
 		String randomNum = String.valueOf(new Random().nextInt(899999) + 100000);
 		String message = "您的注册验证码为:" + randomNum;
-		mailService.sendSimpleMail(email, "examsys", message);
+		mailService.sendSimpleMail(email, "教育", message);
 		log.info("{} 验证码发送成功" + email);
 		return randomNum;
 	}

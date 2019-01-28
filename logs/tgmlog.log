@@ -1,0 +1,3 @@
+2019-01-28 16:06:10,980 [main] ERROR o.h.e.jdbc.spi.SqlExceptionHelper 129 - Duplicate entry 'user1' for key 'UK_ew1hvam8uwaknuaellwhqchhb'
+2019-01-28 16:30:30,713 [main] ERROR o.h.e.jdbc.spi.SqlExceptionHelper 129 - Duplicate entry 'user1' for key 'UK_ew1hvam8uwaknuaellwhqchhb'
+2019-01-28 16:42:26,186 [main] ERROR o.h.e.jdbc.spi.SqlExceptionHelper 129 - Duplicate entry 'user1' for key 'UK_ew1hvam8uwaknuaellwhqchhb'
