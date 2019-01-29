@@ -11,6 +11,7 @@
 <link href="css/fancybox/jquery.fancybox.css" rel="stylesheet">
 <link href="css/flexslider.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
+<link href="css/layer.css" rel="stylesheet" type="text/css" />
 
 
 
@@ -20,17 +21,13 @@
     <![endif]-->
 
 </head>
-<body onload="setup();promptinfo();ageinfo()">
+<body>
 	<div id="wrapper">
 		<!-- start header -->
 		<header>
 			<div class="navbar navbar-default navbar-static-top">
 				<div class="container">
 					<div class="navbar-header">
-						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-collapse">
-							<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-						</button>
 						<a class="navbar-brand" href="index.html">
 							<img src="img/logo.png" alt="logo" />
 						</a>
@@ -58,127 +55,51 @@
 		<section id="content">
 			<div class="container">
 				<!-- Form itself -->
-				<form name="sentMessage" id="loginForm" style="width: 80%; margin: 0 auto" novalidate action=""
-					method="post">
+				<form id="registerForm" style="width: 300px; margin: 0 auto" novalidate action="registerInfo.html" method="post" onSubmit="return registerCheck();">
 					<div class="row">
-						<div class="col-md-6">
-							<div class="control-group">
-								<div class="controls">
-									注册类型：
-									<select class="form-control">
-										<option value="student">学生</option>
-										<option value="teacher">教师</option>
-									</select>
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									姓名：
-									<input type="text" class="form-control" id="name" required
-										data-validation-required-message="Please enter your name" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									昵称：
-									<input type="text" class="form-control" id="nickname" required
-										data-validation-required-message="Please enter your nickname" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									性别：
-									<select class="form-control" id="gender" required
-										data-validation-required-message="Please choose your gender">
-										<option value="male">男</option>
-										<option value="female">女</option>
-									</select>
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									年龄:
-									<select class="form-control" id="age" required
-										data-validation-required-message="Please choose your age">
-									</select>
-									<p class="help-block"></p>
-								</div>
-							</div>
-
-							<div class="control-group">
-								<div class="controls">
-									联系电话：
-									<input type="tel" class="form-control" id="phone" required
-										data-validation-required-message="Please enter your phone number" />
-									<p class="help-block"></p>
-								</div>
+						<div class="control-group">
+							<div class="controls">
+								注册类型：
+								<select class="form-control" name="UserType">
+									<option value="Student">学生</option>
+									<option value="Teacher">教师</option>
+								</select>
+								<p class="help-block"></p>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="control-group">
-								<div class="controls">
-									邮箱：
-									<input type="email" class="form-control" id="email" required
-										data-validation-required-message="Please enter your email" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									<span style="display: block">学校所在地：</span>
-									<select class="form-control" style="width: 32.5%; display: inline" name="province" id="s1">
-										<option></option>
-									</select>
-									<select class="form-control" style="width: 32.5%; display: inline" name="city" id="s2">
-										<option></option>
-									</select>
-									<select class="form-control" style="width: 32.5%; display: inline" name="town" id="s3">
-										<option></option>
-									</select>
-									<input id="schoollacation" name="address" type="hidden" value="" />
-									<p class="help-block"></p>
-									<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									学校名称：
-									<input type="text" class="form-control" id="school" required
-										data-validation-required-message="Please enter your school" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									培训机构名称：
-									<input type="text" class="form-control" id="trainingagency" required
-										data-validation-required-message="Please enter your training agency" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									座右铭：
-									<input type="text" class="form-control" id="motto" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									上传生活照：
-									<input type="file" id="test-image-file" name="test"
-										accept="image/gif, image/jpeg, image/png, image/jpg" required
-										data-validation-required-message="请上传生活照" />
-									<p class="help-block"></p>
-									<div id="test-image-preview"></div>
-								</div>
-
+						<div class="control-group">
+							<div class="controls">
+								用户名：
+								<input type="text" name="Username" class="form-control" id="Username" required
+									data-validation-required-message="Please enter your login name" />
+								<p class="help-block"></p>
 							</div>
 						</div>
+						<div class="control-group">
+							<div class="controls">
+								密码：
+								<input type="password" name="Password" class="form-control" id="Password" required
+									data-validation-required-message="Please enter your password" />
+								<p class="help-block"></p>
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="controls">
+							    <span style="display: block;">邮箱：</span> 
+								<input type="email" class="form-control" style="width: 58%;display: inline;" name="Email" id="Email" value="" name="yzm_email"/>
+								<input type="button" class="form-control"  style="width: 40%;display: inline;"  id="addSendCode" value="获取验证码" onClick="sendAddmes()" />
+								<p class="help-block"></p>
+							</div>
+						</div>
+
+						<div class="control-group">
+							<div class="controls">
+							        请输入验证码：
+								<input type="number" name="verificationCode" class="form-control code error" id="verificationCode" value="" />
+								<p class="help-block"></p>
+							</div>
+						</div>
+
 					</div>
 					<div class="pricing-action">
 						<button type="submit" class="btn btn-primary"
@@ -191,31 +112,6 @@
 
 		</section>
 	</div>
-	<a href="#" class="scrollup">
-		<i class="fa fa-angle-up active"></i>
-	</a>
-
-	<script>
-		function promptinfo() {
-			var schoollacation = document.getElementById('schoollacation').value;
-			var s1 = document.getElementById('s1').value;
-			var s2 = document.getElementById('s2').value;
-			var s3 = document.getElementById('s3').value;
-			schoollacation = "" + s1 + s2 + s3;
-			console.log(schoollacation);
-			//return schoollacation;
-		}
-
-		function ageinfo() {
-			var select = document.getElementById("age");
-			for (var i = 1; i <= 100; i++) {
-				var opt = document.createElement("option");
-				opt.value = i;
-				opt.innerHTML = i;
-				select.appendChild(opt);
-			}
-		}
-	</script>
 
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.easing.1.3.js"></script>
@@ -230,8 +126,9 @@
 	<script src="js/jquery.magnific-popup.min.js"></script>
 	<script src="js/animate.js"></script>
 	<script src="js/custom.js"></script>
-	<script type="text/javascript" src="js/province.js"></script>
-	<script src="js/uploadImg.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/layer.js"></script>
+    <script type="text/javascript" src="js/emailCheck.js"></script>
 
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <title>PaperCreate</title>
-<link rel="stylesheet" type="text/css" href="../css/paperCreate.css">
 <link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/paperCreate.css">
 <link href="../css/fancybox/jquery.fancybox.css" rel="stylesheet">
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
@@ -14,7 +14,6 @@
 </head>
 
 <body>
-	<div class="headerpage"></div>
 	<section id="inner-headline">
 		<div class="container">
 			<div class="row">
@@ -208,13 +207,13 @@
 
 							<!--完成编辑-->
 							<div class="bjqxwc_box">
-								<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
-								<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+								<a href="javascript:void(0);" class="finish_edit"> 完成编辑</a>
 							</div>
 						</div>
 
 						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
-						<div class="xxk_xzqh_box duoxuan hide">
+						<div class="xxk_xzqh_box duoxuan" style="display:none">
 							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
 								onblur="if(!this.value)this.value='多选题目'"
 								onclick="if(this.value&&this.value=='多选题目' )  this.value=''"></textarea>
@@ -246,26 +245,26 @@
 
 							<!--完成编辑-->
 							<div class="bjqxwc_box">
-								<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
-								<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+								<a href="javascript:void(0);" class="finish_edit"> 完成编辑</a>
 							</div>
 						</div>
 
 						<!-- 填空----------------------------------------------------------------------------------------------------------------------------------------->
-						<div class="xxk_xzqh_box tktm hide">
+						<div class="xxk_xzqh_box tktm" style="display:none">
 							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk"
 								onblur="if(!this.value)this.value='填空题目'"
 								onclick="if(this.value&&this.value=='填空题目' )  this.value=''"></textarea>
 
 							<!--完成编辑-->
 							<div class="bjqxwc_box">
-								<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
-								<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+								<a href="javascript:void(0);" class="finish_edit"> 完成编辑</a>
 							</div>
 						</div>
 
 						<!-- 矩阵----------------------------------------------------------------------------------------------------------------------------------------->
-						<div class="xxk_xzqh_box  hide">
+						<div class="xxk_xzqh_box" style="display:none">
 							<h4 class="title_wjht">1. 对目前的工作哪方面不满意？</h4>
 							<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tswjdc_table">
 								<tr>
@@ -353,8 +352,8 @@
 
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
-									<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+									<a href="javascript:void(0);" class="finish_edit"> 完成编辑</a>
 								</div>
 							</div>
 						</div>
@@ -363,7 +362,6 @@
 			</div>
 		</div>
 	</section>
-	<div class="footerpage"></div>
 
 
 	<script src="../js/jquery-1.8.0.min.js"></script>
@@ -381,13 +379,6 @@
 	<script src="../js/jquery.magnific-popup.min.js"></script>
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
-
-	<script type="text/javascript">
-		$(function() {
-			$(".headerpage").load("../header.html");
-			$(".footerpage").load("../footer.html");
-		});
-	</script>
 
 </body>
 </html>

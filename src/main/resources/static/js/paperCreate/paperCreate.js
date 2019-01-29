@@ -484,4 +484,20 @@ $(document)
 
 									});
 
+					// 完成编辑（新题目录入）
+					$(".finish_edit").live(
+							"click",
+							function() {
+								console.log("finish one question input");
+								var ydbox = document.getElementByClass("yd_box");
+								var jcxxxx = $(this).parent(".bjqxwc_box")
+										.parent(".xxk_xzqh_box");
+								// 题目标题
+								var texte_bt_val_bj = jcxxxx
+										.find(".btwen_text").val();
+								//题目选项的个数
+								var bjtm_xm_length = jcxxxx.find(".title_itram").children(".kzjxx_iteam").length;
+
+							});
+
 				});

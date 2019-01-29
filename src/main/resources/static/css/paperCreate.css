@@ -39,6 +39,11 @@ color: #666;
 .xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 164px; text-align: center; border-right: 1px solid #fff; }
 .xxk_title li.on { background: #0099ff; color: #fff; }
 .xxk_conn .xxk_xzqh_box { padding: 20px; background: #f2f2f2; }
+
+.hide{
+	display:none;
+}
+
 .input_wenbk { font-family: "寰蒋闆呴粦"; width: 450px; height: 33px; line-height: 33px; padding-left: 10px; border: 1px solid #ccc; background: #FFF; color: #666; }
 .btwen_text { font-family: "寰蒋闆呴粦"; height: 66px; width: 608px; margin-bottom: 15px; }
 .kzjxx_iteam { height: 35px; overflow: hidden; margin-bottom: 10px; line-height: 35px; }
