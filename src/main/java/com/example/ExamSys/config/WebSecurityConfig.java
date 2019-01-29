@@ -66,10 +66,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.authenticated()
 			.and()
 			.formLogin()
-			.loginPage("/account/login.go")
+			.loginPage("/login.go")
 			.loginProcessingUrl("/login")
-			.defaultSuccessUrl("/")
-			.failureUrl("/login?error=true")
+//			.defaultSuccessUrl("/")
+//			.failureUrl("/login?error")
 			.successHandler(getSuccessHandler())
 			.failureHandler(getFailureHandler())
 //			.usernameParameter("loginname")
@@ -91,23 +91,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public AuthenticationSuccessHandler getSuccessHandler() {
 		return new AuthenticationSuccessHandler() {
 			@Override
-			public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication auth) throws IOException{
-				String targetUrl = req.getParameter("targetUrl");
-				if(targetUrl == null || "".equals(targetUrl)) {
-					targetUrl = "/";
-				}
-				
-				Object principal = auth.getPrincipal();
-				resp.setContentType("application/json;charset=utf-8");
-				PrintWriter out = resp.getWriter();
-				resp.setStatus(200);
-				Map<String, Object> map = new HashMap<>();
-				map.put("status", 200);
-				map.put("msg", principal);
-				ObjectMapper om = new ObjectMapper();
-				out.write(om.writeValueAsString(map));
-				out.flush();
-				out.close();
+			public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication auth) throws IOException, ServletException{
+//				String targetUrl = req.getParameter("targetUrl");
+//				if(targetUrl == null || "".equals(targetUrl)) {
+//					targetUrl = "/";
+//				}
+//				
+//				Object principal = auth.getPrincipal();
+//				resp.setContentType("application/json;charset=utf-8");
+//				PrintWriter out = resp.getWriter();
+//				resp.setStatus(200);
+//				Map<String, Object> map = new HashMap<>();
+//				map.put("status", 200);
+//				map.put("msg", principal);
+//				ObjectMapper om = new ObjectMapper();
+//				out.write(om.writeValueAsString(map));
+//				out.flush();
+//				out.close();
+				req.getRequestDispatcher("/");
 			}
 		};
 	}
@@ -120,28 +121,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 					org.springframework.security.core.AuthenticationException e)
 					throws IOException, ServletException {
 				// TODO Auto-generated method stub
-				resp.setContentType("application/json;charset=utf-8");
-				PrintWriter out = resp.getWriter();
-				resp.setStatus(401);
-				Map<String, Object> map = new HashMap<>();
-				map.put("status", 401);
-				if(e instanceof LockedException) {
-					map.put("msg", "账户被锁定，登陆失败！");
-				} else if (e instanceof BadCredentialsException) {
-					map.put("msg", "账户名或密码输入错误，登陆失败！");
-				} else if (e instanceof DisabledException) {
-					map.put("msg", "账户被禁用，登陆失败！");
-				} else if(e instanceof AccountExpiredException) {
-					map.put("msg", "账户已过期，登陆失败！");
-				} else if(e instanceof CredentialsExpiredException) {
-					map.put("msg", "密码已过期，登陆失败！");
-				} else {
-					map.put("msg", "登陆失败！");
-				}
-				ObjectMapper om = new ObjectMapper();
-				out.write(om.writeValueAsString(map));
-				out.flush();
-				out.close();
+				
+//				resp.setContentType("application/json;charset=utf-8");
+//				PrintWriter out = resp.getWriter();
+//				resp.setStatus(401);
+//				Map<String, Object> map = new HashMap<>();
+//				map.put("status", 401);
+//				if(e instanceof LockedException) {
+//					map.put("msg", "账户被锁定，登陆失败！");
+//				} else if (e instanceof BadCredentialsException) {
+//					map.put("msg", "账户名或密码输入错误，登陆失败！");
+//				} else if (e instanceof DisabledException) {
+//					map.put("msg", "账户被禁用，登陆失败！");
+//				} else if(e instanceof AccountExpiredException) {
+//					map.put("msg", "账户已过期，登陆失败！");
+//				} else if(e instanceof CredentialsExpiredException) {
+//					map.put("msg", "密码已过期，登陆失败！");
+//				} else {
+//					map.put("msg", "登陆失败！");
+//				}
+//				ObjectMapper om = new ObjectMapper();
+//				out.write(om.writeValueAsString(map));
+//				out.flush();
+//				out.close();
 			}
 		};
 	}
