@@ -46,6 +46,8 @@ public class AccountController {
 	@Autowired
 	private VerifyService verifyService;
 	
+	
+	
 	/*
 	 * 注册
 	 * 参数: UserDTO
@@ -128,6 +130,9 @@ public class AccountController {
 	
 	/*
 	 * 忘记密码时，发送验证码
+	 * 参数：email 邮箱
+	 * 返回值：hash: 密文
+	 * 		 time: 时间
 	 */
 	@RequestMapping(value = "/sendmessageforget", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> sendMessageForget(@RequestParam(value = "email") String email){
