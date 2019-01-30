@@ -7,6 +7,23 @@
 	var hash;
 	var codeTimestamp;
 	
+	
+	$.fn.serializeObject = function() {
+		    var o = {};
+		    var a = this.serializeArray();
+		    $.each(a, function() {
+		        if (o[this.name]) {
+		            if (!o[this.name].push) {
+		                o[this.name] = [o[this.name]];
+		            }
+		            o[this.name].push(this.value || '');
+		        } else {
+		            o[this.name] = this.value || '';
+		        }
+		    });
+		    return o;
+		};
+	
 	function sendAddmes() {
 		/*
 		 * var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
@@ -19,7 +36,7 @@
 			 $("#addSendCode").val("" + addCount + "秒后重新获取").css({"background-color":"#002e5b"});
 			 AddInterValObj = window.setInterval(SetAddnTime, 1000); // 启动计时器，1秒执行一次
 		　　  // 向后台发送处理数据
-			 var email = document.getElementById("Email").value;
+			 var email = document.getElementById("email").value;
 			 console.log(email);
 			 $.ajax({
 			 　　type: "POST", // 用POST方式传输
@@ -88,27 +105,28 @@
 	}
 	
 	function registerCheck() {	
-		var formData = $('#registerForm').serialize();
-		console.log(formData);
+		var verificationCode = document.getElementById("verificationCode").value;;
+		var userDTO = $('#registerForm').serializeObject();
+		console.log(JSON.stringify(userDTO) +"&hash="+hash+"&time="+codeTimestamp+"&verificationCode="+ verificationCode);
 		if($('.error').length >0){
 			layertest('请您填写验证码');
 			return false;
 		}else{
-			   $.ajax({
-				   type: "POST", // 用POST方式传输
-				 　 dataType: "JSON", // 数据格式:JSON
-			       url: "/account/register",
-			       data: formData+"&hash="+hash+"&time="+codeTimestamp,
-			   }).success(function(message) {
-				 layertest('注册成功!');
-				 console.log(message);
-				 return true;
-			   }).fail(function(err){
-			     console.log(err);
-			     layertest('注册失败!');
-			     return false;
-			   })
-			
+		   $.ajax({
+			   type: "POST", // 用POST方式传输
+			 　 dataType: "JSON", // 数据格式:JSON
+			   contentType:"application/json",
+		       url: "/account/register?hash="+hash+"&time="+codeTimestamp+"&verificationCode="+ verificationCode,
+		       data: JSON.stringify(userDTO),
+		   }).success(function(message) {
+			 layertest('注册成功!');
+			 console.log(message);
+			 window.location.href="../registerInfo.html";
+		   }).fail(function(err){
+		     console.log(err);
+		     layertest('注册失败!');
+		   })
+			return false;
 		}
 	}
 	// update btn click
