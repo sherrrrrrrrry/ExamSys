@@ -244,9 +244,9 @@ $(document).ready(function(e) {
 
 	});
 
-    var titleNum = 0;
-	// 完成编辑（单选题录入）
-	$(".finish_one_choice").live("click", function() {
+	var titleNum = 0;
+	// 完成编辑（新题目录入）
+	$(".finish_new_problem").live("click", function() {
 		var ydbox = $(".yd_box");
 		var jcxxxx = $(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box");
 		// 题目标题
@@ -254,27 +254,33 @@ $(document).ready(function(e) {
 		// 题目选项的个数
 		var bjtm_xm_length = jcxxxx.find(".title_itram").children(".kzjxx_iteam").length; // 添加选项题目
 		// 添加选项
-		if(ydbox.children(".movie_box").length!=0){
-			 titleNum = ydbox.children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
+		if (ydbox.children(".movie_box").length != 0) {
+			titleNum = ydbox.children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
 		}
-        var nextNum = parseInt(titleNum)+1;
+		var nextNum = parseInt(titleNum) + 1;
 		if (jcxxxx.find(".btwen_text_dx").val() != null) {
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="0"></div></div>');
-			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">'+ nextNum +'</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【单选】</span></div></li>');
+			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【单选】</span></div></li>');
+			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			for (var i = 0; i < bjtm_xm_length; i++) {
+				var insertContent = jcxxxx.find(".title_itram").children(".kzjxx_iteam").eq(i).find(".input_wenbk").val();
+				insertOption.append('<li><label><input name="a" type="radio" value=""><span>' + insertContent + '</span></label></li>');
+			}
 		} else if (jcxxxx.find(".btwen_text_duox").val() != null) {
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="1"></div></div>');
-			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">'+ nextNum +'</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【多选】</span></div></li>');
-		}else console.log("error cannot find!");
-		
-		var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-		for (var i = 0; i < bjtm_xm_length; i++) {
-			var insertContent = jcxxxx.find(".title_itram").children(".kzjxx_iteam").eq(i).find(".input_wenbk").val();
-			if (jcxxxx.find(".btwen_text_dx").val() != null) {
-				insertOption.append('<li><label><input name="a" type="radio" value=""><span>' + insertContent + '</span></label></li>');
-			} else if (jcxxxx.find(".btwen_text_duox").val() != null) {
+			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【多选】</span></div></li>');
+			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			for (var i = 0; i < bjtm_xm_length; i++) {
+				var insertContent = jcxxxx.find(".title_itram").children(".kzjxx_iteam").eq(i).find(".input_wenbk").val();
 				insertOption.append('<li><label><input name="" type="checkbox" value=""><span>' + insertContent + '</span></label></li>');
 			}
-		}
+		} else if (jcxxxx.find(".btwen_text_zw").val() != null) {
+			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="2"></div></div>');
+			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【正误】</span></div></li>');
+			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			insertOption.append('<li><label><input name="a" type="radio" value=""><span>正确</span></label></li><li><label><input name="a" type="radio" value=""><span>错误</span></label></li>');
+		} else console.log("error cannot find!");
+
 	});
 
 
