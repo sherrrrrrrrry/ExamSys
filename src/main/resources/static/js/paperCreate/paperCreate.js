@@ -8,7 +8,7 @@ $(document).ready(function(e) {
 	$(".xxk_title li").click(function() {
 		var xxkjs = $(this).index();
 		$(this).addClass("on").siblings().removeClass("on");
-		$(".xxk_conn").children(".xxk_xzqh_box").eq(xxkjs).show().siblings().hide().find(".cancle_edit").trigger("click");
+		$(".xxk_conn").children(".xxk_xzqh_box").eq(xxkjs).show().siblings().hide();
 	});
 
 	$(".movie_box").live("hover", function(event) {
@@ -186,7 +186,7 @@ $(document).ready(function(e) {
 	});
 	// 取消编辑
 	$(".dx_box .qxbj_but").live("click", function() {
-		$(this).parent(".bjqxwc_box").parent(".dx_box").empty().hide();
+		$(this).parent(".bjqxwc_box").parent("form").parent(".dx_box").empty().hide();
 		$(".movie_box").css({
 			"border": "1px solid #fff"
 		});
@@ -196,7 +196,7 @@ $(document).ready(function(e) {
 
 	// 完成编辑（编辑）
 	$(".swcbj_but").live("click", function() {
-		var jcxxxx = $(this).parent(".bjqxwc_box").parent(".dx_box");
+		var jcxxxx = $(this).parent(".bjqxwc_box").parent("form").parent(".dx_box");
 		// 编辑题目选项的个数
 		var bjtm_xm_length = jcxxxx.find(".title_itram").children(".kzjxx_iteam").length;
 		var xmtit_length = jcxxxx.parent(".movie_box").children(".wjdc_list").children("li").length - 1;
@@ -248,7 +248,7 @@ $(document).ready(function(e) {
 	// 完成编辑（新题目录入）
 	$(".finish_new_problem").live("click", function() {
 		var ydbox = $(".yd_box");
-		var jcxxxx = $(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box");
+		var jcxxxx = $(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box form");
 		// 题目标题
 		var texte_bt_val_bj = jcxxxx.find(".btwen_text").val();
 		// 题目选项的个数
@@ -276,11 +276,16 @@ $(document).ready(function(e) {
 			}
 		} else if (jcxxxx.find(".btwen_text_zw").val() != null) {
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="2"></div></div>');
-			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【正误】</span></div></li>');
+			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【判断】</span></div></li>');
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 			insertOption.append('<li><label><input name="a" type="radio" value=""><span>正确</span></label></li><li><label><input name="a" type="radio" value=""><span>错误</span></label></li>');
-		} else console.log("error cannot find!");
-
+		} else if (jcxxxx.find(".btwen_text_tk").val() != null) {
+			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
+			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【简答】</span></div></li>');
+			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" value="请填写您的答案"></textarea></label></li>');
+		}else console.log("error cannot find!");
+		jcxxxx.find(".cancle_edit").trigger("click")
 	});
 
 
@@ -293,3 +298,23 @@ $(document).ready(function(e) {
 
 
 });
+
+
+function dxuanSubmit() {
+	var optionNum = 4;
+	console.log($('#dxuanForm').serialize()+ "&optionNum=" + optionNum);
+	$.ajax({
+		type: "POST", // 用POST方式传输
+		dataType: "JSON", // 数据格式:JSON
+		contentType: "application/json",
+		url: "/questionbank/onechoice",
+		data: $('#dxuanForm').serialize()+ "&optionNum=" + optionNum,
+	}).success(function(message) {
+		console.log('单选传输成功!');
+		console.log(message);
+	}).fail(function(err) {
+		console.log('单选传输失败!');
+		console.log(err);
+	})
+	return false;
+}

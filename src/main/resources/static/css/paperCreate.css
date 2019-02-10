@@ -36,7 +36,7 @@ color: #666;
 /*閫夐」鍗�*/
 .xxk_box { margin-top: 20px; }
 .xxk_title { height: auto; overflow: hidden; }
-.xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 20%; text-align: center; border-right: 1px solid #fff; }
+.xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 25%; text-align: center; border-right: 1px solid #fff; }
 .xxk_title li.on { background: #0099ff; color: #fff; }
 .xxk_conn .xxk_xzqh_box { padding: 20px; background: #f2f2f2; }
 
