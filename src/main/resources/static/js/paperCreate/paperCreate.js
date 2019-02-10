@@ -90,6 +90,7 @@ $(document).ready(function(e) {
 		var dxtm = $(".dxuaninsert").html();
 		var duoxtm = $(".duoxuaninsert").html();
 		var tktm = $(".tktminsert").html();
+		var pdtm = $(".pdtminsert").html();
 		// 接受编辑内容的容器
 		var dx_rq = $(this).parent(".kzqy_czbut").parent(".movie_box").find(".dx_box");
 		var title = dx_rq.attr("data-t");
@@ -158,8 +159,16 @@ $(document).ready(function(e) {
 
 			});
 		}
-		// 填空题目
+		// 判断题目
 		if (title == 2) {
+			dx_rq.show().html(pdtm);
+			// 赋值文本框
+			// 题目标题
+			var texte_bt_val = $(this).parent(".kzqy_czbut").parent(".movie_box").find(".wjdc_list").children("li").eq(0).find(".tm_btitlt").children(".btwenzi").text();
+			dx_rq.find(".btwen_text").val(texte_bt_val);
+		}
+		// 简答题目
+		if (title == 3) {
 			dx_rq.show().html(tktm);
 			// 赋值文本框
 			// 题目标题
@@ -170,8 +179,16 @@ $(document).ready(function(e) {
 
 	// 增加选项
 	$(".zjxx").live("click", function() {
-		var zjxx_html = $(this).prev(".title_itram").children(".kzjxx_iteam").html();
-		$(this).prev(".title_itram").append("<div class='kzjxx_iteam'>" + zjxx_html + "</div>");
+		var index = $("[class=on]").index();
+		var optionNum = $(this).prev(".title_itram").children(".kzjxx_iteam").length;
+		if(index == 0){
+			console.log(index);
+			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="radio" class="dxk"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
+		}else if(index == 1){
+			console.log(index);
+			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="checkbox" class="dxk"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
+		}
+		
 	});
 
 	// 删除一行
@@ -285,23 +302,23 @@ $(document).ready(function(e) {
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 			insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" value="请填写您的答案"></textarea></label></li>');
 		}else console.log("error cannot find!");
-		jcxxxx.find(".cancle_edit").trigger("click")
+		jcxxxx.find(".cancle_edit").trigger("click");
 	});
 
 
 
 	// 取消录入
 	$(".cancle_edit").live("click", function() {
-		$(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box").find(".input_wenbk").val("选项");
-		$(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box").find(".btwen_text").val("请输入题目");
+		$(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box form").find(".input_wenbk").val("选项");
+		$(this).parent(".bjqxwc_box").parent(".xxk_xzqh_box form").find(".btwen_text").val("请输入题目");
 	});
-
 
 });
 
 
 function dxuanSubmit() {
-	var optionNum = 4;
+	var index = $("[class=on]").index();
+	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
 	console.log($('#dxuanForm').serialize()+ "&optionNum=" + optionNum);
 	$.ajax({
 		type: "POST", // 用POST方式传输
@@ -314,6 +331,26 @@ function dxuanSubmit() {
 		console.log(message);
 	}).fail(function(err) {
 		console.log('单选传输失败!');
+		console.log(err);
+	})
+	return false;
+}
+
+function duoxuanSubmit() {
+	var index = $("[class=on]").index();
+	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
+	console.log($('#duoxuanForm').serialize()+ "&optionNum=" + optionNum);
+	$.ajax({
+		type: "POST", // 用POST方式传输
+		dataType: "JSON", // 数据格式:JSON
+		contentType: "application/json",
+		url: "/questionbank/mutiplechoice",
+		data: $('#dxuanForm').serialize()+ "&optionNum=" + optionNum,
+	}).success(function(message) {
+		console.log('多选传输成功!');
+		console.log(message);
+	}).fail(function(err) {
+		console.log('多选传输失败!');
 		console.log(err);
 	})
 	return false;

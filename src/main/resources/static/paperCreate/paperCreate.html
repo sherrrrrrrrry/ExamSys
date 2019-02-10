@@ -139,6 +139,11 @@
 									<div class="title_itram">
 										<div class="kzjxx_iteam">
 											<input type="radio" class="dxk">
+											<input name="0" type="text" class="input_wenbk" value="选项">
+											<a href="javascript:void(0);" class="del_xm">删除</a>
+										</div>
+										<div class="kzjxx_iteam">
+											<input type="radio" class="dxk">
 											<input name="1" type="text" class="input_wenbk" value="选项">
 											<a href="javascript:void(0);" class="del_xm">删除</a>
 										</div>
@@ -150,11 +155,6 @@
 										<div class="kzjxx_iteam">
 											<input type="radio" class="dxk">
 											<input name="3" type="text" class="input_wenbk" value="选项">
-											<a href="javascript:void(0);" class="del_xm">删除</a>
-										</div>
-										<div class="kzjxx_iteam">
-											<input type="radio" class="dxk">
-											<input name="4" type="text" class="input_wenbk" value="选项">
 											<a href="javascript:void(0);" class="del_xm">删除</a>
 										</div>
 									</div>
@@ -172,39 +172,51 @@
 
 							<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
 							<div class="xxk_xzqh_box duoxuan" style="display:none">
-								<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
-								<div class="title_itram">
-									<div class="kzjxx_iteam">
-										<input name="" type="radio" value="" class="dxk">
-										<input name="" type="text" class="input_wenbk" value="选项" onblur="if(!this.value)this.value='选项'" onclick="if(this.value&&this.value=='选项' )  this.value=''">
-
-										<a href="javascript:void(0);" class="del_xm">删除</a>
+								<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/mutiplechoice" method="post" onSubmit="return duoxuanSubmit();">
+									<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+									<div class="title_itram">
+										<div class="kzjxx_iteam">
+											<input type="checkbox" class="dxk">
+											<input name="0" type="text" class="input_wenbk" value="选项">
+											<a href="javascript:void(0);" class="del_xm">删除</a>
+										</div>
+										<div class="kzjxx_iteam">
+											<input type="checkbox" class="dxk">
+											<input name="1" type="text" class="input_wenbk" value="选项">
+											<a href="javascript:void(0);" class="del_xm">删除</a>
+										</div>
+										<div class="kzjxx_iteam">
+											<input type="checkbox" class="dxk">
+											<input name="2" type="text" class="input_wenbk" value="选项">
+											<a href="javascript:void(0);" class="del_xm">删除</a>
+										</div>
+										<div class="kzjxx_iteam">
+											<input type="checkbox" class="dxk">
+											<input name="3" type="text" class="input_wenbk" value="选项">
+											<a href="javascript:void(0);" class="del_xm">删除</a>
+										</div>
 									</div>
-									<div class="kzjxx_iteam">
-										<input name="" type="radio" value="" class="dxk">
-										<input name="" type="text" class="input_wenbk" value="选项" onblur="if(!this.value)this.value='选项'" onclick="if(this.value&&this.value=='选项' )  this.value=''">
+									<a href="javascript:void(0)" class="zjxx">增加选项</a>
 
-										<a href="javascript:void(0);" class="del_xm">删除</a>
+									<!--完成编辑-->
+									<div class="bjqxwc_box">
+										<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+										<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
 									</div>
-								</div>
-								<a href="javascript:void(0)" class="zjxx">增加选项</a>
-
-								<!--完成编辑-->
-								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
-								</div>
+								</form>
 							</div>
 
 							<!-- 判断题----------------------------------------------------------------------------------------------------------------------------------------->
 							<div class="xxk_xzqh_box zwtm" style="display:none">
-								<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_zw" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+								<form id="pduanForm" name="pduanForm" action="/questionbank/trueflase" method="post" onSubmit="return truefalseSubmit();">
+									<textarea name="title" class="input_wenbk btwen_text btwen_text_zw" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
 
-								<!--完成编辑-->
-								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
-								</div>
+									<!--完成编辑-->
+									<div class="bjqxwc_box">
+										<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+										<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
+									</div>
+								</form>
 							</div>
 
 							<!-- 简答题----------------------------------------------------------------------------------------------------------------------------------------->
@@ -287,16 +299,43 @@
 								</div>
 							</div>
 
-							<!-- 简答----------------------------------------------------------------------------------------------------------------------------------------->
-							<div class="xxk_xzqh_box tktm tktminsert" style="display:none">
+							<!-- 判断----------------------------------------------------------------------------------------------------------------------------------------->
+							<div class="xxk_xzqh_box tktm pdtminsert" style="display:none">
 								<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
-
+								<li>
+									<label>
+										<input name="a" type="radio" value=""><span>正确</span></label>
+								</li>
+								<li>
+									<label>
+										<input name="a" type="radio" value=""><span>错误</span></label>
+								</li>
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
 									<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
 									<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
 								</div>
 							</div>
+
+							<!-- 简答----------------------------------------------------------------------------------------------------------------------------------------->
+							<div class="xxk_xzqh_box tktm tktminsert" style="display:none">
+								<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk" onblur="if(!this.value)this.value='请输入题目'" onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+								<li>
+									<label>
+										<input name="a" type="radio" value=""><span>正确</span></label>
+								</li>
+								<li>
+									<label>
+										<input name="a" type="radio" value=""><span>错误</span></label>
+								</li>
+								<!--完成编辑-->
+								<div class="bjqxwc_box">
+									<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
+									<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+								</div>
+							</div>
+							
+							
 						</div>
 					</div>
 
