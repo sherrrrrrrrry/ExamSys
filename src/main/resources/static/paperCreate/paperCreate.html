@@ -126,9 +126,10 @@
 
 				<div class="xxk_box">
 					<ul class="xxk_title">
-						<li class="on">单选</li>
-						<li>多选</li>
-						<li>填空</li>
+						<li class="on">单选题</li>
+						<li>多选题</li>
+						<li>正误题</li>
+						<li>填空题</li>
 						<li>矩阵</li>
 					</ul>
 					<div class="xxk_conn">
@@ -160,7 +161,7 @@
 							<!--完成编辑-->
 							<div class="bjqxwc_box">
 								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-								<a href="javascript:void(0);" class="finish_one_choice"> 完成编辑</a>
+								<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
 							</div>
 						</div>
 
@@ -192,7 +193,20 @@
 							<!--完成编辑-->
 							<div class="bjqxwc_box">
 								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-								<a href="javascript:void(0);" class="finish_one_choice"> 完成编辑</a>
+								<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
+							</div>
+						</div>
+
+						<!-- 正误题----------------------------------------------------------------------------------------------------------------------------------------->
+						<div class="xxk_xzqh_box zwtm" style="display:none">
+							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_zw"
+								onblur="if(!this.value)this.value='请输入题目'"
+								onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+
+							<!--完成编辑-->
+							<div class="bjqxwc_box">
+								<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+								<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
 							</div>
 						</div>
 
