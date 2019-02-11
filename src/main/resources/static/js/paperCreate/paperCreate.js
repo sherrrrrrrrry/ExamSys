@@ -16,7 +16,8 @@ $(document).ready(function(e) {
 		if (event.type == 'mouseenter') {
 			var html_cz = "<div class='kzqy_czbut'><a href='javascript:void(0)' class='sy'>上移</a><a href='javascript:void(0)'  class='xy'>下移</a><a href='javascript:void(0)'  class='bianji'>编辑</a><a href='javascript:void(0)' class='del' >删除</a></div>"
 			$(this).css({
-				"border": "1px solid #0099ff"
+				"border": "double #0058ad",
+				"border-radius":"8px"
 			});
 			$(this).children(".wjdc_list").after(html_cz);
 		} else {

@@ -58,8 +58,8 @@
 		<section id="content">
 			<div class="container">
 				<!-- Form itself -->
-				<form name="LoginMessage" id="loginForm" style="width: 300px; margin: 0 auto" novalidate
-					action="/login" method="post">
+				<form id="loginForm" style="width: 300px; margin: 0 auto" novalidate
+					action="/account/login" method="post"  onSubmit="return login();">
 					<div class="row">
 						<div class="control-group">
 							<div class="controls">
@@ -90,6 +90,26 @@
 		</section>
 	</div>
 
+<script type="text/javascript">
+function login(){
+	var userLoginDTO = $('#loginForm').serializeObject();
+	var username = document.getElementById("username").value;
+	$.ajax({
+		type: "POST", // 用POST方式传输
+		dataType: "JSON", // 数据格式:JSON
+		contentType: "application/json",
+		url: "/account/login",
+		data: JSON.stringify(userLoginDTO),
+	}).success(function(message) {
+		$.cookie('username', username);
+		window.location.href = "index.html";
+	}).fail(function(err) {
+		console.log(err);
+	})
+	return false;
+}
+</script>
+
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.easing.1.3.js"></script>
 	<script src="js/bootstrap.min.js"></script>
@@ -103,6 +123,7 @@
 	<script src="js/jquery.magnific-popup.min.js"></script>
 	<script src="js/animate.js"></script>
 	<script src="js/custom.js"></script>
+	<script src="js/jquery.cookie.js"></script>
 
 </body>
 </html>

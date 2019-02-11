@@ -37,7 +37,7 @@ color: #666;
 .xxk_box { margin-top: 20px; }
 .xxk_title { height: auto; overflow: hidden; }
 .xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 25%; text-align: center; border-right: 1px solid #fff; }
-.xxk_title li.on { background: #0099ff; color: #fff; }
+.xxk_title li.on { background: #0058ad; color: #fff; }
 .xxk_conn .xxk_xzqh_box { padding: 20px; background: #f2f2f2; }
 
 .hide{
@@ -80,7 +80,7 @@ a.zjxx { display: block; background: url(../img/jiajia.png) no-repeat left; heig
 /**/
 .movie_box{ position:relative; z-index:8; border: 1px solid #fff; padding:0 5px;} 
 .kzqy_czbut{ text-align:right;position:absolute; top:5px; right:5px;}
-.kzqy_czbut a{ display:inline-block; font-size:12px; padding:4px 10px; background:#0099ff; color:#fff; margin-left:5px;  }
+.kzqy_czbut a{ display:inline-block; font-size:12px; padding:4px 10px; background:#0058ad; color:#fff; margin-left:5px;  }
  .hide{ display:none;}
  
  .dx_box{ display:none; padding: 20px; background: #f2f2f2; }

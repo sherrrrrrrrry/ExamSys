@@ -44,12 +44,10 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
-						<h2 class="pageTitle">请完善您的信息</h2>
+						<h2 class="pageTitle">请完善您的个人信息</h2>
 					</div>
 					<div class="col-md-12">
 						<p class="pull-right">
-							<i class="fa fa-sign-in" style="color: #fdd428;"></i>
-							<a href="login.html">用户登录</a>
 						</p>
 					</div>
 				</div>
@@ -58,40 +56,21 @@
 		<section id="content">
 			<div class="container">
 				<!-- Form itself -->
-				<form name="sentMessage" id="loginForm" style="width: 80%; margin: 0 auto" novalidate action=""
-					method="post">
+				<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate action="/account/personalInfo" method="post"  onSubmit="return infoFinish();">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="control-group">
 								<div class="controls">
-									注册类型：
-									<select class="form-control">
-										<option value="student">学生</option>
-										<option value="teacher">教师</option>
-									</select>
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
-									姓名：
-									<input type="text" class="form-control" id="name" required
+									真实姓名：
+									<input type="text" class="form-control" id="realname" name="realname" required
 										data-validation-required-message="Please enter your name" />
 									<p class="help-block"></p>
 								</div>
 							</div>
 							<div class="control-group">
 								<div class="controls">
-									昵称：
-									<input type="text" class="form-control" id="nickname" required
-										data-validation-required-message="Please enter your nickname" />
-									<p class="help-block"></p>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls">
 									性别：
-									<select class="form-control" id="gender" required
+									<select class="form-control" id="gender" required name="gender" 
 										data-validation-required-message="Please choose your gender">
 										<option value="male">男</option>
 										<option value="female">女</option>
@@ -102,7 +81,7 @@
 							<div class="control-group">
 								<div class="controls">
 									年龄:
-									<select class="form-control" id="age" required
+									<select class="form-control" id="age" required name="age" 
 										data-validation-required-message="Please choose your age">
 									</select>
 									<p class="help-block"></p>
@@ -112,21 +91,13 @@
 							<div class="control-group">
 								<div class="controls">
 									联系电话：
-									<input type="tel" class="form-control" id="phone" required
+									<input type="tel" class="form-control" id="phone" required name="phone" 
 										data-validation-required-message="Please enter your phone number" />
 									<p class="help-block"></p>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="control-group">
-								<div class="controls">
-									邮箱：
-									<input type="email" class="form-control" id="email" required
-										data-validation-required-message="Please enter your email" />
-									<p class="help-block"></p>
-								</div>
-							</div>
 							<div class="control-group">
 								<div class="controls">
 									<span style="display: block">学校所在地：</span>
@@ -147,7 +118,7 @@
 							<div class="control-group">
 								<div class="controls">
 									学校名称：
-									<input type="text" class="form-control" id="school" required
+									<input type="text" class="form-control" id="school" required name="school"
 										data-validation-required-message="Please enter your school" />
 									<p class="help-block"></p>
 								</div>
@@ -155,7 +126,7 @@
 							<div class="control-group">
 								<div class="controls">
 									培训机构名称：
-									<input type="text" class="form-control" id="trainingagency" required
+									<input type="text" class="form-control" id="trainingagency" required name="trainingagency"
 										data-validation-required-message="Please enter your training agency" />
 									<p class="help-block"></p>
 								</div>
@@ -163,14 +134,14 @@
 							<div class="control-group">
 								<div class="controls">
 									座右铭：
-									<input type="text" class="form-control" id="motto" />
+									<input type="text" class="form-control" id="motto" name="motto"/>
 									<p class="help-block"></p>
 								</div>
 							</div>
 							<div class="control-group">
 								<div class="controls">
 									上传生活照：
-									<input type="file" id="test-image-file" name="test"
+									<input type="file" id="test-image-file" name="personalpic"
 										accept="image/gif, image/jpeg, image/png, image/jpg" required
 										data-validation-required-message="请上传生活照" />
 									<p class="help-block"></p>
@@ -215,6 +186,24 @@
 				select.appendChild(opt);
 			}
 		}
+		
+		function infoFinish(){
+			var userInfoDTO = $('#personalInfo').serializeObject();
+			$.ajax({
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: "/account/personalInfo",
+				data: JSON.stringify(userInfoDTO),
+			}).success(function(data) {
+				var username = data.username;
+				$.cookie('username', username);
+				window.location.href = "index.html";
+			}).fail(function(err) {
+				console.log(err);
+			})
+			return false;
+		}
 	</script>
 
 	<script src="js/jquery.js"></script>
@@ -232,6 +221,7 @@
 	<script src="js/custom.js"></script>
 	<script type="text/javascript" src="js/province.js"></script>
 	<script src="js/uploadImg.js"></script>
+	<script src="js/jquery.cookie.js"></script>
 
 </body>
 </html>

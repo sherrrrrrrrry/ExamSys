@@ -17,6 +17,7 @@
 </head>
 <body style="margin: 0; padding: 0; overflow: auto; scroll: no;">
 	<div id="wrapper" class="home-page">
+		<div class="topbarpage"></div>
 		<div class="headerpage"></div>
 		<section id="banner">
 			<!-- Slider -->
@@ -217,9 +218,20 @@
 	<script src="js/jquery.magnific-popup.min.js"></script>
 	<script src="js/animate.js"></script>
 	<script src="js/custom.js"></script>
+	<script src="js/jquery.cookie.js"></script>
 
 	<script type="text/javascript">
 		$(function() {
+			//var username = $.cookie('username');
+			//var username = "guoxuexue";
+			var username = null;
+			$.cookie('username', username);
+			if(username!=null){
+				$(".topbarpage").load("topbarPerson.html");
+			}else{
+				$(".topbarpage").load("topbar.html");
+			} 
+			
 			$(".headerpage").load("header.html");
 			$(".footerpage").load("footer.html");
 		});
