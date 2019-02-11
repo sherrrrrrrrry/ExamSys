@@ -184,10 +184,10 @@ $(document).ready(function(e) {
 		var optionNum = $(this).prev(".title_itram").children(".kzjxx_iteam").length;
 		if(index == 0){
 			console.log(index);
-			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="radio" class="dxk"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
+			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="radio" class="dxk" name="dxoption" value="'+optionNum+'"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
 		}else if(index == 1){
 			console.log(index);
-			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="checkbox" class="dxk"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
+			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="checkbox" class="dxk"  name="option'+optionNum+'" value="on"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
 		}
 		
 	});

@@ -136,29 +136,78 @@
 					<div class="xxk_conn">
 						<!--单选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box dxuan ">
-							<form id="dxuanForm" name="dxuanForm" action="/questionbank/onechoice" method="post"
-								onSubmit="return dxuanSubmit();">
+							<form id="dxuanForm" name="dxuanForm" action="/questionbank/onechoice" method="post" onSubmit="return dxuanSubmit();">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_dx"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
 								<div class="title_itram">
 									<div class="kzjxx_iteam">
-										<input type="radio" class="dxk">
+										<input name="dxoption" type="radio" class="dxk" value="0">
 										<input name="0" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="radio" class="dxk">
+										<input name="dxoption" type="radio" class="dxk" value="1">
 										<input name="1" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="radio" class="dxk">
+										<input name="dxoption" type="radio" class="dxk" value="2">
 										<input name="2" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="radio" class="dxk">
+										<input name="dxoption" type="radio" class="dxk" value="3">
+										<input name="3" type="text" class="input_wenbk" value="选项">
+										<a href="javascript:void(0);" class="del_xm">删除</a>
+									</div>
+								</div>
+								<a href="javascript:void(0)" class="zjxx">增加选项</a>
+								<div>
+									题目类型：
+									<select name="type">
+										<option value="GRXY">个人修养</option>
+										<option value="CXNL">创新能力</option>
+										<option value="GTXTNL">沟通协调能力</option>
+										<option value="ZWGLNL">自我管理能力</option>
+										<option value="GZYLCSNL">工作压力承受能力</option>
+									</select>
+								</div>
+								<!--完成编辑-->
+								<div class="bjqxwc_box">
+									<!--<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+										<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
+									<button class="cancle_edit">取消编辑</button>
+									<button type="submit" class="finish_new_problem">完成编辑</button>
+								</div>
+							</form>
+						</div>
+
+						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
+						<div class="xxk_xzqh_box duoxuan" style="display: none">
+							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/mutiplechoice" method="post"
+								onSubmit="return duoxuanSubmit();">
+								<textarea name="title" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
+									onblur="if(!this.value)this.value='请输入题目'"
+									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+								<div class="title_itram">
+									<div class="kzjxx_iteam">
+										<input type="checkbox" class="dxk" name="option0" value="on">
+										<input name="0" type="text" class="input_wenbk" value="选项">
+										<a href="javascript:void(0);" class="del_xm">删除</a>
+									</div>
+									<div class="kzjxx_iteam">
+										<input type="checkbox" class="dxk"  name="option1" value="on">
+										<input name="1" type="text" class="input_wenbk" value="选项">
+										<a href="javascript:void(0);" class="del_xm">删除</a>
+									</div>
+									<div class="kzjxx_iteam">
+										<input type="checkbox" class="dxk"  name="option2" value="on">
+										<input name="2" type="text" class="input_wenbk" value="选项">
+										<a href="javascript:void(0);" class="del_xm">删除</a>
+									</div>
+									<div class="kzjxx_iteam">
+										<input type="checkbox" class="dxk"  name="option3" value="on">
 										<input name="3" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
@@ -178,58 +227,9 @@
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
 									<!--<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-										<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
+									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
 									<button class="cancle_edit">取消编辑</button>
 									<button type="submit" class="finish_new_problem">完成编辑</button>
-								</div>
-							</form>
-						</div>
-
-						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
-						<div class="xxk_xzqh_box duoxuan" style="display: none">
-							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/mutiplechoice" method="post"
-								onSubmit="return duoxuanSubmit();">
-								<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
-									onblur="if(!this.value)this.value='请输入题目'"
-									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
-								<div class="title_itram">
-									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk">
-										<input name="0" type="text" class="input_wenbk" value="选项">
-										<a href="javascript:void(0);" class="del_xm">删除</a>
-									</div>
-									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk">
-										<input name="1" type="text" class="input_wenbk" value="选项">
-										<a href="javascript:void(0);" class="del_xm">删除</a>
-									</div>
-									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk">
-										<input name="2" type="text" class="input_wenbk" value="选项">
-										<a href="javascript:void(0);" class="del_xm">删除</a>
-									</div>
-									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk">
-										<input name="3" type="text" class="input_wenbk" value="选项">
-										<a href="javascript:void(0);" class="del_xm">删除</a>
-									</div>
-								</div>
-								<a href="javascript:void(0)" class="zjxx">增加选项</a>
-								<div>
-									题目类型：
-									<select name="type">
-										<option value="GRXY">个人修养</option>
-										<option value="CXNL">创新能力</option>
-										<option value="GTXTNL">沟通协调能力</option>
-										<option value="ZWGLNL">自我管理能力</option>
-										<option value="GZYLCSNL">工作压力承受能力</option>
-									</select>
-									<p class="help-block"></p>
-								</div>
-								<!--完成编辑-->
-								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
 								</div>
 							</form>
 						</div>
