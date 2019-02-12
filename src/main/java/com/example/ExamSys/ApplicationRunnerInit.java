@@ -10,8 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.ExamSys.dao.AuthorityRepository;
+import com.example.ExamSys.dao.QuestionChoiceRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Authority;
+import com.example.ExamSys.domain.Choice;
+import com.example.ExamSys.domain.QuestionChoice;
 import com.example.ExamSys.domain.User;
 
 @Component
@@ -22,6 +25,9 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private QuestionChoiceRepository questionChoiceRepository;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -64,8 +70,30 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		user2.setEnabled(true);
 		userRepository.save(user2);
 		System.out.println("Authority save ok");
+		
 		} catch(Exception e) {
 		}
+		try {
+
+			/*
+			 * 选项保存
+			 */
+			QuestionChoice qc1 = new QuestionChoice();
+			qc1.setContent("123");
+			qc1.setAnswer("123");
+			qc1.setType("123");
+			
+			Choice c1 = new Choice();
+			c1.setContent("123");
+			c1.setImageUrl("123");
+
+			qc1.addChoice(c1);
+			questionChoiceRepository.save(qc1);
+			System.out.println("Choice save ok");
+		} catch(Exception e) {
+			
+		}
+		
 	}
 	
 }

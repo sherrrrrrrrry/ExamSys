@@ -2,6 +2,7 @@ package com.example.ExamSys.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +22,10 @@ public class Choice implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	/*
+	 * optional = false 表示QuestionChoice不可为空
+	 */
+	@ManyToOne(optional=false, fetch = FetchType.LAZY)
 	private QuestionChoice questionChoice;
 	
 	@Column(name = "content")
