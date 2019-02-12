@@ -1787,4 +1787,14 @@ padding-top: 3px;
 	background-position: center center;
 }
  
+.person-info-title{
+	width:45%;
+	text-align:right;
+	display:inline-block;
+	margin-right:2em;
+}
 
+.person-info{
+	width:50%;
+	display:inline-block;
+}

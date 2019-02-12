@@ -223,11 +223,11 @@
 	<script type="text/javascript">
 		$(function() {
 			//var username = $.cookie('username');
-			//var username = "guoxuexue";
-			var username = null;
+			var username = "guoxuexue";
+			//var username = null;
 			$.cookie('username', username);
 			if(username!=null){
-				$(".topbarpage").load("topbarPerson.html");
+				$(".topbarpage").load("topbarLogin.html");
 			}else{
 				$(".topbarpage").load("topbar.html");
 			} 
