@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,7 +23,11 @@ public class QuestionChoice implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToMany(mappedBy = "questionChoice", orphanRemoval = true)
+	/*
+	 * 如果orphanRemoval = true，那么这个操作会删除Choice对象，
+	 * 如果为false，则会删除他们的关系，将choice对questionChoice的引用设置为null。
+	 */
+	@OneToMany(mappedBy = "questionChoice",cascade=CascadeType.ALL, orphanRemoval = true)
 	private Set<Choice> choices = new HashSet<>();
 	
 	@Column(name = "content")
@@ -76,5 +79,8 @@ public class QuestionChoice implements Serializable {
 		this.type = type;
 	}
 	
-	
+	public void addChoice(Choice choice) {
+		choice.setQuestionChoice(this);
+		this.choices.add(choice);
+	}
 }
