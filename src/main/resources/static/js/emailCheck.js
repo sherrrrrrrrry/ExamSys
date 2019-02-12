@@ -6,6 +6,22 @@ var addCount; // 当前剩余秒数
 var hash;
 var codeTimestamp;
 
+$.fn.serializeObject = function() {
+	var o = {};
+	var a = this.serializeArray();
+	$.each(a, function() {
+		if (o[this.name]) {
+			if (!o[this.name].push) {
+				o[this.name] = [o[this.name]];
+			}
+			o[this.name].push(this.value || '');
+		} else {
+			o[this.name] = this.value || '';
+		}
+	});
+	return o;
+};
+
 function sendAddmes() {
 	/*
 	 * var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
@@ -99,7 +115,7 @@ function registerCheck() {
 	} else {
 		$.ajax({
 			type: "POST", // 用POST方式传输
-			　dataType: "JSON", // 数据格式:JSON
+			dataType: "JSON", // 数据格式:JSON
 			contentType: "application/json",
 			url: "/account/register?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode,
 			data: JSON.stringify(userDTO),
