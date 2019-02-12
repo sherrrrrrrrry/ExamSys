@@ -25,8 +25,7 @@ function sendAddmes() {
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		contentType: "application/json",
-		data: "email=" + email,
-		url: '/account/sendmessage', // 目标地址
+		url: '/account/sendmessage?email=' + email, // 目标地址
 		error: function(data) {
 			console.log(data);　　
 		},
