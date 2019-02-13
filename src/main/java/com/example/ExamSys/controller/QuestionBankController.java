@@ -1,13 +1,11 @@
 package com.example.ExamSys.controller;
 
 import com.example.ExamSys.dao.QuestionBankRepository;
-import com.example.ExamSys.domain.Choice;
-import com.example.ExamSys.domain.QuestionBank;
-import com.example.ExamSys.domain.QuestionChoice;
-import com.example.ExamSys.domain.QuestionShort;
+import com.example.ExamSys.domain.*;
 import com.example.ExamSys.service.QuestionBankService;
 import com.example.ExamSys.service.QuestionChoiceService;
 import com.example.ExamSys.service.QuestionShortService;
+import com.example.ExamSys.service.QuestionJudgmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +29,9 @@ public class QuestionBankController {
 
     @Resource
     private QuestionChoiceService questionChoiceService;
+
+    @Resource
+    private QuestionJudgmentService questionJudgmentService;
 
     QuestionBank questionBank = new QuestionBank();
 
@@ -73,7 +74,7 @@ public class QuestionBankController {
             return questionShort;
     }
 
-    //单选 title= ，1= ，2= ，3= ，4= ， optionNum= , answer=
+    //单选 title= ，1= ，2= ，3= ，4= ， optionNum= , option1= ...... ,choicetype =
     @RequestMapping(value = "/questionchoice_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public Object saveChoice(HttpServletRequest request){
 
@@ -92,7 +93,6 @@ public class QuestionBankController {
                 answer = answer + i;
             }
         }
-
         questionChoice.setContent(request.getParameter("title"));
         questionChoice.setAnswer(answer);
         questionChoice.setType(request.getParameter("type"));
@@ -100,5 +100,17 @@ public class QuestionBankController {
         questionChoiceService.save(questionChoice);
         questionBank.getChoiceQuestions().add(questionChoice);
         return questionChoice;
+    }
+
+    //判断题：
+    @RequestMapping(value = "/questionjudgment_save")
+    public Object saveJudgment(HttpServletRequest request){
+        QuestionJudgment questionJudgment = new QuestionJudgment();
+        questionJudgment.setContent(request.getParameter("content"));
+        questionJudgment.setType(request.getParameter("type"));
+        questionJudgment.setAnswer(request.getParameter("answer"));
+        questionJudgmentService.save(questionJudgment);
+        questionBank.getQuestionJudgments().add(questionJudgment);
+        return questionJudgment;
     }
 }

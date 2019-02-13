@@ -18,8 +18,8 @@ public class QuestionChoice_multi implements Serializable {
 //    @OneToMany(mappedBy = "questionChoice_multi",cascade=CascadeType.REMOVE,orphanRemoval = true)
 //    private Set<Choice> choices = new HashSet<>();
 
-    @ManyToMany(mappedBy = "multi_choiceQuestions", fetch = FetchType.LAZY)
-    private Set<QuestionBank> questionBankSet = new HashSet<>();
+//    @ManyToMany(mappedBy = "multi_choiceQuestions", fetch = FetchType.LAZY)
+//    private Set<QuestionBank> questionBankSet = new HashSet<>();
 
     @Column(name = "content")
     private String content;
@@ -75,11 +75,11 @@ public class QuestionChoice_multi implements Serializable {
 //        this.choices.add(choice);
 //    }
 
-    public Set<QuestionBank> getQuestionBankSet() {
-        return questionBankSet;
-    }
-
-    public void setQuestionBankSet(Set<QuestionBank> questionBankSet) {
-        this.questionBankSet = questionBankSet;
-    }
+//    public Set<QuestionBank> getQuestionBankSet() {
+//        return questionBankSet;
+//    }
+//
+//    public void setQuestionBankSet(Set<QuestionBank> questionBankSet) {
+//        this.questionBankSet = questionBankSet;
+//    }
 }

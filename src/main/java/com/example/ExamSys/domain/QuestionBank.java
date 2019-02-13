@@ -37,18 +37,26 @@ public class QuestionBank implements Serializable{
 	private Set<QuestionChoice> choiceQuestions = new HashSet<>();
 
 	@ManyToMany
+    @JoinTable(
+	    name = "bank_judgment",
+            joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "question_judgment_id", referencedColumnName = "id")}
+    )
+    private Set<QuestionJudgment> questionJudgments = new HashSet<>();
+
+	@ManyToMany
 	@JoinTable(
 			name = "bank_short",
 			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
 				inverseJoinColumns = {@JoinColumn(name = "question_short_id", referencedColumnName = "id")})
 	private Set<QuestionShort> shortQuestions = new HashSet<>();
 
-	@ManyToMany
-	@JoinTable(
-			name = "bank_choice_multi",
-			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
-				inverseJoinColumns = {@JoinColumn(name = "question_choice_multi_id", referencedColumnName = "id")})
-	private Set<QuestionChoice_multi> multi_choiceQuestions = new HashSet<>();
+//	@ManyToMany
+//	@JoinTable(
+//			name = "bank_choice_multi",
+//			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
+//				inverseJoinColumns = {@JoinColumn(name = "question_choice_multi_id", referencedColumnName = "id")})
+//	private Set<QuestionChoice_multi> multi_choiceQuestions = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(
@@ -84,13 +92,13 @@ public class QuestionBank implements Serializable{
 		this.choiceQuestions = choiceQuestions;
 	}
 
-    public Set<QuestionChoice_multi> getMulti_choiceQuestions() {
-        return  multi_choiceQuestions;
-    }
-
-    public void setMulti_choiceQuestions(Set<QuestionChoice_multi> multi_choiceQuestions) {
-        this.multi_choiceQuestions = multi_choiceQuestions;
-    }
+//    public Set<QuestionChoice_multi> getMulti_choiceQuestions() {
+//        return  multi_choiceQuestions;
+//    }
+//
+//    public void setMulti_choiceQuestions(Set<QuestionChoice_multi> multi_choiceQuestions) {
+//        this.multi_choiceQuestions = multi_choiceQuestions;
+//    }
 
 	public Set<QuestionShort> getShortQuestions() {
 		return shortQuestions;
@@ -107,6 +115,8 @@ public class QuestionBank implements Serializable{
 	public void setShowQuestions(Set<QuestionShow> showQuestions) {
 		this.showQuestions = showQuestions;
 	}
-	
-	
+
+    public Set<QuestionJudgment> getQuestionJudgments() { return questionJudgments; }
+
+    public void setQuestionJudgments(Set<QuestionJudgment> questionJudgments) { this.questionJudgments = questionJudgments; }
 }
