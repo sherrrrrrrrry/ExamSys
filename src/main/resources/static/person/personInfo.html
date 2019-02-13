@@ -24,55 +24,86 @@
 		</div>
 	</section>
 	<section class="section-padding gray-bg">
-		<div class="container" style="width: 80%;">
+		<div class="container"
+			style="width: 80%; border: solid 1px #ccc;; border-radius: 8px; background-color: #fff;">
 
-			<div class="row">
+			<div class="row" style="margin: 2em auto;">
 				<div class="col-md-8">
 					<div class="col-md-6">
 						<div>
-							<h5>用户名：</h5>
-							<span>Sherry</span>
+							<h5 class="person-info-title" id="username">用户名：</h5>
+							<span class="person-info">Sherry</span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5>用户名：</h5>
-							<span>Sherry</span>
+							<h5 class="person-info-title" id="gender">性别：</h5>
+							<span class="person-info">女</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="phone">联系电话：</h5>
+							<span class="person-info">13333333333</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="location">学校所在地：</h5>
+							<span class="person-info">江苏省南京市鼓楼区</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="trainingagency">培训机构名称：</h5>
+							<span class="person-info">南京培训机构</span>
 							<p class="help-block"></p>
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div>
-							<h5>用户名：</h5>
-							<span>Sherry</span>
+							<h5 class="person-info-title" id="realname">真实姓名：</h5>
+							<span class="person-info">郭雪</span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5>用户名：</h5>
-							<span>Sherry</span>
+							<h5 class="person-info-title" id="age">年龄：</h5>
+							<span class="person-info">10</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="email">邮箱：</h5>
+							<span class="person-info">1355342423@qq.com</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="school">学校名称：</h5>
+							<span class="person-info">南京小学</span>
+							<p class="help-block"></p>
+						</div>
+						<div>
+							<h5 class="person-info-title" id="motto">座右铭：</h5>
+							<span class="person-info">好好学习天天向上</span>
 							<p class="help-block"></p>
 						</div>
 					</div>
 				</div>
 
 				<div class="col-md-4">
-
-					<div class="control-group">
-						<div class="controls">
-							<span style="display: block;">生活照：</span> <img src="../img/team2.jpg"
-								style="width: 180px; height: 230px;" />
-						</div>
+					<div>
+						<h5 id="personalpic">生活照：</h5>
+						<img src="../img/team2.jpg" style="width: 180px; height: 230px;" />
 						<p class="help-block"></p>
-
 					</div>
 
-					<button class="btn btn-primary"
-						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">信息修改</button>
+
 				</div>
 
-
-
-
+				
 			</div>
+			<div class="pricing-action" style="background-color: inherit;">
+			<button class="btn btn-primary" id="infoEdit"
+					style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">信息修改</button>
+			
+			</div>
+			
+			
 		</div>
 	</section>
 
@@ -93,6 +124,12 @@
 		$(function() {
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
+			
+			
+			$("#infoEdit").click(function() {
+				window.location.href = "personInfoEdit.html";
+			});
+			
 		});
 	</script>
 </body>
