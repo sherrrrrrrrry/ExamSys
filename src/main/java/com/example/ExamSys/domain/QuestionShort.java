@@ -1,15 +1,12 @@
 package com.example.ExamSys.domain;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "question_short")
@@ -26,6 +23,10 @@ public class QuestionShort implements Serializable {
 	
 	@Column(name = "type")
 	private String type;
+
+    @ManyToMany(mappedBy = "shortQuestions", fetch = FetchType.LAZY)
+	private Set<QuestionBank> questionBankSet = new HashSet<>();
+
 
 	public Long getId() {
 		return id;
@@ -50,6 +51,13 @@ public class QuestionShort implements Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	
+
+    public Set<QuestionBank> getQuestionBankSet() {
+        return questionBankSet;
+    }
+
+    @JsonBackReference
+    public void setQuestionBankSet(Set<QuestionBank> questionBankSet) {
+        this.questionBankSet = questionBankSet;
+    }
 }

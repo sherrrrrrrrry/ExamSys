@@ -1,17 +1,12 @@
 package com.example.ExamSys.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "question_choice")
@@ -29,8 +24,11 @@ public class QuestionChoice implements Serializable {
 	 */
 	@OneToMany(mappedBy = "questionChoice",cascade=CascadeType.ALL, orphanRemoval = true)
 	private Set<Choice> choices = new HashSet<>();
-	
-	@Column(name = "content")
+
+    @ManyToMany(mappedBy = "choiceQuestions", fetch = FetchType.LAZY)
+    private Set<QuestionBank> questionBankSet = new HashSet<>();
+
+    @Column(name = "content")
 	private String content;
 	
 	@Column(name = "answer")
@@ -38,6 +36,9 @@ public class QuestionChoice implements Serializable {
 	
 	@Column(name = "type")
 	private String type;
+
+	@Column(name = "choicetype")
+    private String choicetype;
 
 	public Long getId() {
 		return id;
@@ -51,6 +52,7 @@ public class QuestionChoice implements Serializable {
 		return choices;
 	}
 
+	@JsonBackReference
 	public void setChoices(Set<Choice> choices) {
 		this.choices = choices;
 	}
@@ -78,9 +80,25 @@ public class QuestionChoice implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	public void addChoice(Choice choice) {
+
+    public String getChoicetype() {
+        return choicetype;
+    }
+
+    public void setChoicetype(String choicetype) {
+        this.choicetype = choicetype;
+    }
+
+    public void addChoice(Choice choice) {
 		choice.setQuestionChoice(this);
 		this.choices.add(choice);
 	}
+
+    public Set<QuestionBank> getQuestionBankSet() {
+        return questionBankSet;
+    }
+
+    public void setQuestionBankSet(Set<QuestionBank> questionBankSet) {
+        this.questionBankSet = questionBankSet;
+    }
 }

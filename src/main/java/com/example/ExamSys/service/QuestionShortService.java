@@ -9,8 +9,6 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 @Service
-
-
 public class QuestionShortService {
 
 

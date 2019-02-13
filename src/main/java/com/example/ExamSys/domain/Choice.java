@@ -1,5 +1,7 @@
 package com.example.ExamSys.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
@@ -25,14 +27,20 @@ public class Choice implements Serializable {
 	/*
 	 * optional = false 表示QuestionChoice不可为空
 	 */
-	@ManyToOne(optional=false, fetch = FetchType.LAZY)
+	@ManyToOne(optional=true, fetch = FetchType.LAZY)
 	private QuestionChoice questionChoice;
-	
+
+//    @ManyToOne(optional=true, fetch = FetchType.LAZY)
+//    private QuestionChoice_multi questionChoice_multi;
+
 	@Column(name = "content")
-	private String content;
+	private String content = null;
 	
 	@Column(name = "image_url")
-	private String imageUrl;
+	private String imageUrl = null;
+
+	@Column(name = "choiceindex")
+    private char index;
 
 	public Long getId() {
 		return id;
@@ -41,8 +49,16 @@ public class Choice implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public QuestionChoice getQuestionChoice() {
+
+    public char getIndex() {
+        return index;
+    }
+
+    public void setIndex(char index) {
+        this.index = index;
+    }
+
+    public QuestionChoice getQuestionChoice() {
 		return questionChoice;
 	}
 
@@ -65,7 +81,12 @@ public class Choice implements Serializable {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-	
-	
-	
+
+//    public QuestionChoice_multi getQuestionChoice_multi() {
+//        return questionChoice_multi;
+//    }
+//
+//    public void setQuestionChoice_multi(QuestionChoice_multi questionChoice_multi) {
+//        this.questionChoice_multi = questionChoice_multi;
+//    }
 }
