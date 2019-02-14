@@ -187,7 +187,7 @@ $(document).ready(function(e) {
 			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="radio" class="dxk" name="dxoption" value="'+optionNum+'"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
 		}else if(index == 1){
 			console.log(index);
-			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="checkbox" class="dxk"  name="option'+optionNum+'" value="on"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
+			$(this).prev(".title_itram").append('<div class="kzjxx_iteam"><input type="checkbox" class="dxk"  name="option" value="'+optionNum+'"><input name="'+optionNum+'" type="text" class="input_wenbk" value="选项"><a href="javascript:void(0);" class="del_xm">删除</a></div>');
 		}
 		
 	});
@@ -285,6 +285,10 @@ $(document).ready(function(e) {
 				insertOption.append('<li><label><input name="a" type="radio" value=""><span>' + insertContent + '</span></label></li>');
 			}
 		} else if (jcxxxx.find(".btwen_text_duox").val() != null) {
+			var index = $("[class=on]").index();
+			var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
+			console.log($('#duoxuanForm').serialize()+ "&optionNum=" + optionNum + "&choiceType=1");
+			
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="1"></div></div>');
 			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【多选】</span></div></li>');
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
@@ -320,13 +324,13 @@ $(document).ready(function(e) {
 function dxuanSubmit() {
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
-	console.log($('#dxuanForm').serialize()+ "&optionNum=" + optionNum);
+	console.log($('#dxuanForm').serialize()+ "&optionNum=" + optionNum + "&choiceType=0");
 	$.ajax({
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		contentType: "application/json",
-		url: "/questionbank/onechoice",
-		data: $('#dxuanForm').serialize()+ "&optionNum=" + optionNum,
+		url: "/questionbank/choice",
+		data: $('#dxuanForm').serialize()+ "&optionNum=" + optionNum + "&choiceType=0",
 	}).success(function(message) {
 		console.log('单选传输成功!');
 		console.log(message);
@@ -340,13 +344,13 @@ function dxuanSubmit() {
 function duoxuanSubmit() {
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
-	console.log($('#duoxuanForm').serialize()+ "&optionNum=" + optionNum);
+	console.log($('#duoxuanForm').serialize()+ "&optionNum=" + optionNum + "&choiceType=1");
 	$.ajax({
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		contentType: "application/json",
-		url: "/questionbank/mutiplechoice",
-		data: $('#dxuanForm').serialize()+ "&optionNum=" + optionNum,
+		url: "/questionbank/choice",
+		data: $('#duoxuanForm').serialize()+ "&optionNum=" + optionNum + "&choiceType=1",
 	}).success(function(message) {
 		console.log('多选传输成功!');
 		console.log(message);
