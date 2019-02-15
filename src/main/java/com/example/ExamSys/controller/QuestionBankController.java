@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/questionbank")
@@ -34,14 +32,20 @@ public class QuestionBankController {
     private QuestionJudgmentService questionJudgmentService;
 
     QuestionBank questionBank = new QuestionBank();
+    Map<Integer, Question> questionList = new HashMap<>();
 
-    @RequestMapping("/save")
-    public String save(){
-        QuestionBank questionBank = new QuestionBank();
-        questionBank.setLevel(1);
+
+
+    /**
+     * 添加完所有试题后，保存题库
+     */
+    @RequestMapping("/questionbank_save")
+    public String save(HttpServletRequest request){
+        questionBank.setLevel(request.getParameter("level").charAt(0));
         questionBankService.save(questionBank);
         return "题库保存成功！";
     }
+
 
 
     @GetMapping(value = "/hello")
@@ -49,68 +53,124 @@ public class QuestionBankController {
         return questionBankRepository.findAll();
     }
 
-    /**
-     * 添加一个学生记录
-    */
-//@PostMapping(value = "/hello")
-//public Student addStu(@RequestParam("name") String name,@RequestParam("age") Integer age){
-//        Student stu=new Student();
-//        stu.setName(name);
-//        stu.setAge(age);
-//        return studentResitory.save(stu);
-//        }
-//}
 
-    //添加简答题
+
+
+    //添加简答题：content = , type = , index =
     @RequestMapping(value ="/questionshort_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public Object saveShort(HttpServletRequest request){
+        int index = Integer.parseInt(request.getParameter("index"));
+        String type = request.getParameter("type");
+        if (!questionList.containsKey(index)) {
             QuestionShort questionShort = new QuestionShort();
             questionShort.setContent(request.getParameter("content"));
-            questionShort.setType(request.getParameter("type"));
+            questionShort.setType(type);
             questionShortService.save(questionShort);
-//            questionBank.setLevel(1);
             questionBank.getShortQuestions().add(questionShort);
-//            questionBankService.save(questionBank);
+            Long id = questionShort.getId();
+            Question question = new Question(id, type);
+            questionList.put(index, question);
             return questionShort;
+        }
+        else{
+            Long id = questionList.get(index).getId();
+            QuestionShort questionShort = new QuestionShort();
+            questionShort.setContent(request.getParameter("content"));
+            questionShort.setType(type);
+            questionShort.setId(id);
+            questionShortService.save(questionShort);
+            return questionShort;
+
+        }
+
     }
 
     //单选 title= ，1= ，2= ，3= ，4= ， optionNum= , option1= ...... ,choicetype =
     @RequestMapping(value = "/questionchoice_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public Object saveChoice(HttpServletRequest request){
 
-        QuestionChoice questionChoice = new QuestionChoice();
-        int optionNum = Integer.parseInt(request.getParameter("optionNum"));
-        for (int i =1;i <=optionNum; i++){
-            Choice choice = new Choice();
-            choice.setContent(request.getParameter(""+ i));
-            choice.setIndex((char)('A'+ (i-1)));
-            questionChoice.addChoice(choice);
-        }
-
-        String answer = "";
-        for (int i =1; i<=optionNum; i++){
-            if (request.getParameter("option"+i).equals("on")){
-                answer = answer + i;
+        int index = Integer.parseInt(request.getParameter("index"));
+        String type = request.getParameter("type");
+        if (!questionList.containsKey(index)) {
+            QuestionChoice questionChoice = new QuestionChoice();
+            int optionNum = Integer.parseInt(request.getParameter("optionNum"));
+            for (int i = 0; i < optionNum; i++) {
+                Choice choice = new Choice();
+                choice.setContent(request.getParameter("" + i));
+                choice.setIndex(i);
+                questionChoice.addChoice(choice);
             }
+            String answers[] = request.getParameterValues("option");
+            String answer = "";
+            for (int i = 0; i < answers.length; i++) {
+                answer += answers[i];
+            }
+            questionChoice.setContent(request.getParameter("title"));
+            questionChoice.setAnswer(answer);
+            questionChoice.setType(request.getParameter("type"));
+            questionChoice.setChoicetype(request.getParameter("choicetype"));
+            questionChoiceService.save(questionChoice);
+            questionBank.getChoiceQuestions().add(questionChoice);
+
+            Long id = questionChoice.getId();
+            Question question = new Question(id, type);
+            questionList.put(index, question);
+            return questionChoice;
         }
-        questionChoice.setContent(request.getParameter("title"));
-        questionChoice.setAnswer(answer);
-        questionChoice.setType(request.getParameter("type"));
-        questionChoice.setChoicetype(request.getParameter("choicetype"));
-        questionChoiceService.save(questionChoice);
-        questionBank.getChoiceQuestions().add(questionChoice);
-        return questionChoice;
+        else{
+            Long id = questionList.get(index).getId();
+            QuestionChoice questionChoice = new QuestionChoice();
+            questionChoice.setId(id);
+            int optionNum = Integer.parseInt(request.getParameter("optionNum"));
+            for (int i = 0; i < optionNum; i++) {
+                Choice choice = new Choice();
+                choice.setContent(request.getParameter("" + i));
+                choice.setIndex(i);
+                questionChoice.addChoice(choice);
+            }
+            String answers[] = request.getParameterValues("option");
+            String answer = "";
+            for (int i = 0; i < answers.length; i++) {
+                answer += answers[i];
+            }
+            questionChoice.setContent(request.getParameter("title"));
+            questionChoice.setAnswer(answer);
+            questionChoice.setType(request.getParameter("type"));
+            questionChoice.setChoicetype(request.getParameter("choicetype"));
+            questionChoiceService.save(questionChoice);
+            return questionChoice;
+        }
     }
 
     //判断题：
     @RequestMapping(value = "/questionjudgment_save")
     public Object saveJudgment(HttpServletRequest request){
-        QuestionJudgment questionJudgment = new QuestionJudgment();
-        questionJudgment.setContent(request.getParameter("content"));
-        questionJudgment.setType(request.getParameter("type"));
-        questionJudgment.setAnswer(request.getParameter("answer"));
-        questionJudgmentService.save(questionJudgment);
-        questionBank.getQuestionJudgments().add(questionJudgment);
-        return questionJudgment;
+        int index = Integer.parseInt(request.getParameter("index"));
+        String type = request.getParameter("type");
+        if (!questionList.containsKey(index)) {
+            QuestionJudgment questionJudgment = new QuestionJudgment();
+            questionJudgment.setContent(request.getParameter("content"));
+            questionJudgment.setType(request.getParameter("type"));
+            questionJudgment.setAnswer(request.getParameter("answer"));
+            questionJudgmentService.save(questionJudgment);
+            questionBank.getQuestionJudgments().add(questionJudgment);
+            Long id = questionJudgment.getId();
+            Question question = new Question(id, type);
+            questionList.put(index, question);
+            return questionJudgment;
+        }
+        else{
+            Long id = questionList.get(index).getId();
+            QuestionJudgment questionJudgment = new QuestionJudgment();
+            questionJudgment.setId(id);
+            questionJudgment.setContent(request.getParameter("content"));
+            questionJudgment.setType(request.getParameter("type"));
+            questionJudgment.setAnswer(request.getParameter("answer"));
+            questionJudgmentService.save(questionJudgment);
+            return questionJudgment;
+        }
     }
+
+//    public Object save
+
 }
