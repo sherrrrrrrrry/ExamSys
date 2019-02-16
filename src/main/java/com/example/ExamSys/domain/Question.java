@@ -1,15 +1,17 @@
 package com.example.ExamSys.domain;
 
+import com.example.ExamSys.domain.enumeration.QuestionType;
+
 public class Question {
 
     private Long id;
-    private String type;
+    private QuestionType type;
 
     public Question(){
         this.id = null;
         this.type = null;
     }
-    public Question(Long id, String type){
+    public Question(Long id, QuestionType type){
         this.type = type;
         this.id = id;
     }
@@ -22,11 +24,11 @@ public class Question {
         this.id = id;
     }
 
-    public String getType() {
+    public QuestionType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(QuestionType type) {
         this.type = type;
     }
 }

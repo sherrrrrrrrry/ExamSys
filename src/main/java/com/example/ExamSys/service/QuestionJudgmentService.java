@@ -17,4 +17,16 @@ public class QuestionJudgmentService {
         questionJudgmentRepository.save(questionJudgment);
         return questionJudgment;
     }
+
+    @Transactional
+    public boolean delete(Long id){
+        try {
+            questionJudgmentRepository.deleteById(id);
+            return true;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

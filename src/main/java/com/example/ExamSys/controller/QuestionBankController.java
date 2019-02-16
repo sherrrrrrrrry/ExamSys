@@ -2,6 +2,8 @@ package com.example.ExamSys.controller;
 
 import com.example.ExamSys.dao.QuestionBankRepository;
 import com.example.ExamSys.domain.*;
+import com.example.ExamSys.domain.enumeration.QuestionType;
+import com.example.ExamSys.domain.enumeration.UserType;
 import com.example.ExamSys.service.QuestionBankService;
 import com.example.ExamSys.service.QuestionChoiceService;
 import com.example.ExamSys.service.QuestionShortService;
@@ -68,7 +70,7 @@ public class QuestionBankController {
             questionShortService.save(questionShort);
             questionBank.getShortQuestions().add(questionShort);
             Long id = questionShort.getId();
-            Question question = new Question(id, type);
+            Question question = new Question(id, QuestionType.Short );
             questionList.put(index, question);
             return questionShort;
         }
@@ -90,7 +92,6 @@ public class QuestionBankController {
     public Object saveChoice(HttpServletRequest request){
 
         int index = Integer.parseInt(request.getParameter("index"));
-        String type = request.getParameter("type");
         if (!questionList.containsKey(index)) {
             QuestionChoice questionChoice = new QuestionChoice();
             int optionNum = Integer.parseInt(request.getParameter("optionNum"));
@@ -113,7 +114,7 @@ public class QuestionBankController {
             questionBank.getChoiceQuestions().add(questionChoice);
 
             Long id = questionChoice.getId();
-            Question question = new Question(id, type);
+            Question question = new Question(id, QuestionType.Choice);
             questionList.put(index, question);
             return questionChoice;
         }
@@ -146,7 +147,6 @@ public class QuestionBankController {
     @RequestMapping(value = "/questionjudgment_save")
     public Object saveJudgment(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
-        String type = request.getParameter("type");
         if (!questionList.containsKey(index)) {
             QuestionJudgment questionJudgment = new QuestionJudgment();
             questionJudgment.setContent(request.getParameter("content"));
@@ -155,7 +155,7 @@ public class QuestionBankController {
             questionJudgmentService.save(questionJudgment);
             questionBank.getQuestionJudgments().add(questionJudgment);
             Long id = questionJudgment.getId();
-            Question question = new Question(id, type);
+            Question question = new Question(id, QuestionType.Judgment);
             questionList.put(index, question);
             return questionJudgment;
         }
@@ -171,6 +171,28 @@ public class QuestionBankController {
         }
     }
 
-//    public Object save
+    @RequestMapping(value = "deleteQuestion")
+    public boolean deleteQuestion(HttpServletRequest request){
+        int index = Integer.parseInt(request.getParameter("index"));
+        if (questionList.containsKey(index)){
+            QuestionType type = questionList.get(index).getType();
+            Long id = questionList.get(index).getId();
+            //根据题目类型 去对应表中删除记录
+            if (type == QuestionType.Choice){
+                questionChoiceService.delete(id);
+            }
+            else if (type == QuestionType.Judgment){
+                questionJudgmentService.delete(id);
+            }
+            else if (type == QuestionType.Short){
+                questionShortService.delete(id);
+            }
+            else if (type == QuestionType.Show){
+
+            }
+        }
+        return false;
+    }
+
 
 }

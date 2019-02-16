@@ -18,4 +18,16 @@ public class QuestionChoiceService {
         questionChoiceRepository.save(questionChoice);
         return questionChoice;
     }
+
+    @Transactional
+    public boolean delete(Long id){
+        try {
+            questionChoiceRepository.deleteById(id);
+            return true;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

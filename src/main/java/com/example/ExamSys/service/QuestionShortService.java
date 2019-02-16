@@ -29,4 +29,16 @@ public class QuestionShortService {
     }
 
 
+    @Transactional
+    public boolean delete(Long id){
+        try {
+            questionShortRepository.deleteById(id);
+            return true;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
