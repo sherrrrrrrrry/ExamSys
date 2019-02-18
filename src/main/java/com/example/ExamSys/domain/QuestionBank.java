@@ -24,7 +24,10 @@ public class QuestionBank implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@Column(name = "name")
+	private String name;
+
 	//试卷难度
 	@Column(name = "level")
 	private char level;
@@ -76,7 +79,11 @@ public class QuestionBank implements Serializable{
 		this.id = id;
 	}
 
-	public int getLevel() {
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public int getLevel() {
 		return level;
 	}
 
