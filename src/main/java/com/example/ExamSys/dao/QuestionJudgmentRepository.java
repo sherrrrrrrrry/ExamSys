@@ -9,4 +9,7 @@ public interface QuestionJudgmentRepository extends JpaRepository<QuestionJudgme
     @Modifying
     @Query("delete from QuestionJudgment q where q.id=?1")
     void deleteById(Long id);
+
+    @Query("select q from QuestionJudgment q where q.id = ?1")
+    QuestionJudgment findByIndex(Long id);
 }

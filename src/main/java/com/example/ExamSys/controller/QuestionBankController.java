@@ -18,8 +18,6 @@ public class QuestionBankController {
 
     @Resource
     private QuestionBankService questionBankService;
-    @Autowired
-    private QuestionBankRepository questionBankRepository;
 
     @Resource
     private QuestionShortService questionShortService;
@@ -32,6 +30,7 @@ public class QuestionBankController {
 
     @Resource
     private QuestionListService questionListService;
+
 //    QuestionBank questionBank = new QuestionBank();
 //    Map<Integer, Question> questionList = new HashMap<>();
 

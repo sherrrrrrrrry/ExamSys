@@ -41,4 +41,14 @@ public class QuestionShortService {
         }
     }
 
+    @Transactional
+    public QuestionShort findByIndex(Long id){
+        try{
+            return questionShortRepository.findByIndex(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ public class QuestionListService {
         return questionListRepository.findByName(name);
     }
 
+    @Transactional
     public QuestionList findByNameandNumber(String name, int number){
         return questionListRepository.findByNameandNumber(name, number);
     }

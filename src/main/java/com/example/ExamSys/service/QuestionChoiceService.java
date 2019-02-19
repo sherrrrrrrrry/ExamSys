@@ -30,4 +30,14 @@ public class QuestionChoiceService {
             return false;
         }
     }
+
+    @Transactional
+    public QuestionChoice findByIndex(Long id){
+        try{
+            return questionChoiceRepository.findByIndex(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

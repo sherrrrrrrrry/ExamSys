@@ -14,4 +14,6 @@ public interface QuestionChoiceRepository extends JpaRepository<QuestionChoice, 
     @Query("delete from QuestionChoice q where q.id=?1")
     void deleteById(Long id);
 
+    @Query("select q from QuestionChoice q where q.id = ?1")
+    QuestionChoice findByIndex(Long id);
 }

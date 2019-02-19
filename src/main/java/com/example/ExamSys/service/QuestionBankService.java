@@ -31,7 +31,8 @@ public class QuestionBankService {
         return questionBankRepository.findByName(name);
     }
 
-
+    @Transactional
+    public List<String> getBankNames(){return questionBankRepository.getBankNames();}
 
 }
 

@@ -9,4 +9,7 @@ public interface QuestionShortRepository extends JpaRepository<QuestionShort,Int
     @Modifying
     @Query("delete from QuestionShort q where q.id=?1")
     void deleteById(Long id);
+
+    @Query("select q from QuestionShort q where q.id = ?1")
+    QuestionShort findByIndex(Long id);
 }

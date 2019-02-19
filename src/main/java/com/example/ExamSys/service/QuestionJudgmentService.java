@@ -29,4 +29,14 @@ public class QuestionJudgmentService {
             return false;
         }
     }
+
+    @Transactional
+    public QuestionJudgment findByIndex(Long id){
+        try{
+            return questionJudgmentRepository.findByIndex(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
