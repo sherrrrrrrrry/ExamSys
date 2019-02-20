@@ -22,9 +22,11 @@ public class QuestionChoice implements Serializable {
 	 * 如果orphanRemoval = true，那么这个操作会删除Choice对象，
 	 * 如果为false，则会删除他们的关系，将choice对questionChoice的引用设置为null。
 	 */
+
 	@OneToMany(mappedBy = "questionChoice",cascade=CascadeType.ALL, orphanRemoval = true)
 	private Set<Choice> choices = new HashSet<>();
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "choiceQuestions", fetch = FetchType.LAZY)
     private Set<QuestionBank> questionBankSet = new HashSet<>();
 
@@ -52,7 +54,7 @@ public class QuestionChoice implements Serializable {
 		return choices;
 	}
 
-	@JsonBackReference
+
 	public void setChoices(Set<Choice> choices) {
 		this.choices = choices;
 	}
