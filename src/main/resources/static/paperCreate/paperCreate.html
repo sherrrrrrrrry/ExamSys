@@ -249,11 +249,20 @@
 
 						<!-- 判断题----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box zwtm" style="display: none">
-							<form id="pduanForm" name="pduanForm" action="/questionbank/trueflase" method="post"
-								onsubmit="return truefalseSubmit();">
-								<textarea name="title" class="input_wenbk btwen_text btwen_text_zw"
+							<form id="pduanForm" onsubmit="return false;">
+								<textarea name="content" class="input_wenbk btwen_text btwen_text_zw"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+								<div class="title_itram">
+									<div class="kzjxx_iteam">
+										<input type="radio" class="dxk" name="answer" value="T">
+										<input type="text" class="input_wenbk" value="正确">
+									</div>
+									<div class="kzjxx_iteam">
+										<input type="radio" class="dxk" name="answer" value="F">
+										<input type="text" class="input_wenbk" value="错误">
+									</div>
+								</div>
 								<div>
 									题目类型：
 									<select name="type">
@@ -267,15 +276,15 @@
 								</div>
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
+									<button  type="button" class="cancle_edit">取消编辑</button>
+									<button type="button" onclick="panduanSubmit()" class="finish_new_problem">完成编辑</button>
 								</div>
 							</form>
 						</div>
 
 						<!-- 简答题----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box tktm" style="display: none">
-							<form id="jdaForm" action="/questionbank/questionshort_save" method="post">
+							<form id="jdaForm" onsubmit="return false;">
 								<textarea name="content" class="input_wenbk btwen_text btwen_text_tk"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -292,8 +301,8 @@
 								</div>
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
-									<button class="cancle_edit">取消编辑</button>
-									<button type="submit" class="finish_new_problem">完成编辑</button>
+									<button type="button" class="cancle_edit">取消编辑</button>
+									<button type="button" onclick="jdSubmit()" class="finish_new_problem">完成编辑</button>
 								</div>
 							</form>
 						</div>
