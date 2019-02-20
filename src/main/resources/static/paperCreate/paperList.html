@@ -134,16 +134,16 @@
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
 				contentType: "application/json",
-				url: '/questioncomposition/questionbank_Name1', // 目标地址
+				url: '/questioncomposition/questionbank_Name2', // 目标地址
 				error: function(data) {
 					console.log(data);　　
 				},
 				success: function(data) {
 					console.log(data);
-					$("#paperName").append("<option value='请选择'>请选择</option>");
-					for(i=0 ; i<data.questionBankNames.length();i++){
-					$("#paperName").append( "<option value='"+data[i] +"'>"+data[i] + "</option>");
-					}
+					$("#paperName").append("<ul>试卷列表</ul>");
+					$.each(data,function(i){
+                        $("#paperName").append("<li>"+data[i]+"</li>");
+                     });
 					
 				}
 			});
