@@ -410,7 +410,6 @@ function paperNameSub(){
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		data:{"name":name,"level":level},
-		contentType: "application/json",
 		url: '/questionbank/questionbank_save', // 目标地址
 		error: function(data) {
 			console.log("题库创建失败");　　
