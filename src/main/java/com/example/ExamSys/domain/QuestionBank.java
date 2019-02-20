@@ -30,7 +30,7 @@ public class QuestionBank implements Serializable{
 
 	//试卷难度
 	@Column(name = "level")
-	private char level;
+	private int level;
 	
 	@ManyToMany
 	@JoinTable(
@@ -87,7 +87,7 @@ public class QuestionBank implements Serializable{
 		return level;
 	}
 
-	public void setLevel(char level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 

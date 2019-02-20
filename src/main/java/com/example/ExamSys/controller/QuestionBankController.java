@@ -6,6 +6,7 @@ import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.domain.enumeration.UserType;
 import com.example.ExamSys.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -60,9 +61,10 @@ public class QuestionBankController {
      * 添加简答题：content = , type = , index =
      */
     @RequestMapping(value ="/questionshort_save", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Object saveShort(HttpServletRequest request){
+    public ResponseEntity saveShort(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
         String questionBankName = request.getParameter("name");
+        try{
         //找到对应题库
         QuestionBank questionBank = questionBankService.findByName(questionBankName);
         //找到题库名字对应的map
@@ -85,7 +87,8 @@ public class QuestionBankController {
             q.setNumber(index);
             q.setQuestion_id(id);
             questionListService.save(q);
-            return questionShort;
+        //    return questionShort;
+            return ResponseEntity.ok().header("result","Insert Successfully!").body(questionShort);
         }
         else{
             Long id = question.getQuestion_id();
@@ -94,12 +97,16 @@ public class QuestionBankController {
             questionShort.setType(request.getParameter("type"));
             questionShort.setId(id);
             questionShortService.save(questionShort);
-            return questionShort;
+            return ResponseEntity.ok().header("result","Insert Successfully!").body(questionShort);
+        }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().header("result","Insert failed!").body(null);
         }
 
     }
 
-    //单选 title= ，1= ，2= ，3= ，4= ， optionNum= , option1= ...... ,choicetype =
+    //单选 title= ，1= ，2= ，3= ，4= ， optionNum= , option= ...... ,choicetype =
     @RequestMapping(value = "/questionchoice_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public Object saveChoice(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
@@ -108,8 +115,6 @@ public class QuestionBankController {
         QuestionBank questionBank = questionBankService.findByName(questionBankName);
         //找到题库名字对应的map
         QuestionList question = questionListService.findByNameandNumber(questionBankName,index);
-
-
         if (question==null) {
             QuestionChoice questionChoice = new QuestionChoice();
             int optionNum = Integer.parseInt(request.getParameter("optionNum"));
