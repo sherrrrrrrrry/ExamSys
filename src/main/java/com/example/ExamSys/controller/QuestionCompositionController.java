@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ public class QuestionCompositionController {
     @RequestMapping("/questionbank_Name1")
     public ResponseEntity<List<String>> getQuestionBankName(){
         List<String> questionBankNames = questionBankService.getBankNames();
+//        for (int i=0; i<questionBankNames.size();i++){
+//            questionBankNames.get(i);
+//        }
         if (questionBankNames!=null){
             return ResponseEntity.ok().body(questionBankNames);
         }
@@ -49,10 +53,14 @@ public class QuestionCompositionController {
     }
 
     @RequestMapping("/questionbank_Name2")
-    public List<String> getQuestionBankName2(){
+    public Map<Integer, String> getQuestionBankName2(){
         List<String> questionBankNames = questionBankService.getBankNames();
         if (questionBankNames!=null){
-            return questionBankNames;
+            Map<Integer,String> questionBankName = new HashMap<>();
+            for (int i=0; i<questionBankNames.size();i++){
+                questionBankName.put(i,questionBankNames.get(i));
+            }
+            return questionBankName;
         }
         else{
             return null;
