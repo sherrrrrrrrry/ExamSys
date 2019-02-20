@@ -135,7 +135,7 @@
 						<option value="2">2</option>
 						<option value="3">3</option>
 					</select>
-					<button type="button" onclick="paperNameSub()"">试卷名称提交</button>
+					<button type="button" onclick="paperNameSub()">试卷名称提交</button>
 				</div>
 
 				<!--选项卡区域  模板区域---------------------------------------------------------------------------------------------------------------------------------------->
@@ -150,8 +150,8 @@
 					<div class="xxk_conn">
 						<!--单选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box dxuan ">
-							<form id="dxuanForm" name="dxuanForm" action="/questionbank/onechoice" method="post"
-								onSubmit="return dxuanSubmit();">
+							<form id="dxuanForm" name="dxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
+								onsubmit="return dxuanSubmit();">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_dx"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -200,8 +200,8 @@
 
 						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box duoxuan" style="display: none">
-							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/mutiplechoice" method="post"
-								onSubmit="return duoxuanSubmit();">
+							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
+								onsubmit="return duoxuanSubmit();">
 								<textarea name="title" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -252,7 +252,7 @@
 						<!-- 判断题----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box zwtm" style="display: none">
 							<form id="pduanForm" name="pduanForm" action="/questionbank/trueflase" method="post"
-								onSubmit="return truefalseSubmit();">
+								onsubmit="return truefalseSubmit();">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_zw"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
