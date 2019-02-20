@@ -25,77 +25,26 @@
 		</div>
 	</section>
 	<section class="section-padding gray-bg">
-		<div class="container"
-			style="width: 80%; border: solid 1px #ccc;; border-radius: 8px; background-color: #fff;">
-
-			<div class="row">
-				<div class="col-md-12">
-					<div class="aligncenter">
-						<h2 class="aligncenter">您还没有录入任何试卷！</h2>
-					</div>
-					<br />
-
-				</div>
-			</div>
-			<div class="pricing-action" style="background-color: inherit;">
-				<button class="btn btn-primary" id="paperCreate"
-					style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">去录入试卷</button>
-
-			</div>
-		</div>
 
 		<div class="container" style="width: 80%; background-color: #fff; margin-top: 5em;">
 
 			<div class="row">
+				<div class="pricing-action" style="background-color: #fff;">
+					<button class="btn btn-primary" id="paperCreate"
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">需要录入试卷？</button>
 
-				<div id="paperName"></div>
+				</div>
 
-				<table>
+				<table id="paperList">
 					<thead>
 						<tr>
 							<th>测试ID</th>
-							<th>成绩</th>
-							<th>测试等级</th>
-							<th>批改教师</th>
-							<th>查看试卷</th>
+							<th>试卷名称</th>
+							<th>录入教师</th>
+							<th>试题链接</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>95</td>
-							<td>1</td>
-							<td>许伟</td>
-							<td>查看</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>88</td>
-							<td>2</td>
-							<td>汪函新</td>
-							<td>查看</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>70</td>
-							<td>3</td>
-							<td>李广</td>
-							<td>查看</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>70</td>
-							<td>3</td>
-							<td>李广</td>
-							<td>查看</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td>70</td>
-							<td>3</td>
-							<td>李广</td>
-							<td>查看</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -117,6 +66,7 @@
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
+	<script src="../js/jquery.params.js"></script>
 	<script type="text/javascript">
 		
 		$(function() {
@@ -139,12 +89,9 @@
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(data);
-					$("#paperName").append("<ul>试卷列表</ul>");
 					$.each(data,function(i){
-                        $("#paperName").append("<li>"+data[i]+"</li>");
+						$("#paperList tbody").append("<tr><td>"+i+"</td><td>"+data[i]+"</td><td>教师名字</td><td><button type='button' onclick='getPaperByName("+JSON.stringify(data[i])+")'>去考试</a></td></tr>");
                      });
-					
 				}
 			});
 			
@@ -152,6 +99,11 @@
 				window.location.href = "paperCreate.html";
 			});
 		});
+		
+		function getPaperByName(paperName){
+			window.location.href = "paperShow.html?paperName="+ paperName;
+		}
+		
 	</script>
 </body>
 </html>

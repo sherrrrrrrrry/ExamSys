@@ -59,20 +59,14 @@ td, th {
 	/*
                 Label the data
                 */
-	td:nth-of-type(1):before {
+	#paperList td:nth-of-type(1):before {
 		content: "测试ID";
 	}
-	td:nth-of-type(2):before {
-		content: "成绩";
+	#paperList td:nth-of-type(2):before {
+		content: "试卷名称";
 	}
-	td:nth-of-type(3):before {
-		content: "测试等级";
-	}
-	td:nth-of-type(4):before {
-		content: "批改教师";
-	}
-	td:nth-of-type(5):before {
-		content: "查看试卷";
+	#paperList td:nth-of-type(3):before {
+		content: "录入教师";
 	}
 }
 
