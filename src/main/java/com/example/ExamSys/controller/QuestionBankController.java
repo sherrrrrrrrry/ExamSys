@@ -41,7 +41,7 @@ public class QuestionBankController {
     @RequestMapping("/questionbank_save")
     public String save(HttpServletRequest request){
         QuestionBank questionBank = new QuestionBank();
-        questionBank.setLevel(request.getParameter("level").charAt(0));
+        questionBank.setLevel(Integer.parseInt(request.getParameter("level")));
         //！！！name不能重复！！！
         questionBank.setName(request.getParameter("name"));
         questionBankService.save(questionBank);
