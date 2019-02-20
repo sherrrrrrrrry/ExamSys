@@ -1,5 +1,6 @@
 package com.example.ExamSys.controller;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.ExamSys.dao.QuestionBankRepository;
 import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
@@ -40,13 +41,25 @@ public class QuestionBankController {
      * 新建题库
      */
     @RequestMapping("/questionbank_save")
-    public String save(HttpServletRequest request){
-        QuestionBank questionBank = new QuestionBank();
-        questionBank.setLevel(Integer.parseInt(request.getParameter("level")));
-        //！！！name不能重复！！！
-        questionBank.setName(request.getParameter("name"));
-        questionBankService.save(questionBank);
-        return "题库保存成功！";
+    public ResponseEntity save(HttpServletRequest request){
+        String name = request.getParameter("name");
+        try {
+            QuestionBank questionBank = questionBankService.findByName(name);
+            if (questionBank==null) {
+                questionBank = new QuestionBank();
+                questionBank.setLevel(Integer.parseInt(request.getParameter("level")));
+                //！！！name不能重复！！！
+                questionBank.setName(name);
+                questionBankService.save(questionBank);
+                return ResponseEntity.ok().header("Insert successfully!").body(questionBank);
+            }
+            else{
+                return ResponseEntity.badRequest().header("questionbank","This bank is already existing!").body(null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().header("questionbank","Insert failed").body(null);
+        }
     }
 
 
