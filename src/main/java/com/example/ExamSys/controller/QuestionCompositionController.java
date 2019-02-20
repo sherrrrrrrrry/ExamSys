@@ -38,31 +38,29 @@ public class QuestionCompositionController {
     /**
      * 获取所有试卷名
      */
-    @RequestMapping("/questionbank_Name1")
-    public ResponseEntity<List<String>> getQuestionBankName(){
-        List<String> questionBankNames = questionBankService.getBankNames();
-//        for (int i=0; i<questionBankNames.size();i++){
-//            questionBankNames.get(i);
+//    @RequestMapping("/questionbank_Name1")
+//    public ResponseEntity<List<String>> getQuestionBankName(){
+//        List<String> questionBankNames = questionBankService.getBankNames();
+////        for (int i=0; i<questionBankNames.size();i++){
+////            questionBankNames.get(i);
+////        }
+//        if (questionBankNames!=null){
+//            return ResponseEntity.ok().body(questionBankNames);
 //        }
-        if (questionBankNames!=null){
-            return ResponseEntity.ok().body(questionBankNames);
-        }
-        else{
-            return ResponseEntity.ok().header("PaperName","No Paper!").body(null);
-        }
-    }
-
-    @RequestMapping("/questionbank_Name2")
-    public Map<Integer, String> getQuestionBankName2(){
+//        else{
+//            return ResponseEntity.badRequest().header("PaperName","No Paper!").body(null);
+//        }
+//    }
+    @RequestMapping("/questionbank_Name")
+    public Map<Integer, String> getQuestionBankName() {
         List<String> questionBankNames = questionBankService.getBankNames();
-        if (questionBankNames!=null){
-            Map<Integer,String> questionBankName = new HashMap<>();
-            for (int i=0; i<questionBankNames.size();i++){
-                questionBankName.put(i,questionBankNames.get(i));
+        if (questionBankNames != null) {
+            Map<Integer, String> questionBankName = new HashMap<>();
+            for (int i = 0; i < questionBankNames.size(); i++) {
+                questionBankName.put(i, questionBankNames.get(i));
             }
             return questionBankName;
-        }
-        else{
+        } else {
             return null;
         }
     }
@@ -71,28 +69,49 @@ public class QuestionCompositionController {
      * POST请求，试卷名 name 及题号 index
      */
     @RequestMapping(value = "/get_questions", method = RequestMethod.POST, headers = "Accept=application/json")
-    public Object getQuestions(HttpServletRequest request){
+    public ResponseEntity<Map<String, Object>> getQuestions(HttpServletRequest request) {
         String bankName = request.getParameter("name");
         int index = Integer.parseInt(request.getParameter("index"));
-        QuestionList questionList = questionListService.findByNameandNumber(bankName,index);
-        if (questionList!=null){
-            QuestionType type = questionList.getType();
-            if (type == QuestionType.Choice){
-                return questionChoiceService.findByIndex(questionList.getQuestion_id());
+        QuestionList questionList = questionListService.findByNameandNumber(bankName, index);
+        if (questionList != null) {
+            try {
+                Map<String, Object> question = new HashMap<>();
+                QuestionType type = questionList.getType();
+                if (type == QuestionType.Choice) {
+                    QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.getQuestion_id());
+                    String questiontype = questionChoice.getChoicetype();
+                    //单选
+                    if (questiontype.equals("1") ) {
+                        question.put("type", "singlechoice");
+                    }
+                    if (questiontype.equals("0")) {
+                        question.put("type", "multichoice");
+                    }
+                    question.put("question", questionChoice);
+                } else if (type == QuestionType.Judgment) {
+                    QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.getQuestion_id());
+                    question.put("type", "judgment");
+                    question.put("question", questionJudgment);
+                } else if (type == QuestionType.Short) {
+                    QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+                    question.put("type", "short");
+                    question.put("question", questionShort);
+//            else{
+//                //展示题 还没做！
+//                return null;
+//            }
+                }
+                return ResponseEntity.ok().body(question);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().header("question", "No such question!").body(null);
             }
-            else if (type == QuestionType.Judgment){
-                return questionJudgmentService.findByIndex(questionList.getQuestion_id());
-            }
-            else if (type == QuestionType.Short){
-                return questionShortService.findByIndex(questionList.getQuestion_id());
-            }
-            else{
-                //展示题 还没做！
-                return null;
-            }
+
+
+        } else {
+            return ResponseEntity.badRequest().header("question", "No such question!").body(null);
         }
-        else {
-            return ResponseEntity.badRequest().header("index","Index is out of range!");
-        }
+
     }
 }
