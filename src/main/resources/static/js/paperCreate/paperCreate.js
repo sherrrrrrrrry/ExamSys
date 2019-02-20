@@ -14,6 +14,9 @@ $.fn.serializeObject = function() {
 	return o;
 };
 
+var titleNum = 0;
+var nextNum = 0;
+
 $(document).ready(function(e) {
 	$(".btwen_text").val("请输入题目");
 	$(".btwen_text_dx").val("请输入题目");
@@ -278,11 +281,7 @@ $(document).ready(function(e) {
 
 	});
 
-	var titleNum = 0;
-	if ($(".yd_box").children(".movie_box").length != 0) {
-		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
-	}
-	var nextNum = parseInt(titleNum) + 1;
+	
 	// 完成编辑（新题目录入）
 	$(".finish_new_problem").live("click", function() {
 		var ydbox = $(".yd_box");
@@ -292,14 +291,11 @@ $(document).ready(function(e) {
 		// 题目选项的个数
 		var bjtm_xm_length = jcxxxx.find(".title_itram").children(".kzjxx_iteam").length; // 添加选项题目
 		// 添加选项
-		
-		if (jcxxxx.find(".btwen_text_dx").val() != null) {
-			var index = $("[class=on]").index();
-			var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
-			var paperName = document.getElementById("paperName").value;
-			console.log($("#dxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=0" + "&name=" + paperName+ "&index=" + nextNum);
-			
-			
+		if ($(".yd_box").children(".movie_box").length != 0) {
+			titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
+		}
+		nextNum = parseInt(titleNum) + 1;
+		if (jcxxxx.find(".btwen_text_dx").val() != null) {		
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="0"></div></div>');
 			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【单选】</span></div></li>');
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
@@ -308,12 +304,6 @@ $(document).ready(function(e) {
 				insertOption.append('<li><label><input name="a" type="radio" value=""><span>' + insertContent + '</span></label></li>');
 			}
 		} else if (jcxxxx.find(".btwen_text_duox").val() != null) {
-			var index = $("[class=on]").index();
-			var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
-			var paperName = document.getElementById("paperName").value;
-			console.log($("#duoxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=1"+ "&name=" + paperName);
-			
-			
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="1"></div></div>');
 			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【多选】</span></div></li>');
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
@@ -350,11 +340,10 @@ $(document).ready(function(e) {
 });
 
 function dxuanSubmit() {	
-	var titleNum = 0;
 	if ($(".yd_box").children(".movie_box").length != 0) {
 		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
 	}
-	var nextNum = parseInt(titleNum) + 1;
+	nextNum = parseInt(titleNum) + 1;
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
 	var paperName = document.getElementById("paperName").value;
@@ -372,15 +361,13 @@ function dxuanSubmit() {
 		console.log('单选传输失败!');
 		console.log(err);
 	});
-	return false;
 }
 
 function duoxuanSubmit() {
-	var titleNum = 0;
 	if ($(".yd_box").children(".movie_box").length != 0) {
 		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
 	}
-	var nextNum = parseInt(titleNum) + 1;
+	nextNum = parseInt(titleNum) + 1;
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
 	var paperName = document.getElementById("paperName").value;
@@ -397,7 +384,6 @@ function duoxuanSubmit() {
 		console.log('多选传输失败!');
 		console.log(err);
 	});
-	return false;
 }
 
 

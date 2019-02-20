@@ -150,8 +150,7 @@
 					<div class="xxk_conn">
 						<!--单选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box dxuan ">
-							<form id="dxuanForm" name="dxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
-								onsubmit="return dxuanSubmit();">
+							<form id="dxuanForm"  onsubmit="return false;">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_dx"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -192,16 +191,15 @@
 								<div class="bjqxwc_box">
 									<!--<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
 										<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
-									<button class="cancle_edit">取消编辑</button>
-									<button type="submit" class="finish_new_problem">完成编辑</button>
+									<button type="button" class="cancle_edit">取消编辑</button>
+									<button type="button" onclick="dxuanSubmit()" class="finish_new_problem">完成编辑</button>
 								</div>
 							</form>
 						</div>
 
 						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box duoxuan" style="display: none">
-							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
-								onsubmit="return duoxuanSubmit();">
+							<form id="duoxuanForm" onsubmit="return false;">
 								<textarea name="title" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -243,8 +241,8 @@
 								<div class="bjqxwc_box">
 									<!--<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
 									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
-									<button class="cancle_edit">取消编辑</button>
-									<button type="submit" class="finish_new_problem">完成编辑</button>
+									<button  type="button" class="cancle_edit">取消编辑</button>
+									<button type="button" onclick="duoxuanSubmit()" class="finish_new_problem">完成编辑</button>
 								</div>
 							</form>
 						</div>
