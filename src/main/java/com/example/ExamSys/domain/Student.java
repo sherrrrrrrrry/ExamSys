@@ -78,9 +78,9 @@ public class Student implements Serializable{
 	@Column(name = "motto")
 	private String motto;
 
-
-	@OneToMany(mappedBy = "student", orphanRemoval = true)
-	private Set<Production> productions = new HashSet<>();
+//
+//	@OneToMany(mappedBy = "student", orphanRemoval = true)
+//	private Set<Production> productions = new HashSet<>();
 
 	@OneToMany(mappedBy = "student", orphanRemoval = true)
 	private Set<Exam_sum> exam_sums = new HashSet<>();
@@ -189,13 +189,13 @@ public class Student implements Serializable{
 		this.motto = motto;
 	}
 
-	public Set<Production> getProductions() {
-		return productions;
-	}
-
-	public void setProductions(Set<Production> productions) {
-		this.productions = productions;
-	}
+//	public Set<Production> getProductions() {
+//		return productions;
+//	}
+//
+//	public void setProductions(Set<Production> productions) {
+//		this.productions = productions;
+//	}
 
 	public Set<Exam_sum> getExam_sums() {return exam_sums;}
 

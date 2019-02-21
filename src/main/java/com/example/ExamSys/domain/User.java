@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -65,7 +66,10 @@ public class User implements Serializable, UserDetails{
 					inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
 	@BatchSize(size = 20)
 	private Set<Authority> authorities = new HashSet<>();
-
+	
+	@OneToMany(mappedBy = "user", orphanRemoval = true)
+	private Set<Production> productions = new HashSet<>();
+	
 	public Long getId() {
 		return id;
 	}
@@ -160,7 +164,15 @@ public class User implements Serializable, UserDetails{
 		return authorites;
 	}
 	
-    @Override
+    public Set<Production> getProductions() {
+		return productions;
+	}
+
+	public void setProductions(Set<Production> productions) {
+		this.productions = productions;
+	}
+
+	@Override
     public String toString() {
         return "User{" +
             "login='" + login + '\'' +

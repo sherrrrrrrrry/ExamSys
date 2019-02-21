@@ -10,8 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.ExamSys.dao.AuthorityRepository;
+import com.example.ExamSys.dao.ProductionRepository;
 import com.example.ExamSys.dao.QuestionBankRepository;
 import com.example.ExamSys.dao.QuestionChoiceRepository;
+import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Authority;
 import com.example.ExamSys.domain.Choice;
@@ -32,6 +34,12 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 	
 	@Autowired
 	private QuestionBankRepository questionBankRepository;
+	
+	@Autowired
+	private StudentRepository studentRepository;
+	
+	@Autowired
+	private ProductionRepository productionRepository;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -98,6 +106,9 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 			
 		}
 		try {
+//			Long id = studentRepository.findUserIdById(3L);
+//			System.out.println(id);
+			
 //			Student s1 = new Student();
 //			User u1 = userRepository.findOneById(1L).get();
 //			s1.setUser(u1);
