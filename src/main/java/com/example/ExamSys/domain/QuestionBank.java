@@ -68,8 +68,8 @@ public class QuestionBank implements Serializable{
 				inverseJoinColumns = {@JoinColumn(name = "question_show_id", referencedColumnName = "id")})
 	private Set<QuestionShow> showQuestions = new HashSet<>();
 
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = false)
-	private Set<Exam_sum> exam_sums = new HashSet<>();
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<Transcript> transcripts = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -126,4 +126,8 @@ public class QuestionBank implements Serializable{
     public Set<QuestionJudgment> getQuestionJudgments() { return questionJudgments; }
 
     public void setQuestionJudgments(Set<QuestionJudgment> questionJudgments) { this.questionJudgments = questionJudgments; }
+
+    public Set<Transcript> getTranscripts() { return transcripts; }
+
+    public void setTranscripts(Set<Transcript> transcripts) { this.transcripts = transcripts; }
 }

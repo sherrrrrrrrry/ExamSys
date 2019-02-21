@@ -147,7 +147,10 @@ public class QuestionBankController {
             questionChoice.setType(request.getParameter("type"));
             questionChoice.setChoicetype(request.getParameter("choicetype"));
             questionChoiceService.save(questionChoice);
-            questionBank.getChoiceQuestions().add(questionChoice);
+            Set<QuestionChoice> questionChoicesSet = new HashSet<>();
+            questionChoicesSet = questionBank.getChoiceQuestions();
+            questionChoicesSet.add(questionChoice);
+            questionBank.setChoiceQuestions(questionChoicesSet);
             questionBankService.save(questionBank);
 
             Long id = questionChoice.getId();

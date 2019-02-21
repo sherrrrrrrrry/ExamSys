@@ -38,19 +38,7 @@ public class QuestionCompositionController {
     /**
      * 获取所有试卷名
      */
-//    @RequestMapping("/questionbank_Name1")
-//    public ResponseEntity<List<String>> getQuestionBankName(){
-//        List<String> questionBankNames = questionBankService.getBankNames();
-////        for (int i=0; i<questionBankNames.size();i++){
-////            questionBankNames.get(i);
-////        }
-//        if (questionBankNames!=null){
-//            return ResponseEntity.ok().body(questionBankNames);
-//        }
-//        else{
-//            return ResponseEntity.badRequest().header("PaperName","No Paper!").body(null);
-//        }
-//    }
+
     @RequestMapping("/questionbank_Name")
     public Map<Integer, String> getQuestionBankName() {
         List<String> questionBankNames = questionBankService.getBankNames();

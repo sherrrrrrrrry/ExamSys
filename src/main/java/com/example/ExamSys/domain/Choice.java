@@ -83,11 +83,4 @@ public class Choice implements Serializable {
 		this.imageUrl = imageUrl;
 	}
 
-//    public QuestionChoice_multi getQuestionChoice_multi() {
-//        return questionChoice_multi;
-//    }
-//
-//    public void setQuestionChoice_multi(QuestionChoice_multi questionChoice_multi) {
-//        this.questionChoice_multi = questionChoice_multi;
-//    }
 }

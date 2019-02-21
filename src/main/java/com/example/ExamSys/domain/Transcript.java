@@ -25,25 +25,13 @@ public class Transcript implements Serializable{
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private QuestionBank questionBank;
-	
-	@Column(name = "total_points")
-	private Integer totalPoints;
-	
-	//一张试卷中个人修养得分/一张试卷中个人修养总分*level
-	@Column(name = "grxy_points")
-	private Integer grxyPoints;
-	
-	@Column(name = "gzylcsnl_points")
-	private Integer gzylcsnlPoints;
-	
-	@Column(name = "zwglnl_points")
-	private Integer zwglnlPoints;
-	
-	@Column(name = "gtxtnl_points")
-	private Integer gtxtnlPoints;
-	
-	@Column(name = "cxnl_points")
-	private Integer cxnlPoints;
+
+	//按照不同类别存储分数，一张试卷需维护N条记录，N为试卷包含的类别数。
+	@Column(name = "score")
+	private int score;
+
+	@Column(name = "type")
+	private String type;
 
 	public Long getId() {
 		return id;
@@ -69,53 +57,11 @@ public class Transcript implements Serializable{
 		this.questionBank = questionBank;
 	}
 
-	public Integer getTotalPoints() {
-		return totalPoints;
-	}
+    public int getScore() { return score; }
 
-	public void setTotalPoints(Integer totalPoints) {
-		this.totalPoints = totalPoints;
-	}
+    public void setScore(int score) { this.score = score; }
 
-	public Integer getGrxyPoints() {
-		return grxyPoints;
-	}
+    public String getType() { return type; }
 
-	public void setGrxyPoints(Integer grxyPoints) {
-		this.grxyPoints = grxyPoints;
-	}
-
-	public Integer getGzylcsnlPoints() {
-		return gzylcsnlPoints;
-	}
-
-	public void setGzylcsnlPoints(Integer gzylcsnlPoints) {
-		this.gzylcsnlPoints = gzylcsnlPoints;
-	}
-
-	public Integer getZwglnlPoints() {
-		return zwglnlPoints;
-	}
-
-	public void setZwglnlPoints(Integer zwglnlPoints) {
-		this.zwglnlPoints = zwglnlPoints;
-	}
-
-	public Integer getGtxtnlPoints() {
-		return gtxtnlPoints;
-	}
-
-	public void setGtxtnlPoints(Integer gtxtnlPoints) {
-		this.gtxtnlPoints = gtxtnlPoints;
-	}
-
-	public Integer getCxnlPoints() {
-		return cxnlPoints;
-	}
-
-	public void setCxnlPoints(Integer cxnlPoints) {
-		this.cxnlPoints = cxnlPoints;
-	}
-	
-	
+    public void setType(String type) { this.type = type; }
 }
