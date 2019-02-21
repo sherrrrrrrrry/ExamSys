@@ -10,12 +10,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.ExamSys.dao.AuthorityRepository;
+import com.example.ExamSys.dao.QuestionBankRepository;
 import com.example.ExamSys.dao.QuestionChoiceRepository;
+import com.example.ExamSys.dao.StudentRepository;
+import com.example.ExamSys.dao.TranscriptRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Authority;
 import com.example.ExamSys.domain.Choice;
+import com.example.ExamSys.domain.QuestionBank;
 import com.example.ExamSys.domain.QuestionChoice;
+import com.example.ExamSys.domain.Student;
+import com.example.ExamSys.domain.Transcript;
 import com.example.ExamSys.domain.User;
+import com.example.ExamSys.domain.enumeration.Gender;
 
 @Component
 public class ApplicationRunnerInit implements ApplicationRunner{
@@ -27,7 +34,16 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 	private UserRepository userRepository;
 	
 	@Autowired
+	private StudentRepository studentRepository;
+	
+	@Autowired
 	private QuestionChoiceRepository questionChoiceRepository;
+	
+	@Autowired
+	private QuestionBankRepository questionBankRepository;
+	
+	@Autowired
+	private TranscriptRepository transcriptRepository;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -73,8 +89,8 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		
 		} catch(Exception e) {
 		}
+		
 		try {
-
 			/*
 			 * 选项保存
 			 */
@@ -93,7 +109,36 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 		} catch(Exception e) {
 			
 		}
+		try {
+//			Student s1 = new Student();
+//			User u1 = userRepository.findOneById(1L).get();
+//			s1.setUser(u1);
+//			s1.setGender(Gender.BOY);
+//			s1.setName("小猪佩奇");
+//			studetRepository.save(s1);
+//			Student s2 = studentRepository.findOneById(3L);
+//			System.out.println(s2.getGender().getAlias());
+		} catch(Exception e) {
+			e.printStackTrace();;
+		}
+		try {
+			/*
+			 * 成绩保存
+			 */
+//			Student s1 = studentRepository.findOneById(3L);
+//			QuestionBank qb1 = questionBankRepository.findOneById(1L);
+//			Transcript ts = new Transcript();
+//			ts.setStudent(s1);
+//			ts.setQuestionBank(qb1);
+//			transcriptRepository.save(ts);
+//			Transcript transcript = transcriptRepository.findOneById(1L);
+//			QuestionBank qb = transcript.getQuestionBank();
+//			System.out.println(qb.getId());
+//			System.out.println(qb.getName());
+			
+		} catch(Exception e) {
+			e.printStackTrace();;
+		}
 		
 	}
-	
 }

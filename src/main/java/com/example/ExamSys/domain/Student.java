@@ -44,7 +44,7 @@ public class Student implements Serializable{
 	private String name;
 	
 	@NotNull
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	@Column(name = "gender")
 	private Gender gender;
 	

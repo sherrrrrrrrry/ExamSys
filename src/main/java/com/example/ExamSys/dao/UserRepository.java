@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	Set<User> findAllByEnabledFalse();
 	
+	Optional<User> findOneById(Long id);
+	
 	@Modifying
 	@Transactional
 	@Query("UPDATE User user set user.enabled=true where user.id in (:ids)")

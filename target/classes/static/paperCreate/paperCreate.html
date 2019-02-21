@@ -16,8 +16,8 @@
 </head>
 
 <body>
-<div class="topbarpage"></div>
-		<div class="headerpage"></div>
+	<div class="topbarpage"></div>
+	<div class="headerpage"></div>
 	<section id="inner-headline">
 		<div class="container">
 			<div class="row">
@@ -126,6 +126,18 @@
 					</div>
 				</div>
 
+				<div>
+					请填写试卷名称:
+					<input id="paperName" type="text" class="input_wenbk" value="选项">
+					请选择试卷level:
+					<select id="paperLevel">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					</select>
+					<button type="button" onclick="paperNameSub()">试卷名称提交</button>
+				</div>
+
 				<!--选项卡区域  模板区域---------------------------------------------------------------------------------------------------------------------------------------->
 
 				<div class="xxk_box">
@@ -138,28 +150,29 @@
 					<div class="xxk_conn">
 						<!--单选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box dxuan ">
-							<form id="dxuanForm" name="dxuanForm" action="/questionbank/onechoice" method="post" onSubmit="return dxuanSubmit();">
+							<form id="dxuanForm" name="dxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
+								onsubmit="return dxuanSubmit();">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_dx"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
 								<div class="title_itram">
 									<div class="kzjxx_iteam">
-										<input name="dxoption" type="radio" class="dxk" value="0">
+										<input name="option" type="radio" class="dxk" value="0">
 										<input name="0" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input name="dxoption" type="radio" class="dxk" value="1">
+										<input name="option" type="radio" class="dxk" value="1">
 										<input name="1" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input name="dxoption" type="radio" class="dxk" value="2">
+										<input name="option" type="radio" class="dxk" value="2">
 										<input name="2" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input name="dxoption" type="radio" class="dxk" value="3">
+										<input name="option" type="radio" class="dxk" value="3">
 										<input name="3" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
@@ -187,7 +200,8 @@
 
 						<!--多选----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box duoxuan" style="display: none">
-							<form id="duoxuanForm" name="duoxuanForm">
+							<form id="duoxuanForm" name="duoxuanForm" action="/questionbank/questionchoice_save" method="post" novalidate
+								onsubmit="return duoxuanSubmit();">
 								<textarea name="title" cols="" rows="" class="input_wenbk btwen_text btwen_text_duox"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -198,17 +212,17 @@
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk"  name="option" value="1">
+										<input type="checkbox" class="dxk" name="option" value="1">
 										<input name="1" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk"  name="option" value="2">
+										<input type="checkbox" class="dxk" name="option" value="2">
 										<input name="2" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
 									<div class="kzjxx_iteam">
-										<input type="checkbox" class="dxk"  name="option" value="3">
+										<input type="checkbox" class="dxk" name="option" value="3">
 										<input name="3" type="text" class="input_wenbk" value="选项">
 										<a href="javascript:void(0);" class="del_xm">删除</a>
 									</div>
@@ -227,10 +241,10 @@
 								</div>
 								<!--完成编辑-->
 								<div class="bjqxwc_box">
-									<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
-									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>
-									<!--<button class="cancle_edit">取消编辑</button>
-									<button type="submit" class="finish_new_problem">完成编辑</button>-->
+									<!--<a href="javascript:void(0);" class="cancle_edit">取消编辑</a>
+									<a href="javascript:void(0);" class="finish_new_problem"> 完成编辑</a>-->
+									<button class="cancle_edit">取消编辑</button>
+									<button type="submit" class="finish_new_problem">完成编辑</button>
 								</div>
 							</form>
 						</div>
@@ -238,7 +252,7 @@
 						<!-- 判断题----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box zwtm" style="display: none">
 							<form id="pduanForm" name="pduanForm" action="/questionbank/trueflase" method="post"
-								onSubmit="return truefalseSubmit();">
+								onsubmit="return truefalseSubmit();">
 								<textarea name="title" class="input_wenbk btwen_text btwen_text_zw"
 									onblur="if(!this.value)this.value='请输入题目'"
 									onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
@@ -288,6 +302,7 @@
 
 					</div>
 				</div>
+
 
 				<div class="xxk_box" style="display: none;">
 					<div class="xxk_conn">
@@ -425,7 +440,7 @@
 			</div>
 		</div>
 	</section>
-<div class="footerpage"></div>
+	<div class="footerpage"></div>
 	<script src="../js/jquery-1.8.0.min.js"></script>
 	<script src="../js/paperCreate/paperCreate.js"></script>
 	<script src="../js/jquery.js"></script>
@@ -443,15 +458,15 @@
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 		$(function() {
 			var username = $.cookie('username');
-			if(username!=null){
+			if (username != null) {
 				$(".topbarpage").load("../topbarLogin.html");
-			}else{
+			} else {
 				$(".topbarpage").load("../topbar.html");
-			} 
-			
+			}
+
 			$(".headerpage").load("../header.html");
 			$(".footerpage").load("../footer.html");
 		});
