@@ -12,17 +12,11 @@ import org.springframework.stereotype.Component;
 import com.example.ExamSys.dao.AuthorityRepository;
 import com.example.ExamSys.dao.QuestionBankRepository;
 import com.example.ExamSys.dao.QuestionChoiceRepository;
-import com.example.ExamSys.dao.StudentRepository;
-import com.example.ExamSys.dao.TranscriptRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Authority;
 import com.example.ExamSys.domain.Choice;
-import com.example.ExamSys.domain.QuestionBank;
 import com.example.ExamSys.domain.QuestionChoice;
-import com.example.ExamSys.domain.Student;
-import com.example.ExamSys.domain.Transcript;
 import com.example.ExamSys.domain.User;
-import com.example.ExamSys.domain.enumeration.Gender;
 
 @Component
 public class ApplicationRunnerInit implements ApplicationRunner{
@@ -34,16 +28,10 @@ public class ApplicationRunnerInit implements ApplicationRunner{
 	private UserRepository userRepository;
 	
 	@Autowired
-	private StudentRepository studentRepository;
-	
-	@Autowired
 	private QuestionChoiceRepository questionChoiceRepository;
 	
 	@Autowired
 	private QuestionBankRepository questionBankRepository;
-	
-	@Autowired
-	private TranscriptRepository transcriptRepository;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
