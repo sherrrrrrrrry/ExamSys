@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.ExamSys.domain.Authority;
 import com.example.ExamSys.domain.User;
 
 @Repository
@@ -23,6 +24,12 @@ public interface UserRepository extends JpaRepository<User, String>{
 	Set<User> findAllByEnabledFalse();
 	
 	Optional<User> findOneById(Long id);
+	
+	@Query("select u.authorities from User u where u.login = ?1")
+	Set<Authority> findAuthoritiesByLogin(String login);
+	
+	@Query("select u.id from User u where u.login = ?1")
+	Long findIdByLogin(String login);
 	
 	@Modifying
 	@Transactional

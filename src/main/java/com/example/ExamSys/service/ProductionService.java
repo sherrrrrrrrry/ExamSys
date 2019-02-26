@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.ProductionRepository;
 import com.example.ExamSys.dao.StudentRepository;
+import com.example.ExamSys.dao.TeacherRepository;
+import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Production;
 import com.example.ExamSys.domain.User;
 
@@ -27,8 +29,16 @@ public class ProductionService {
 	
 	private static String studentProductionParentPath = Constants.STUDENT_PRODUCTION_PATH;
 	
+	private static String personalPhotoPath = Constants.PERSONAL_PHOTO_PATH;
+	
 	@Autowired
 	private StudentRepository studentRepository;
+	
+	@Autowired
+	private TeacherRepository teacherRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private ProductionRepository productionRepository;
@@ -109,5 +119,51 @@ public class ProductionService {
 		
 		productionName.append(file.getName());
 		return productionName.toString();
+	}
+	/*
+	 * 上传个人照
+	 */
+	public boolean upLoadPersonalPhoto(String login, File file, String userType) {
+		String oldPhotoUrl = null;
+		Long userId = userRepository.findIdByLogin(login);
+		
+		if(userType.equals("Student")) {
+			if((oldPhotoUrl = studentRepository.findPhotoUrlByLogin(login)) != null) {
+				File oldFile = new File(oldPhotoUrl);
+				oldFile.delete();
+				logger.info("user: {} delete the old production successfully Name: {}", userId, oldFile.getName());
+				studentRepository.updatePhotoUrlByLogin("", login);
+			}
+			String photoName = login + "_" + file.getName();
+			
+			String url = saveProductionInLocalFS(personalPhotoPath, file, photoName);
+
+			if(url == null) {
+				logger.error("user:{} Failed to save the production Name:{}", userId, file.getName());
+				return false;
+			}
+			studentRepository.updatePhotoUrlByLogin(url, login);
+			logger.info("user: {} save the production successfully Name: {}", userId, file.getName());
+			return true;
+		} else if(userType.equals("Teacher")) {
+			if((oldPhotoUrl = teacherRepository.findPhotoUrlByLogin(login)) != null) {
+				File oldFile = new File(oldPhotoUrl);
+				oldFile.delete();
+				logger.info("user: {} delete the old production successfully Name: {}", userId, oldFile.getName());
+				teacherRepository.updatePhotoUrlByLogin("", login);
+			}
+			String photoName = login + "_" + file.getName();
+			
+			String url = saveProductionInLocalFS(personalPhotoPath, file, photoName);
+
+			if(url == null) {
+				logger.error("user:{} Failed to save the production Name:{}", userId, file.getName());
+				return false;
+			}
+			teacherRepository.updatePhotoUrlByLogin(url, login);
+			logger.info("user: {} save the production successfully Name: {}", userId, file.getName());
+			return true;
+		}
+		return false;
 	}
 }
