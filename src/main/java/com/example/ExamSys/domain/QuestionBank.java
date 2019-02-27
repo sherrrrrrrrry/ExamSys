@@ -70,6 +70,14 @@ public class QuestionBank implements Serializable{
 
 	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
 	private Set<Transcript> transcripts = new HashSet<>();
+//
+//	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+//	private Set<ExamAnswer_choice> examAnswer_choices = new HashSet<>();
+//	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+//	private Set<ExamAnswer_text> examAnswer_texts = new HashSet<>();
+
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	private Set<QuestionAnswer> questionAnswers = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -130,4 +138,8 @@ public class QuestionBank implements Serializable{
     public Set<Transcript> getTranscripts() { return transcripts; }
 
     public void setTranscripts(Set<Transcript> transcripts) { this.transcripts = transcripts; }
+
+	public Set<QuestionAnswer> getQuestionAnswers() { return questionAnswers; }
+
+	public void setQuestionAnswers(Set<QuestionAnswer> questionAnswers) { this.questionAnswers = questionAnswers; }
 }

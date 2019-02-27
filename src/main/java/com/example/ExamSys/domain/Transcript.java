@@ -2,14 +2,7 @@ package com.example.ExamSys.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "transcript")
@@ -19,7 +12,15 @@ public class Transcript implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "examanswer_text")
+//	private ExamAnswer_text examAnswer_text;
+//
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "examanswer_choice")
+//    private ExamAnswer_choice examAnswer_choice;
+
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Student student;
 	

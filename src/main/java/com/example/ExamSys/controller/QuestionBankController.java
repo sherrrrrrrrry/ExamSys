@@ -40,7 +40,7 @@ public class QuestionBankController {
     /**
      * 新建题库
      */
-    @RequestMapping("/questionbank_save")
+    @RequestMapping(value = "/questionbank_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity save(HttpServletRequest request){
         String name = request.getParameter("name");
         try {
@@ -189,7 +189,7 @@ public class QuestionBankController {
     }
 
     //判断题：
-    @RequestMapping(value = "/questionjudgment_save")
+    @RequestMapping(value = "/questionjudgment_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public Object saveJudgment(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
         String questionBankName = request.getParameter("name");
@@ -229,7 +229,7 @@ public class QuestionBankController {
         }
     }
 
-    @RequestMapping(value = "deleteQuestion")
+    @RequestMapping(value = "deleteQuestion", method = RequestMethod.POST, headers = "Accept=application/json")
     public boolean deleteQuestion(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
         String questionBankName = request.getParameter("name");

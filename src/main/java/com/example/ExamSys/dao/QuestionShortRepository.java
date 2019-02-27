@@ -4,8 +4,10 @@ import com.example.ExamSys.domain.QuestionShort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-public interface QuestionShortRepository extends JpaRepository<QuestionShort,Integer> {
+@Repository
+public interface QuestionShortRepository extends JpaRepository<QuestionShort,Long> {
     @Modifying
     @Query("delete from QuestionShort q where q.id=?1")
     void deleteById(Long id);

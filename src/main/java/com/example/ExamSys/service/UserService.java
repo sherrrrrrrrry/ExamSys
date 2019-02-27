@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.User;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UserService {
@@ -35,5 +37,8 @@ public class UserService {
 		BCryptPasswordEncoder encoder1 = new BCryptPasswordEncoder();
 		String hash = encoder1.encode(password);
 		return hash;
+	}
+	public Optional<User> findOneByLogin(String login){
+		return userRepository.findOneByLogin(login);
 	}
 }

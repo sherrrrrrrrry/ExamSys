@@ -59,6 +59,7 @@ public class QuestionCompositionController {
     @RequestMapping(value = "/get_questions", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<Map<String, Object>> getQuestions(HttpServletRequest request) {
         String bankName = request.getParameter("name");
+        System.out.print(bankName);
         int index = Integer.parseInt(request.getParameter("index"));
         QuestionList questionList = questionListService.findByNameandNumber(bankName, index);
         if (questionList != null) {
@@ -69,12 +70,14 @@ public class QuestionCompositionController {
                     QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.getQuestion_id());
                     String questiontype = questionChoice.getChoicetype();
                     //单选
-                    if (questiontype.equals("1") ) {
+                    if (questiontype.equals("0") ) {
                         question.put("type", "singlechoice");
                     }
-                    if (questiontype.equals("0")) {
+                    if (questiontype.equals("1")) {
                         question.put("type", "multichoice");
                     }
+                    int choicenumber = questionChoice.getChoices().size();
+                    question.put("choicenumber",choicenumber);
                     question.put("question", questionChoice);
                 } else if (type == QuestionType.Judgment) {
                     QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.getQuestion_id());
@@ -93,7 +96,7 @@ public class QuestionCompositionController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return ResponseEntity.badRequest().header("question", "No such question!").body(null);
+                return ResponseEntity.badRequest().header("question", "something wrong happened!").body(null);
             }
 
 

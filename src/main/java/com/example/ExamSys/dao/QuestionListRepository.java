@@ -5,8 +5,10 @@ import com.example.ExamSys.domain.QuestionList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-public interface QuestionListRepository extends JpaRepository<QuestionList, Integer> {
+@Repository
+public interface QuestionListRepository extends JpaRepository<QuestionList, Long> {
     @Query("select q from QuestionList q where q.name = ?1")
     List<QuestionList> findByName(String name);
 

@@ -8,19 +8,19 @@
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
 <link href="../css/person.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/paperCreate.css">
+<link href="../css/gallery-1.css" rel="stylesheet">
+<link href="../css/magnific-popup.css" rel="stylesheet">
+<link href="../css/layer.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 	<div class="topbarpage"></div>
 	<div class="headerpage"></div>
 	<section id="inner-headline">
 		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<h2 class="pageTitle">测试</h2>
-				</div>
-				<div class="col-md-12">
-					<p class="pull-right"></p>
-				</div>
+			<div class="row" id="getPaperName">
+
 			</div>
 		</div>
 	</section>
@@ -32,6 +32,17 @@
 				
 				<div class="yd_box">
 				</div>
+                <div class="pricing-action" style="background-color:#f6f6f6">
+                    <button class="btn btn-primary" id="nextQuestion"
+                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">下一题</button>
+
+                </div>
+
+                <div class="pricing-action" style="background-color:#f6f6f6">
+                    <button class="btn btn-primary" id="getQuestionanswer"
+                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">看选中答案</button>
+
+                </div>
 			
 			</div>
 		</div>
@@ -67,12 +78,55 @@
 			$(".footerpage").load("../footer.html");
 			
 			var name = $.query.get("paperName");
+			var index = 1;
+			console.log(name);
 			var ydbox = $(".yd_box");
-			
-			$.ajax({　　
+
+			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">'+name+'</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
+
+			getQuestion(name,index);
+
+			$("#nextQuestion").click(function() {
+			    
+			    
+
+                var questionType = $(".dx_box").attr("data-t");
+                console.log(questionType);
+				var answer = getAnswer(questionType);
+				console.log(answer);
+				sendAnswer(username,name,index,answer);
+				$(".yd_box").empty();
+				index++;
+				getQuestion(name,index);
+			});
+
+			$("#getQuestionanswer").click(function(){
+				var questionType = $(".dx_box").attr("data-t");
+				console.log(questionType);
+				var answer = getAnswer(questionType);
+				console.log(answer);
+			});
+		});
+
+		function getAnswer(questionType){
+            if(questionType == "0"){
+                 var answer = $('.movie_box input[name="a"]:checked ').val();
+                 return answer;
+            }
+            if(questionType == "1"){
+            	var answer = []; //申明数组保存所有被选中checkbox背后的值
+                $.each($('input:checkbox:checked'),function(){
+                	answer.push($(this).val());
+            	});
+                return answer;
+            }
+		}
+
+		function getQuestion(name,index){
+		    $.ajax({　　
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
-				data:{"name":name,"index":1},
+				data:{"name":name,"index":index},
 				url: '/questioncomposition/get_questions', // 目标地址
 				error: function(data) {
 					console.log(data);　　
@@ -80,21 +134,55 @@
 				success: function(data) {
 					console.log(data);
 					var questionType=data.type;
+					var ydbox = $(".yd_box");
+					<!--console.log(data.question.choices[2].content);-->
 					if(questionType=="singlechoice"){
 						ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="0"></div></div>');
-						ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.type() + '</i><span class="tip_wz">【单选】</span></div></li>');
+						ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【单选】</span></div></li>');
 						var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-						for (var i = 0; i < bjtm_xm_length; i++) {
-							var insertContent = jcxxxx.find(".title_itram").children(".kzjxx_iteam").eq(i).find(".input_wenbk").val();
-							insertOption.append('<li><label><input name="a" type="radio" value=""><span>' + insertContent + '</span></label></li>');
+						for (var i = 0; i < data.choicenumber; i++) {
+							insertOption.append('<li><label><input name="a" type="radio" value="'+i+'"><span>' + data.question.choices[i].content + '</span></label></li>');
 						}
+					}
+					else if(questionType=="multichoice"){
+					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="1"></div></div>');
+					    ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【多选】</span></div></li>');
+					    var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			            for (var i = 0; i < data.choicenumber; i++) {
+		                    insertOption.append('<li><label><input name="option" type="checkbox" value="'+i+'"><span>' + data.question.choices[i].content + '</span></label></li>');
+			            }
+					}
+					else if(questionType=="judgment"){
+					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="2"></div></div>');
+			            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【判断】</span></div></li>');
+			            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			            insertOption.append('<li><label><input name="a" type="radio" value=""><span>正确</span></label></li><li><label><input name="a" type="radio" value=""><span>错误</span></label></li>');
+					}
+					else if(questionType=="short"){
+					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
+			            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【简答】</span></div></li>');
+			            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			            insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" value="请填写您的答案"></textarea></label></li>');
 					}
 				}
 			});
-			
-			
-		});
-		
+		}
+
+		function sendAnswer(username,name,index,answer){
+		    $.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				data:{"username":username,"name":name,"index":index,"answer":answer,},
+				url: '/Exam/questionanswer_save', // 目标地址
+				error: function(data) {
+					console.log('多选传输失败!');
+					　　
+				},
+				success:function(data){
+					console.log('多选传输成功!');
+				}
+				});
+		}
 		
 	</script>
 </body>
