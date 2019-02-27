@@ -1,5 +1,7 @@
 package com.example.ExamSys.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +23,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ExamSys.dao.StudentRepository;
+import com.example.ExamSys.dao.TeacherRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Authority;
+import com.example.ExamSys.domain.Student;
+import com.example.ExamSys.domain.Teacher;
 import com.example.ExamSys.domain.User;
 import com.example.ExamSys.domain.enumeration.UserType;
 import com.example.ExamSys.security.AuthoritiesConstants;
+import com.example.ExamSys.service.ProductionService;
 import com.example.ExamSys.service.UserService;
 import com.example.ExamSys.service.VerifyService;
 import com.example.ExamSys.utils.MD5Utils;
 import com.example.ExamSys.vo.UserDTO;
+import com.example.ExamSys.vo.UserInfoDTO;
 
 @RestController
 @RequestMapping("/account")
@@ -46,6 +55,14 @@ public class AccountController {
 	@Autowired
 	private VerifyService verifyService;
 	
+	@Autowired
+	private StudentRepository studentRepository;
+	
+	@Autowired
+	private TeacherRepository teacherRepository;
+	
+	@Autowired
+	private ProductionService productionService;
 	
 	
 	/*
@@ -190,4 +207,83 @@ public class AccountController {
 		resultMap.put("time", currentTime);
 		return ResponseEntity.ok().body(resultMap);
 	}
+	
+	
+	/*
+	 * 学生个人信息录入
+	 * 参数: userId 用户id
+	 * 返回值: StudentDTO
+	 * username, realname, gender, age, phone, province, city, town, school
+	 * trainingagency, motto, personalpic
+	 */
+	@RequestMapping(value = "/personalInfo", method = RequestMethod.POST)
+	public ResponseEntity<String> recordPersonalInfo(@Valid @RequestBody UserInfoDTO userInfoDTO){
+		
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(userInfoDTO.getLogin());
+		Boolean bool = true;
+		
+		if(authorities == null || authorities.isEmpty())
+			return ResponseEntity.badRequest().header("Authority", "no Authority").body(null);
+		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
+		
+			Student student = new Student();
+			student.setAge(userInfoDTO.getAge());
+			student.setGender(userInfoDTO.getGender());
+			student.setName(userInfoDTO.getRealname());
+			student.setPhoneNumber(userInfoDTO.getPhoneNumber());
+			student.setSchool(userInfoDTO.getSchool());
+			student.setSchoolProvince(userInfoDTO.getProvince());
+			student.setSchoolCity(userInfoDTO.getCity());
+			student.setSchoolRegion(userInfoDTO.getTown());
+			student.setTrainingName(userInfoDTO.getTrainingAgency());
+			student.setMotto(userInfoDTO.getMotto());
+			student.setUser(userRepository.findOneByLogin(userInfoDTO.getLogin()).get());
+			studentRepository.save(student);
+			try {
+				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", userInfoDTO.getPersonalpic().getOriginalFilename());
+				IOUtils.copy(userInfoDTO.getPersonalpic().getInputStream(), new FileOutputStream(upl));
+				
+				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Student");
+			} catch (Exception e) {
+				e.printStackTrace();
+				bool = false;
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			if(bool == false) {
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			return ResponseEntity.ok().body("");
+			
+		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
+			
+			Teacher teacher = new Teacher();
+			teacher.setAge(userInfoDTO.getAge());
+			teacher.setGender(userInfoDTO.getGender());
+			teacher.setName(userInfoDTO.getRealname());
+			teacher.setPhoneNumber(userInfoDTO.getPhoneNumber());
+			teacher.setSchool(userInfoDTO.getSchool());
+			teacher.setSchoolProvince(userInfoDTO.getProvince());
+			teacher.setSchoolCity(userInfoDTO.getCity());
+			teacher.setSchoolRegion(userInfoDTO.getTown());
+			teacher.setTrainingName(userInfoDTO.getTrainingAgency());
+			teacher.setMotto(userInfoDTO.getMotto());
+			teacher.setUser(userRepository.findOneByLogin(userInfoDTO.getLogin()).get());
+			teacherRepository.save(teacher);
+			try {
+				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", userInfoDTO.getPersonalpic().getOriginalFilename());
+				IOUtils.copy(userInfoDTO.getPersonalpic().getInputStream(), new FileOutputStream(upl));
+				
+				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Teacher");
+			} catch (Exception e) {
+				e.printStackTrace();
+				bool = false;
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			if(bool == false) {
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			return ResponseEntity.ok().body("");
+		}
+		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
+	}	
 }
