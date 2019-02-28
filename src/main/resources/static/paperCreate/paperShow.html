@@ -39,8 +39,8 @@
                 </div>
 
                 <div class="pricing-action" style="background-color:#f6f6f6">
-                    <button class="btn btn-primary" id="getQuestionanswer"
-                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">看选中答案</button>
+                    <button class="btn btn-primary" id="lastQuestionanswer"
+                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">上一题</button>
 
                 </div>
 			
@@ -79,32 +79,34 @@
 			
 			var name = $.query.get("paperName");
 			var index = 1;
-			console.log(name);
 			var ydbox = $(".yd_box");
 
 			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">'+name+'</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
 
 			getQuestion(name,index);
+			receiveAnswer(username,name,index);
 
 			$("#nextQuestion").click(function() {
-			    
-			    
-
                 var questionType = $(".dx_box").attr("data-t");
-                console.log(questionType);
 				var answer = getAnswer(questionType);
 				console.log(answer);
 				sendAnswer(username,name,index,answer);
 				$(".yd_box").empty();
 				index++;
 				getQuestion(name,index);
+				receiveAnswer(username,name,index);
 			});
 
-			$("#getQuestionanswer").click(function(){
-				var questionType = $(".dx_box").attr("data-t");
-				console.log(questionType);
-				var answer = getAnswer(questionType);
-				console.log(answer);
+			$("#lastQuestionanswer").click(function(){
+				if (index>1) {
+					var questionType = $(".dx_box").attr("data-t");
+					var answer = getAnswer(questionType);
+					sendAnswer(username,name,index,answer);
+					$(".yd_box").empty();
+					index--;
+					getQuestion(name,index);
+					receiveAnswer(username,name,index);
+				}
 			});
 		});
 
@@ -114,14 +116,25 @@
                  return answer;
             }
             if(questionType == "1"){
-            	var answer = []; //申明数组保存所有被选中checkbox背后的值
-                $.each($('input:checkbox:checked'),function(){
-                	answer.push($(this).val());
+            	var answers = []; //申明数组保存所有被选中checkbox背后的值
+                $.each($('.movie_box input[name="option"]:checked '),function(){
+                	answers.push($(this).val());
             	});
+				var answer = "";
+				for (var i = 0; i <answers.length; i++) {
+					answer += answers[i];
+				}
                 return answer;
             }
+            if (questionType == "2") {
+            	var answer = $('.movie_box input[name="a"]:checked').val();
+            	return answer;
+            }
+            if (questionType == "3") {
+            	var answer = $('.movie_box textarea[name=""]').val();
+            	return answer;
+            }
 		}
-
 		function getQuestion(name,index){
 		    $.ajax({　　
 				type: "POST", // 用POST方式传输
@@ -132,10 +145,8 @@
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(data);
 					var questionType=data.type;
 					var ydbox = $(".yd_box");
-					<!--console.log(data.question.choices[2].content);-->
 					if(questionType=="singlechoice"){
 						ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="0"></div></div>');
 						ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【单选】</span></div></li>');
@@ -156,7 +167,7 @@
 					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="2"></div></div>');
 			            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【判断】</span></div></li>');
 			            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-			            insertOption.append('<li><label><input name="a" type="radio" value=""><span>正确</span></label></li><li><label><input name="a" type="radio" value=""><span>错误</span></label></li>');
+			            insertOption.append('<li><label><input name="a" type="radio" value="T"><span>正确</span></label></li><li><label><input name="a" type="radio" value="F"><span>错误</span></label></li>');
 					}
 					else if(questionType=="short"){
 					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
@@ -172,16 +183,61 @@
 		    $.ajax({　　
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
-				data:{"username":username,"name":name,"index":index,"answer":answer,},
+				data:{"username":username,"name":name,"index":index,"answer":answer},
 				url: '/Exam/questionanswer_save', // 目标地址
 				error: function(data) {
-					console.log('多选传输失败!');
-					　　
+					console.log(answer);
+					console.log('保存答案失败');
 				},
 				success:function(data){
-					console.log('多选传输成功!');
+					console.log(answer);
+					console.log('保存答案成功');
 				}
 				});
+		}
+
+		function receiveAnswer(username,name,index){
+			$.ajax({
+				type: "POST",
+				dataType: "JSON",
+				data:{"username":username,"name":name,"index":index},
+				url:'/Exam/questionanswer_show',
+				error: function(data){
+					console.log('无答案');
+				},
+				success: function(data){
+					var answer = data.answer;
+					var questionType = $(".dx_box").attr("data-t");
+					if(questionType == "0"){
+                 		$('.movie_box input[name="a"]').eq(answer).attr('checked',true);
+            		}
+            		if(questionType == "1"){
+            			var answers = answer.split(""); //申明数组保存所有被选中checkbox背后的值
+            			for(var i=0;i<answers.length;i++){
+            				$('.movie_box input[name="option"]').eq(answer[i]).attr('checked',true);
+            			}
+//                 		$.each($('input:checkbox:checked'),function(){
+//                 			answer.push($(this).val());
+//             			});
+//                 		return answer;
+            		}
+            		if (questionType == "2") {
+            			if (answer == "T") {
+            				$('.movie_box input[name="a"]').eq(0).attr('checked',true);
+            			}
+            			else{
+            				$('.movie_box input[name="a"]').eq(1).attr('checked',true);
+            			}
+
+            		}
+            		if (questionType == "3") {
+            			$('.movie_box textarea[name=""]').text(answer);
+            			return answer;
+            		}
+
+				}
+				});
+			
 		}
 		
 	</script>

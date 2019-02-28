@@ -3,7 +3,9 @@ package com.example.ExamSys.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -24,7 +26,7 @@ public class QuestionChoice implements Serializable {
 	 */
 
 	@OneToMany(mappedBy = "questionChoice",cascade=CascadeType.ALL, orphanRemoval = true)
-	private Set<Choice> choices = new HashSet<>();
+	private List<Choice> choices = new ArrayList<>();
 
     @JsonBackReference
     @ManyToMany(mappedBy = "choiceQuestions", fetch = FetchType.LAZY)
@@ -50,12 +52,12 @@ public class QuestionChoice implements Serializable {
 		this.id = id;
 	}
 
-	public Set<Choice> getChoices() {
+	public List<Choice> getChoices() {
 		return choices;
 	}
 
 
-	public void setChoices(Set<Choice> choices) {
+	public void setChoices(List<Choice> choices) {
 		this.choices = choices;
 	}
 

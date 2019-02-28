@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,6 +39,9 @@ public class ExamAnswerController {
     @Resource
     private QuestionChoiceService questionChoiceService;
 
+    /**
+     *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer
+     **/
     @RequestMapping(value = "/questionanswer_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity save(HttpServletRequest request){
         String name = request.getParameter("name");
@@ -100,13 +105,13 @@ public class ExamAnswerController {
                 if (questionType == QuestionType.Choice) {//选择题答案
                     String choicetype = questionChoiceService.findByIndex(questionList.getQuestion_id()).getChoicetype();
                     if (choicetype=="1") {//多选
-                        String answers[] = request.getParameterValues("option");
+                        String answers[] = request.getParameterValues("answer");
 
                         for (int i = 0; i < answers.length; i++) {
                             current_answer += answers[i];
                         }
                     }
-                    else{
+                    else{//单选
                         current_answer = request.getParameter("answer");
                     }
                 } else {//判断题答案
@@ -187,4 +192,82 @@ public class ExamAnswerController {
             return answer;
         }
     }
+
+
+    /**
+     * 如果是以做过的试卷，则展示答案
+     * 题号：index, 用户名：username, 试卷名:name
+     * **/
+    @RequestMapping(value = "/questionanswer_show", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity getAnswer(HttpServletRequest request){
+        String name = request.getParameter("name");
+        int index = Integer.parseInt(request.getParameter("index"));
+        //确认考生
+        Optional<User> user = userService.findOneByLogin(request.getParameter("username"));
+        if (!user.isPresent()){
+            return ResponseEntity.badRequest().header("User","No such user!").body(null);
+        }
+        Student student = studentRepository.findStuByUser(user.get());
+        if (student== null){
+            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
+        }
+        //确认试卷
+        QuestionBank questionBank = questionBankService.findByName(name);
+        if (questionBank == null){
+            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+        }
+        //确认试题
+        QuestionList questionList = questionListService.findByNameandNumber(name,index);
+        if (questionList==null){
+            return ResponseEntity.badRequest().header("Question","No such question!").body(null);
+        }
+        QuestionType questionType = questionList.getType();
+        Map<String, String> answerMap = new HashMap<>();
+        if (questionType == QuestionType.Choice || questionType == QuestionType.Judgment) {
+            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+            if (questionAnswer==null){//没找到答案
+                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(null);
+            }
+            else{
+                String answer = questionAnswer.getAnswer();
+                String currentAnswer = getAnswer(answer,index);
+                if (currentAnswer == null){
+                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(null);
+                }
+                else{
+                    answerMap.put("answer",currentAnswer);
+                    return ResponseEntity.ok().header("CorJ","Answer existing").body(answerMap);
+                }
+            }
+        }
+        else if (questionType == QuestionType.Short){
+            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+            if (questionAnswer==null){//没找到答案
+                return ResponseEntity.badRequest().body(null);
+            }
+            else{
+                String answer = questionAnswer.getAnswer();
+                if (answer == null){
+                    return ResponseEntity.badRequest().header("short","No such answer!").body(null);
+                }
+                else{
+                    answerMap.put("answer",answer);
+                    return ResponseEntity.ok().body(answerMap);
+                }
+            }
+        }
+        else if (questionType == QuestionType.Show){
+            return null;
+        }
+        return ResponseEntity.badRequest().body(null);
+    }
+
+    public String getAnswer(String answer, int index){
+        String[] answers = answer.split(";");
+        if (index>answers.length){
+            return null;
+        }
+        return answers[index-1];
+    }
+
 }
