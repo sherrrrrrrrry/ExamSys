@@ -9,5 +9,11 @@ import javax.transaction.Transactional;
 
 @Service
 public class QuestionShowService {
+    @Resource
+    QuestionShowRepository questionShowRepository;
 
+    public QuestionShow save(QuestionShow questionShow){
+        questionShowRepository.save(questionShow);
+        return questionShow;
+    }
 }

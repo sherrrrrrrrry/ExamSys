@@ -69,7 +69,6 @@ public class ExamAnswerController {
         QuestionType questionType = questionList.getType();
 
         if (questionType == QuestionType.Choice || questionType == QuestionType.Judgment) {
-
             QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
             if (questionAnswer==null) {//如果 在答案表里没找到对应的数据
                 String answer = "";

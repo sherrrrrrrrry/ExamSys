@@ -1,5 +1,7 @@
 package com.example.ExamSys.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -21,9 +23,12 @@ public class Transcript implements Serializable{
 //    @JoinColumn(name = "examanswer_choice")
 //    private ExamAnswer_choice examAnswer_choice;
 
+
+	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Student student;
-	
+
+	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private QuestionBank questionBank;
 

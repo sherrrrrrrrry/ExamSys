@@ -6,6 +6,8 @@ import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.domain.enumeration.UserType;
 import com.example.ExamSys.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/questionbank")
 public class QuestionBankController {
+
+    private final Logger log = LoggerFactory.getLogger(AdminController.class);
 
     @Resource
     private QuestionBankService questionBankService;
@@ -33,6 +37,8 @@ public class QuestionBankController {
     @Resource
     private QuestionListService questionListService;
 
+    @Resource
+    private QuestionShowService questionShowService;
 //    QuestionBank questionBank = new QuestionBank();
 //    Map<Integer, Question> questionList = new HashMap<>();
 
@@ -112,6 +118,58 @@ public class QuestionBankController {
             questionShortService.save(questionShort);
             return ResponseEntity.ok().header("result","Insert Successfully!").body(questionShort);
         }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().header("result","Insert failed!").body(null);
+        }
+
+    }
+
+    /**
+     * 添加作品展示题：content = , type = , index =
+     */
+    @RequestMapping(value ="/questionshow_save", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity saveShow(HttpServletRequest request){
+        int index = Integer.parseInt(request.getParameter("index"));
+        String questionBankName = request.getParameter("name");
+        try{
+            //找到对应题库
+            QuestionBank questionBank = questionBankService.findByName(questionBankName);
+            if (questionBank == null){
+                return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+            }
+            //找到题库名字对应的map
+            QuestionList question = questionListService.findByNameandNumber(questionBankName,index);
+
+            if (question==null) {
+                QuestionShow questionShow = new QuestionShow();
+                questionShow.setContent(request.getParameter("content"));
+                questionShow.setType(request.getParameter("type"));
+                questionShowService.save(questionShow);
+                //更新到QuestionBank
+                questionBank.getShowQuestions().add(questionShow);
+                questionBankService.save(questionBank);
+                //更新到QuestionList
+                Long id = questionShow.getId();
+                //    Question question = new Question(id, QuestionType.Short);
+                QuestionList q = new QuestionList();
+                q.setName(questionBankName);
+                q.setType(QuestionType.Show);
+                q.setNumber(index);
+                q.setQuestion_id(id);
+                questionListService.save(q);
+                //    return questionShort;
+                return ResponseEntity.ok().header("result","Insert Successfully!").body(questionShow);
+            }
+            else{
+                Long id = question.getQuestion_id();
+                QuestionShow questionShow = new QuestionShow();
+                questionShow.setContent(request.getParameter("content"));
+                questionShow.setType(request.getParameter("type"));
+                questionShow.setId(id);
+                questionShowService.save(questionShow);
+                return ResponseEntity.ok().header("result","Insert Successfully!").body(questionShow);
+            }
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.badRequest().header("result","Insert failed!").body(null);

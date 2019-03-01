@@ -56,7 +56,7 @@
 		<section id="content">
 			<div class="container">
 				<!-- Form itself -->
-				<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate action="/account/personalInfo" method="post"  onSubmit="return infoFinish();">
+				<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate action="/account/personalInfo" enctype="multipart/form-data" method="post"  onSubmit="return infoFinish();">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="control-group">
@@ -110,7 +110,7 @@
 									<select class="form-control" style="width: 32.5%; display: inline" name="town" id="s3">
 										<option></option>
 									</select>
-									<input id="schoollacation" name="address" type="hidden" value="" />
+									<input id="schoollacation" type="hidden" value="" />
 									<p class="help-block"></p>
 									<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
 								</div>

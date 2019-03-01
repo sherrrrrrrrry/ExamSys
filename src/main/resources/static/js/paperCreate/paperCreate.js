@@ -22,6 +22,7 @@ $(document).ready(function(e) {
 	$(".btwen_text_dx").val("请输入题目");
 	$(".btwen_text_duox").val("请输入题目");
 	$(".btwen_text_tk").val("请输入题目");
+	$(".btwen_text_zs").val("请输入题目");
 
 	$(".leftbtwen_text").val("例子：CCTV1，CCTV2，CCTV3");
 	$(".xxk_title li").click(function() {
@@ -110,6 +111,7 @@ $(document).ready(function(e) {
 		var dxtm = $(".dxuaninsert").html();
 		var duoxtm = $(".duoxuaninsert").html();
 		var tktm = $(".tktminsert").html();
+		var zstm = $(".zstminsert").html();
 		var pdtm = $(".pdtminsert").html();
 		// 接受编辑内容的容器
 		var dx_rq = $(this).parent(".kzqy_czbut").parent(".movie_box").find(".dx_box");
@@ -195,6 +197,14 @@ $(document).ready(function(e) {
 			var texte_bt_val = $(this).parent(".kzqy_czbut").parent(".movie_box").find(".wjdc_list").children("li").eq(0).find(".tm_btitlt").children(".btwenzi").text();
 			dx_rq.find(".btwen_text").val(texte_bt_val);
 		}
+		// 展示题目
+        if (title == 4) {
+        	dx_rq.show().html(zstm);
+        	// 赋值文本框
+        	// 题目标题
+        	var texte_bt_val = $(this).parent(".kzqy_czbut").parent(".movie_box").find(".wjdc_list").children("li").eq(0).find(".tm_btitlt").children(".btwenzi").text();
+        	dx_rq.find(".btwen_text").val(texte_bt_val);
+        }
 	});
 
 	// 增加选项
@@ -320,7 +330,12 @@ $(document).ready(function(e) {
 			ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
 			ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【简答】</span></div></li>');
 			var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-			insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" value="请填写您的答案"></textarea></label></li>');
+			insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk" value="请填写您的答案"></textarea></label></li>');
+		}else if(jcxxxx.find(".btwen_text_zs").val() != null){
+		    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="4"></div></div>');
+            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + nextNum + '</i>. <i class="btwenzi">' + texte_bt_val_bj + '</i><span class="tip_wz">【简答】</span></div></li>');
+            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+            insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_zs" value="请上传您的答案"></textarea></label></li>');
 		}else console.log("error cannot find!");
 		
 	});
@@ -344,12 +359,12 @@ function dxuanSubmit() {
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
 	var paperName = document.getElementById("paperName").value;
-	console.log($("#dxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=0" + "&name=" + paperName+ "&index=" + nextNum);
+	console.log($("#dxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=0" + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum);
 	$.ajax({
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		url: "/questionbank/questionchoice_save",
-		data: $("#dxuanForm").serialize()+ "&optionNum=" + optionNum + "&choicetype=0"+ "&name=" + paperName+ "&index=" + nextNum,
+		data: $("#dxuanForm").serialize()+ "&optionNum=" + optionNum + "&choicetype=0"+ "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum,
 	}).success(function(message) {
 		console.log('单选传输成功!');
 		console.log(message);
@@ -368,12 +383,12 @@ function duoxuanSubmit() {
 	var index = $("[class=on]").index();
 	var optionNum = $(".xxk_conn").children(".xxk_xzqh_box").eq(index).find("form").find(".title_itram").children(".kzjxx_iteam").length;
 	var paperName = document.getElementById("paperName").value;
-	console.log($("#duoxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=1"+ "&name=" + paperName+ "&index=" + nextNum);
+	console.log($("#duoxuanForm").serialize()+ "&optionNum=" + optionNum + "&choiceType=1"+ "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum);
 	$.ajax({
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		url: "/questionbank/questionchoice_save",
-		data: $("#duoxuanForm").serialize()+ "&optionNum=" + optionNum + "&choicetype=1"+ "&name=" + paperName+ "&index=" + nextNum,
+		data: $("#duoxuanForm").serialize()+ "&optionNum=" + optionNum + "&choicetype=1"+ "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum,
 	}).success(function(message) {
 		console.log('多选传输成功!');
 		console.log(message);
@@ -389,12 +404,12 @@ function panduanSubmit() {
 	}
 	nextNum = parseInt(titleNum) + 1;
 	var paperName = document.getElementById("paperName").value;
-	console.log($("#pduanForm").serialize() + "&name=" + paperName+ "&index=" + nextNum);
+	console.log($("#pduanForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum);
 	$.ajax({
 		type: "POST", // 用POST方式传输
 		dataType: "JSON", // 数据格式:JSON
 		url: "/questionbank/questionjudgment_save",
-		data: $("#pduanForm").serialize() + "&name=" + paperName+ "&index=" + nextNum,
+		data: $("#pduanForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum,
 	}).success(function(message) {
 		console.log('判断传输成功!');
 		console.log(message);
@@ -405,25 +420,46 @@ function panduanSubmit() {
 }
 
 function jdSubmit() {
-	if ($(".yd_box").children(".movie_box").length != 0) {
-		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
-	}
-	nextNum = parseInt(titleNum) + 1;
-	var paperName = document.getElementById("paperName").value;
-	console.log($("#jdaForm").serialize() + "&name=" + paperName+ "&index=" + nextNum);
-	$.ajax({
-		type: "POST", // 用POST方式传输
-		dataType: "JSON", // 数据格式:JSON
-		url: "/questionbank/questionshort_save",
-		data: $("#jdaForm").serialize() + "&name=" + paperName+ "&index=" + nextNum,
-	}).success(function(message) {
-		console.log('简答传输成功!');
-		console.log(message);
-	}).fail(function(err) {
-		console.log('简答传输失败!');
-		console.log(err);
-	});
-}
+ 	if ($(".yd_box").children(".movie_box").length != 0) {
+ 		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
+ 	}
+ 	nextNum = parseInt(titleNum) + 1;
+ 	var paperName = document.getElementById("paperName").value;
+ 	console.log($("#jdaForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum);
+ 	$.ajax({
+ 		type: "POST", // 用POST方式传输
+ 		dataType: "JSON", // 数据格式:JSON
+ 		url: "/questionbank/questionshort_save",
+ 		data: $("#jdaForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum,
+ 	}).success(function(message) {
+ 		console.log('简答传输成功!');
+ 		console.log(message);
+ 	}).fail(function(err) {
+ 		console.log('简答传输失败!');
+ 		console.log(err);
+ 	});
+ }
+
+function zsSubmit() {
+ 	if ($(".yd_box").children(".movie_box").length != 0) {
+ 		titleNum = $(".yd_box").children(".movie_box:last-child").find("ul").children("li:first-child").find(".nmb").text();
+ 	}
+ 	nextNum = parseInt(titleNum) + 1;
+ 	var paperName = document.getElementById("paperName").value;
+ 	console.log($("#zshiForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum);
+ 	$.ajax({
+ 		type: "POST", // 用POST方式传输
+ 		dataType: "JSON", // 数据格式:JSON
+ 		url: "/questionbank/questionshow_save",
+ 		data: $("#zshiForm").serialize() + "&name=" + encodeURIComponent(paperName)+ "&index=" + nextNum,
+ 	}).success(function(message) {
+ 		console.log('展示题传输成功!');
+ 		console.log(message);
+ 	}).fail(function(err) {
+ 		console.log('展示题传输失败!');
+ 		console.log(err);
+ 	});
+ }
 
 function paperNameSub(){
 	var name = document.getElementById("paperName").value;

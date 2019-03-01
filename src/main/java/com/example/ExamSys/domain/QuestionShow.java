@@ -1,5 +1,7 @@
 package com.example.ExamSys.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,17 +18,8 @@ public class QuestionShow implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "function_introduction")
-	private String functionIntroduction;
-	
-	@Column(name = "technology")
-	private String technology;
-	
-	@Column(name = "image_url")
-	private String imageUrl;
-	
-	@Column(name = "video_url")
-	private String videoUrl;
+	@Column(name = "content")
+	private String content;
 	
 	@Column(name = "type")
 	private String type;
@@ -42,37 +35,9 @@ public class QuestionShow implements Serializable {
 		this.id = id;
 	}
 
-	public String getFunctionIntroduction() {
-		return functionIntroduction;
-	}
+	public String getContent() { return content; }
 
-	public void setFunctionIntroduction(String functionIntroduction) {
-		this.functionIntroduction = functionIntroduction;
-	}
-
-	public String getTechnology() {
-		return technology;
-	}
-
-	public void setTechnology(String technology) {
-		this.technology = technology;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getVideoUrl() {
-		return videoUrl;
-	}
-
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
-	}
+	public void setContent(String content) { this.content = content; }
 
 	public String getType() {
 		return type;
@@ -86,6 +51,7 @@ public class QuestionShow implements Serializable {
         return questionBankSet;
     }
 
+	@JsonBackReference
     public void setQuestionBankSet(Set<QuestionBank> questionBankSet) {
         this.questionBankSet = questionBankSet;
     }

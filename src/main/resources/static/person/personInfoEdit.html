@@ -8,7 +8,7 @@
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
 </head>
-<body>
+<body onload="promptinfo();ageinfo()">
 	<div class="topbarpage"></div>
 	<div class="headerpage"></div>
 	<section id="inner-headline">
@@ -26,7 +26,7 @@
 	<section class="section-padding gray-bg">
 		<div class="container"  style="width: 80%;">
 
-			<form id="personalInfo" novalidate action="/account/personalInfo" method="post" onSubmit="return infoEdit();">
+			<form id="personalInfo" novalidate action="/account/personalInfo" enctype="multipart/form-data" method="post" onSubmit="return infoEdit();">
 				<div class="row">
 					<div class="col-md-6">
 						<div class="control-group">
@@ -80,7 +80,7 @@
 								<select class="form-control" style="width: 32.5%; display: inline" name="town" id="s3">
 									<option></option>
 								</select>
-								<input id="schoollacation" name="address" type="hidden" value="" />
+								<input id="schoollacation" type="hidden" value="" />
 								<p class="help-block"></p>
 								<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
 							</div>
@@ -143,12 +143,25 @@
 	<script src="../js/jquery.magnific-popup.min.js"></script>
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
+	<script type="text/javascript" src="../js/province.js"></script>
+	
 	<script type="text/javascript">
+
 		$(function() {
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
 		});
-		
+
+		function promptinfo() {
+			var schoollacation = document.getElementById('schoollacation').value;
+			var s1 = document.getElementById('s1').value;
+			var s2 = document.getElementById('s2').value;
+			var s3 = document.getElementById('s3').value;
+			schoollacation = "" + s1 + s2 + s3;
+			console.log(schoollacation);
+			//return schoollacation;
+		}
+
 		function infoEdit(){
 			var userInfoDTO = $('#personalInfo').serializeObject();
 			$.ajax({
@@ -164,6 +177,16 @@
 				console.log(err);
 			})
 			return false;
+		}
+
+		function ageinfo() {
+			var select = document.getElementById("age");
+			for (var i = 1; i <= 100; i++) {
+				var opt = document.createElement("option");
+				opt.value = i;
+				opt.innerHTML = i;
+				select.appendChild(opt);
+			}
 		}
 	</script>
 </body>

@@ -53,6 +53,7 @@
 						<li>多选题</li>
 						<li>判断题</li>
 						<li>简答题</li>
+						<li>作品展示题</li>
 					</ul>
 					<div class="xxk_conn">
 						<!--单选----------------------------------------------------------------------------------------------------------------------------------------->
@@ -214,6 +215,32 @@
 							</form>
 						</div>
 
+						<!-- 展示题----------------------------------------------------------------------------------------------------------------------------------------->
+						<div class="xxk_xzqh_box tktm" style="display: none">
+							<form id="zshiForm" onsubmit="return false;">
+								<textarea name="content" class="input_wenbk btwen_text btwen_text_tk"
+										  onblur="if(!this.value)this.value='请输入题目'"
+										  onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+								<div>
+									题目类型：
+									<select name="type">
+										<option value="GRXY">个人修养</option>
+										<option value="CXNL">创新能力</option>
+										<option value="GTXTNL">沟通协调能力</option>
+										<option value="ZWGLNL">自我管理能力</option>
+										<option value="GZYLCSNL">工作压力承受能力</option>
+									</select>
+									<p class="help-block"></p>
+								</div>
+								<!--完成编辑-->
+								<div class="bjqxwc_box">
+									<button type="button" class="cancle_edit">取消编辑</button>
+									<button type="button" onclick="zsSubmit()" class="finish_new_problem">完成编辑</button>
+								</div>
+							</form>
+						</div>
+
+
 					</div>
 				</div>
 
@@ -301,7 +328,7 @@
 
 						<!-- 判断----------------------------------------------------------------------------------------------------------------------------------------->
 						<div class="xxk_xzqh_box tktm pdtminsert" style="display: none">
-							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk"
+							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_zw"
 								onblur="if(!this.value)this.value='请输入题目'"
 								onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
 							<li>
@@ -328,6 +355,30 @@
 							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_tk"
 								onblur="if(!this.value)this.value='请输入题目'"
 								onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
+							<li>
+								<label>
+									<input name="a" type="radio" value="">
+									<span>正确</span>
+								</label>
+							</li>
+							<li>
+								<label>
+									<input name="a" type="radio" value="">
+									<span>错误</span>
+								</label>
+							</li>
+							<!--完成编辑-->
+							<div class="bjqxwc_box">
+								<a href="javascript:void(0);" class="qxbj_but">取消编辑</a>
+								<a href="javascript:void(0);" class="swcbj_but"> 完成编辑</a>
+							</div>
+						</div>
+
+						<!-- 展示题----------------------------------------------------------------------------------------------------------------------------------------->
+						<div class="xxk_xzqh_box tktm zstminsert" style="display: none">
+							<textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_zs"
+									  onblur="if(!this.value)this.value='请输入题目'"
+									  onclick="if(this.value&&this.value=='请输入题目' )  this.value=''"></textarea>
 							<li>
 								<label>
 									<input name="a" type="radio" value="">
