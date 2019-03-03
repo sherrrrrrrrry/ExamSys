@@ -39,6 +39,9 @@ public class Transcript implements Serializable{
 	@Column(name = "type")
 	private String type;
 
+	@Column(name = "totalScore")
+	private int totalScore;
+
 	public Long getId() {
 		return id;
 	}
@@ -70,4 +73,8 @@ public class Transcript implements Serializable{
     public String getType() { return type; }
 
     public void setType(String type) { this.type = type; }
+
+    public int getTotalScore() { return totalScore; }
+
+    public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
 }

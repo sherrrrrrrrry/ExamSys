@@ -21,4 +21,9 @@ public class QuestionAnswerService {
     public QuestionAnswer save(QuestionAnswer questionAnswer){
         return questionAnswerRepository.save(questionAnswer);
     }
+
+    @Transactional
+    public void updateisModified(boolean isMarked, Long id){
+        questionAnswerRepository.updateisModified(isMarked,id);
+    }
 }

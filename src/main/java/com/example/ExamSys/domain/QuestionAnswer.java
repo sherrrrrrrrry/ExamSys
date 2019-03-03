@@ -2,6 +2,7 @@ package com.example.ExamSys.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,6 +41,9 @@ public class QuestionAnswer implements Serializable {
 
     private String questiontype;//题型，分别为0，1，2。 0为选择判断，1为简答，2为展示题
 
+    @Value("${some.key:false}")
+    private boolean isMarked;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -67,4 +71,8 @@ public class QuestionAnswer implements Serializable {
     public String getQuestiontype() { return questiontype; }
 
     public void setQuestiontype(String questiontype) { this.questiontype = questiontype; }
+
+    public boolean isMarked() { return isMarked; }
+
+    public void setMarked(boolean marked) { isMarked = marked; }
 }
