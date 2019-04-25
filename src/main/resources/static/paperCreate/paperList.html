@@ -8,6 +8,7 @@
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
 <link href="../css/person.css" rel="stylesheet" />
+<link href="../datatablemedia/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div class="topbarpage"></div>
@@ -29,7 +30,7 @@
 		<div class="container" style="width: 80%; background-color: #fff; margin-top: 5em;">
 
 			<div class="row">
-				<div class="pricing-action" style="background-color:#f6f6f6">
+				<div class="pricing-action" style="background-color: #f6f6f6">
 					<button class="btn btn-primary" id="paperCreate"
 						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">需要录入试卷？</button>
 
@@ -47,6 +48,29 @@
 					<tbody>
 					</tbody>
 				</table>
+
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>测试ID</th>
+							<th>试卷名称</th>
+							<th>录入教师</th>
+							<th>试题链接</th>
+						</tr>
+					</thead>
+					<tbody id="paperlist">
+					
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>测试ID</th>
+							<th>试卷名称</th>
+							<th>录入教师</th>
+							<th>试题链接</th>
+						</tr>
+					</tfoot>
+				</table>
+
 			</div>
 		</div>
 
@@ -67,6 +91,7 @@
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
 	<script src="../js/jquery.params.js"></script>
+	<script src="../datatablemedia/js/jquery.dataTables.js"></script>
 	<script type="text/javascript">
 		
 		$(function() {
@@ -80,6 +105,8 @@
 			$(".headerpage").load("../header.html");
 			$(".footerpage").load("../footer.html");
 			
+			paperListTable();
+			
 			$.ajax({　　
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
@@ -89,7 +116,9 @@
 					console.log(data);　　
 				},
 				success: function(data) {
+					console.log(JSON.stringify(data));
 					$.each(data,function(i){
+						
 						$("#paperList tbody").append("<tr><td>"+i+"</td><td>"+data[i]+"</td><td>教师名字</td><td><button type='button' onclick='getPaperByName("+JSON.stringify(data[i])+")'>去考试</a></td></tr>");
                      });
 				}
@@ -98,11 +127,52 @@
 			$("#paperCreate").click(function() {
 				window.location.href = "paperCreate.html";
 			});
+			
 		});
 		
 		function getPaperByName(paperName){
 			window.location.href = "paperShow.html?paperName="+ paperName;
 		}
+		
+		
+		function paperListTable() {
+		    $('#example1').dataTable({
+		        "bPaginage": true,
+		        "sPaginationType": "full_numbers",
+		        "sAjaxSource": "/graph_manag.action",
+		        "oLanguage": {
+		            "sLengthMenu": "每页显示 _MENU_ 条",
+		            "sZeroRecords": "没有找到符合条件的数据",
+		            "sInfo": "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+		            "sInfoEmpty": "没有记录",
+		            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
+		            "sSearch": "搜索",
+		            "sProcessing": "数据加载中...",
+		            "oPaginate": {
+		                "sFirst": "首页",
+		                "sPrevious": "上一页",
+		                "sNext": "下一页",
+		                "sLast": "尾页"
+		            }
+		        },
+		        "aoColumns": [
+		            {"mData": "id"},
+		            {"mData": "graphname"},
+		            {"mData": "storageSize"},
+		            {"mData": "iscluster"},
+		            {
+		                "sDefaultContent": "",//添加空列存放操作列
+		                fnRender: function (obj) {
+		                    var name = obj.aData.id;
+		                    return "<button class='manage-btn btn red btn-outline btn-sm' onclick='del_graph(" + name + ")'>删除</button>" +
+		                            "<button class='manage-btn btn red btn-outline btn-sm' onclick='add_graph(" + name + ")'>添加索引</button>";
+		                }
+		            },
+		        ],
+
+		    });
+		}
+
 		
 	</script>
 </body>
