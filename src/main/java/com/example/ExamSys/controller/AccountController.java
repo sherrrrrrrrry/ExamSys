@@ -346,6 +346,52 @@ public class AccountController {
 		}
 	}
 	
+	@RequestMapping(value = "/savepersonal", method = RequestMethod.POST)
+	public ResponseEntity<String> recordPersonalInfo(@Valid @RequestBody UserInfoDTO userInfoDTO,  @RequestParam("file") MultipartFile file){
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(userInfoDTO.getLogin());
+		Boolean bool = true;
+
+		if(authorities == null || authorities.isEmpty())
+			return ResponseEntity.badRequest().header("Authority", "no Authority").body(null);
+		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
+			studentRepository.updateInfoByLogin(userInfoDTO.getRealname(), userInfoDTO.getGender(), userInfoDTO.getAge(), userInfoDTO.getSchool(), 
+					userInfoDTO.getProvince(), userInfoDTO.getCity(), userInfoDTO.getTown(), userInfoDTO.getTrainingAgency(), userInfoDTO.getMotto(), userInfoDTO.getLogin());
+			try {
+				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", file.getOriginalFilename());
+				IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+				
+				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Student");
+			} catch (Exception e) {
+				log.info(e.toString());
+				bool = false;
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			if(bool == false) {
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			return ResponseEntity.ok().body("");
+		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
+			
+			teacherRepository.updateInfoByLogin(userInfoDTO.getRealname(), userInfoDTO.getGender(), userInfoDTO.getAge(), userInfoDTO.getSchool(), 
+					userInfoDTO.getProvince(), userInfoDTO.getCity(), userInfoDTO.getTown(), userInfoDTO.getTrainingAgency(), userInfoDTO.getMotto(), userInfoDTO.getLogin());
+			try {
+				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", file.getOriginalFilename());
+				IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+				
+				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Teacher");
+			} catch (Exception e) {
+				log.info(e.toString());
+				bool = false;
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			if(bool == false) {
+				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
+			}
+			return ResponseEntity.ok().body("");
+		}
+		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
+	}
+	
 	/**
 	 * 个人信息录入
 	 * 参数: userId 用户id
@@ -426,7 +472,7 @@ public class AccountController {
 			return ResponseEntity.ok().body("");
 		}
 		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
-	}	
+	}
 	
 	
 	@RequestMapping(value = "/getpersonalInfo", method = RequestMethod.POST)
