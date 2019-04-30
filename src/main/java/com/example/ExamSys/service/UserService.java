@@ -24,11 +24,20 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 	
-	public User createUser(String login, String password, String email, Boolean enabled) {
+	public User createUserEmail(String login, String password, String email, Boolean enabled) {
 		User user = new User();
 		user.setLogin(login);
 		user.setPassword(getHashPassword(password));
 		user.setEmail(email);
+		user.setEnabled(enabled);
+		return user;
+	}
+	
+	public User createUserPhone(String login, String password, String phoneNumber, Boolean enabled) {
+		User user = new User();
+		user.setLogin(login);
+		user.setPassword(getHashPassword(password));
+		user.setPhoneNumber(phoneNumber);
 		user.setEnabled(enabled);
 		return user;
 	}

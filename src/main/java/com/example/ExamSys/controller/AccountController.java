@@ -36,7 +36,8 @@ import com.example.ExamSys.service.ProductionService;
 import com.example.ExamSys.service.UserService;
 import com.example.ExamSys.service.VerifyService;
 import com.example.ExamSys.utils.MD5Utils;
-import com.example.ExamSys.vo.UserDTO;
+import com.example.ExamSys.vo.EmailUserDTO;
+import com.example.ExamSys.vo.PhoneUserDTO;
 import com.example.ExamSys.vo.UserInfoDTO;
 
 @RestController
@@ -65,16 +66,17 @@ public class AccountController {
 	private ProductionService productionService;
 	
 	
-	/*
-	 * 注册
+	/**
+	 * 用户输出收到的验证码，进行邮箱注册
 	 * 参数: UserDTO
 	 * 		hash:发送验证码后，返回的hash值
 	 * 		time:发送验证码后，返回的time值
-	 * 		verify: 用户输入的验证码
+	 * 		verificationCode: 用户输入的验证码
 	 * 返回值: ResponseEntity 状态
 	 */
-	@RequestMapping(value = "/register", method = RequestMethod.POST, headers = "Accept=application/json")
-	public ResponseEntity<String> registerAccount(@Valid @RequestBody UserDTO userDTO, 
+	// /register->/registeremail,userDTO新增手机号字段
+	@RequestMapping(value = "/registeremail", method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity<String> registerAccountEmail(@Valid @RequestBody EmailUserDTO userDTO, 
 			@RequestParam(value = "hash") String hash, @RequestParam(value = "time") String time, @RequestParam(value = "verificationCode") String verificationCode){
 		
 		HttpHeaders textPlainHeaders = new HttpHeaders();
@@ -90,7 +92,7 @@ public class AccountController {
 								.map(user -> new ResponseEntity<>("email already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
 								.orElseGet(() -> {
 									if(userDTO.getUserType().equals(UserType.STUDENT)) {
-										User user = userService.createUser(userDTO.getLogin(),
+										User user = userService.createUserEmail(userDTO.getLogin(),
 												userDTO.getPassword(),
 												userDTO.getEmail(),
 												true);
@@ -98,8 +100,11 @@ public class AccountController {
 										authorities.add(new Authority(AuthoritiesConstants.STUDENT));
 										user.setAuthorities(authorities);
 										userRepository.save(user);
+										Student student = new Student();
+										student.setUser(user);
+										studentRepository.save(student);
 									} else {
-										User user = userService.createUser(userDTO.getLogin(),
+										User user = userService.createUserEmail(userDTO.getLogin(),
 												userDTO.getPassword(),
 												userDTO.getEmail(),
 												false);
@@ -107,6 +112,72 @@ public class AccountController {
 										authorities.add(new Authority(AuthoritiesConstants.TEACHER));
 										user.setAuthorities(authorities);
 										userRepository.save(user);
+										Teacher teacher = new Teacher();
+										teacher.setUser(user);
+										teacherRepository.save(teacher);
+									}
+									return new ResponseEntity<>(HttpStatus.CREATED);
+								})
+								);
+			} else {
+				//验证码不正确，校验失败
+				return new ResponseEntity<>("verify incorrect", textPlainHeaders, HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			// 超时
+			return new ResponseEntity<>("verify time out", textPlainHeaders, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	/**
+	 * 用户输出收到的验证码，进行手机号注册
+	 * 参数: UserDTO
+	 * 		hash:发送验证码后，返回的hash值
+	 * 		time:发送验证码后，返回的time值
+	 * 		verificationCode: 用户输入的验证码
+	 * 返回值: ResponseEntity 状态
+	 */
+	// 在student或者teacher里增加一条初始信息
+	@RequestMapping(value = "/registerphone", method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity<String> registerAccountPhone(@Valid @RequestBody PhoneUserDTO userDTO, 
+			@RequestParam(value = "hash") String hash, @RequestParam(value = "time") String time, @RequestParam(value = "verificationCode") String verificationCode){
+		
+		HttpHeaders textPlainHeaders = new HttpHeaders();
+		
+		String currentTime = verifyService.getCurrentTime();
+		String hashNow = MD5Utils.getMD5Code(KEY + "@" + time + "@" + verificationCode);
+		if(time.compareTo(currentTime) > 0) {
+			if(hash.equalsIgnoreCase(hashNow)) {
+				//校验成功
+				return userRepository.findOneByLogin(userDTO.getLogin())
+						.map(user -> new ResponseEntity<>("login already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
+						.orElseGet(() -> userRepository.findOneByPhoneNumber(userDTO.getPhoneNumber())
+								.map(user -> new ResponseEntity<>("phoneNumber already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
+								.orElseGet(() -> {
+									if(userDTO.getUserType().equals(UserType.STUDENT)) {
+										User user = userService.createUserPhone(userDTO.getLogin(),
+												userDTO.getPassword(),
+												userDTO.getPhoneNumber(),
+												true);
+										Set<Authority> authorities = new HashSet<Authority>();
+										authorities.add(new Authority(AuthoritiesConstants.STUDENT));
+										user.setAuthorities(authorities);
+										userRepository.save(user);
+										Student student = new Student();
+										student.setUser(user);
+										studentRepository.save(student);
+									} else {
+										User user = userService.createUserPhone(userDTO.getLogin(),
+												userDTO.getPassword(),
+												userDTO.getPhoneNumber(),
+												false);
+										Set<Authority> authorities = new HashSet<Authority>();
+										authorities.add(new Authority(AuthoritiesConstants.TEACHER));
+										user.setAuthorities(authorities);
+										userRepository.save(user);
+										Teacher teacher = new Teacher();
+										teacher.setUser(user);
+										teacherRepository.save(teacher);
 									}
 									return new ResponseEntity<>(HttpStatus.CREATED);
 								})
@@ -122,7 +193,7 @@ public class AccountController {
 	}
 	
 	
-	/*
+	/**
 	 * 忘记密码时，验证验证码
 	 */
 	@RequestMapping(value = "/verifyforget", method = RequestMethod.POST)
@@ -143,47 +214,16 @@ public class AccountController {
 			return new ResponseEntity<>("verify time out", textPlainHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	
-	/*
-	 * 忘记密码时，发送验证码
-	 * 参数：email 邮箱
-	 * 返回值：hash: 密文
-	 * 		 time: 时间
-	 */
-	@RequestMapping(value = "/sendmessageforget", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> sendMessageForget(@RequestParam(value = "email") String email){
 		
-		Optional<User> userOpt = userRepository.findOneByEmail(email);
-		if(!userOpt.isPresent()) {
-			return ResponseEntity.badRequest().header("Email", "The mailbox not be registered").body(null);
-		}
-		String randomNum = "1000000";
-		String currentTime = verifyService.getFiveMinuteTime();
-		try {
-			randomNum = verifyService.getAndSendVerify(email);
-		} catch(Exception e) {
-			log.info("{}邮件发送出错", email);
-			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
-			
-		}
-		String hash = MD5Utils.getMD5Code(KEY + "@" + currentTime + "@" + randomNum);
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("hash", hash);
-		resultMap.put("time", currentTime);
-		return ResponseEntity.ok().body(resultMap);
-	}
-	
-	
-	/*
-	 * 获取邮箱验证码
+	/**
+	 * 发送邮箱验证码
 	 * 超时时间：5分钟
 	 * 验证码位数：6位数
 	 * 参数: email 邮箱
 	 * 返回值：hash:密码密文
 	 * 		time:时间字符串
 	 */
-	@RequestMapping(value = "/sendmessage", method = RequestMethod.POST, headers = "Accept=application/json")
+	@RequestMapping(value = "/sendmessageemail", method = RequestMethod.POST, headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> sendMessage(@RequestParam(value = "email") String email){
 		
 		Optional<User> userOpt = userRepository.findOneByEmail(email);
@@ -196,7 +236,7 @@ public class AccountController {
 		try {
 			randomNum = verifyService.getAndSendVerify(email);
 		} catch(Exception e) {
-			log.info("{}邮件发送出错", email);
+			log.info("{}短信验证码发送出错", email);
 			System.out.println(e);
 			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
 			
@@ -208,8 +248,104 @@ public class AccountController {
 		return ResponseEntity.ok().body(resultMap);
 	}
 	
+	/**
+	 * 忘记密码时，发送邮箱验证码
+	 * 参数：email 邮箱
+	 * 返回值：hash: 密文
+	 * 		 time: 时间
+	 */
+	@RequestMapping(value = "/sendmessageforgetemail", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> sendMessageForget(@RequestParam(value = "email") String email){
+		
+		Optional<User> userOpt = userRepository.findOneByEmail(email);
+		if(!userOpt.isPresent()) {
+			return ResponseEntity.badRequest().header("Email", "The mailbox not be registered").body(null);
+		}
+		String randomNum = "1000000";
+		String currentTime = verifyService.getFiveMinuteTime();
+		try {
+			randomNum = verifyService.getAndSendVerify(email);
+		} catch(Exception e) {
+			log.info("{}忘记密码短信验证码发送出错", email);
+			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
+			
+		}
+		String hash = MD5Utils.getMD5Code(KEY + "@" + currentTime + "@" + randomNum);
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("hash", hash);
+		resultMap.put("time", currentTime);
+		return ResponseEntity.ok().body(resultMap);
+	}
 	
-	/*
+	/**
+	 * 发送手机验证码
+	 * 超时时间：5分钟
+	 * 验证码位数：6位数
+	 * 参数: phone 手机
+	 * 返回值：hash:密码密文
+	 * 		time:时间字符串
+	 */
+	@RequestMapping(value = "/sendmessagephone", method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> sendMessagePhone(@RequestParam(value = "phoneNumber") String phoneNumber){
+		
+		Optional<User> userOpt = userRepository.findOneByPhoneNumber(phoneNumber);
+		if(userOpt.isPresent()) {
+			return ResponseEntity.badRequest().header("PhoneNumber", "The PhoneNumber is occupied").body(null);
+		}
+		
+		String currentTime = verifyService.getFiveMinuteTime();
+		HashMap<Boolean, String> response = verifyService.getAndSendVerifyMessage(phoneNumber);
+		if(response.get(true) != null) {
+			String hash = MD5Utils.getMD5Code(KEY + "@" + currentTime + "@" + response.get(true));
+			Map<String, Object> resultMap = new HashMap<>();
+			resultMap.put("hash", hash);
+			resultMap.put("time", currentTime);
+			return ResponseEntity.ok().body(resultMap);
+		}
+		else if(response.get(false) != null) {
+			log.info("{}手机验证码发送出错，错误信息：{}", phoneNumber, response.get(false));
+			return ResponseEntity.badRequest().header("PhoneNumber", response.get(false)).body(null);
+		}
+		else {
+			log.info("{}手机验证码发送出现未知错误", phoneNumber, response.get(false));
+			return ResponseEntity.badRequest().header("PhoneNumber", "An unknown error happened").body(null);
+		}
+	}
+	
+	/**
+	 * 忘记密码时，发送手机验证码
+	 * 参数：email 邮箱
+	 * 返回值：hash: 密文
+	 * 		 time: 时间
+	 */
+	@RequestMapping(value = "/sendmessageforgetphone", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> sendMessagePhoneForget(@RequestParam(value = "phoneNumber") String phoneNumber){
+		
+		Optional<User> userOpt = userRepository.findOneByPhoneNumber(phoneNumber);
+		if(!userOpt.isPresent()) {
+			return ResponseEntity.badRequest().header("PhoneNumber", "The phoneNumber not be registered").body(null);
+		}
+		
+		String currentTime = verifyService.getFiveMinuteTime();
+		HashMap<Boolean, String> response = verifyService.getAndSendVerifyMessage(phoneNumber);
+		if(response.get(true) != null) {
+			String hash = MD5Utils.getMD5Code(KEY + "@" + currentTime + "@" + response.get(true));
+			Map<String, Object> resultMap = new HashMap<>();
+			resultMap.put("hash", hash);
+			resultMap.put("time", currentTime);
+			return ResponseEntity.ok().body(resultMap);
+		}
+		else if(response.get(false) != null) {
+			log.info("{}忘记密码手机验证码发送出错，错误信息：{}", phoneNumber, response.get(false));
+			return ResponseEntity.badRequest().header("PhoneNumber", response.get(false)).body(null);
+		}
+		else {
+			log.info("{}忘记密码手机验证码发送出现未知错误", phoneNumber, response.get(false));
+			return ResponseEntity.badRequest().header("PhoneNumber", "An unknown error happened").body(null);
+		}
+	}
+	
+	/**
 	 * 学生个人信息录入
 	 * 参数: userId 用户id
 	 * 返回值: StudentDTO
@@ -230,7 +366,6 @@ public class AccountController {
 			student.setAge(userInfoDTO.getAge());
 			student.setGender(userInfoDTO.getGender());
 			student.setName(userInfoDTO.getRealname());
-			student.setPhoneNumber(userInfoDTO.getPhoneNumber());
 			student.setSchool(userInfoDTO.getSchool());
 			student.setSchoolProvince(userInfoDTO.getProvince());
 			student.setSchoolCity(userInfoDTO.getCity());
@@ -260,7 +395,6 @@ public class AccountController {
 			teacher.setAge(userInfoDTO.getAge());
 			teacher.setGender(userInfoDTO.getGender());
 			teacher.setName(userInfoDTO.getRealname());
-			teacher.setPhoneNumber(userInfoDTO.getPhoneNumber());
 			teacher.setSchool(userInfoDTO.getSchool());
 			teacher.setSchoolProvince(userInfoDTO.getProvince());
 			teacher.setSchoolCity(userInfoDTO.getCity());

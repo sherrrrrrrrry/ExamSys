@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	Optional<User> findOneByEmail(String email);
 	
+	Optional<User> findOneByPhoneNumber(String phoneNumber);
+	
 	Set<User> findAllByEnabledFalse();
 	
 	Optional<User> findOneById(Long id);
@@ -35,4 +37,9 @@ public interface UserRepository extends JpaRepository<User, String>{
 	@Transactional
 	@Query("UPDATE User user set user.enabled=true where user.id in (:ids)")
 	void setEnabledTrueByIdIn(@Param("ids") List<Long> ids);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE User user set user.password=?1 where user.login=?2")
+	void updatePasswordByLogin(String password, String login);
 }

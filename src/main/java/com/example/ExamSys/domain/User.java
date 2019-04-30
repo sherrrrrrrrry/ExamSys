@@ -56,6 +56,11 @@ public class User implements Serializable, UserDetails{
 	@Column(length = 100, unique = true)
 	private String email;
 	
+	@Pattern(regexp = Constants.PHONE_REGEX)
+	@Size(min = 5, max = 50)
+	@Column(name = "phone_number", unique = true)
+	private String phoneNumber;
+	
 	@Column(name = "enabled")
 	private Boolean enabled;
 
@@ -123,6 +128,14 @@ public class User implements Serializable, UserDetails{
         this.authorities.remove(authority);
         return this;
     }
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
 	@Override
 	public String getUsername() {

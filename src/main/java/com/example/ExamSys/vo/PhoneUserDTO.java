@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Email;
 import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.domain.enumeration.UserType;
 
-public class UserDTO {
+public class PhoneUserDTO {
 
 	public static final int PASSWORD_MIN_LENGTH = 6;
 	
@@ -23,9 +23,9 @@ public class UserDTO {
 	@Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
 	private String password;
 	
-	@Email
-	@Size(min = 5, max = 100)
-	private String email;
+	@Pattern(regexp = Constants.PHONE_REGEX)
+	@Size(min = 5, max = 50)
+	private String phoneNumber;
 	
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
@@ -45,21 +45,21 @@ public class UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	
 	public UserType getUserType() {
 		return userType;
 	}
 
 	public void setUserType(UserType userType) {
 		this.userType = userType;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 	

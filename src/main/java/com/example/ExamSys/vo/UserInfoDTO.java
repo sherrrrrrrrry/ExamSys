@@ -29,10 +29,6 @@ public class UserInfoDTO {
 	@Size(min = 1, max = 50)
 	private String login;
 	
-	@Pattern(regexp = Constants.PHONE_REGEX)
-	@Size(min = 5, max = 50)
-	private String phoneNumber;
-	
 	private String school;
 	
 	private String province;
@@ -77,14 +73,6 @@ public class UserInfoDTO {
 
 	public void setLogin(String login) {
 		this.login = login;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	public String getSchool() {

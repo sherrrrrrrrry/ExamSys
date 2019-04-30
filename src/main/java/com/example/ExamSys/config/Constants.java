@@ -12,4 +12,7 @@ public final class Constants {
 	
 	public static final String STUDENT_PRODUCTION_PATH = System.getProperty("user.home") +
 			File.separator + "ExamSys" + File.separator + "STUDENT_PRODUCTION";
+	
+	public static final String PERSONAL_PHOTO_PATH = System.getProperty("user.home") +
+			File.separator + "ExamSys" + File.separator + "STUDENT_PHOTO";
 }

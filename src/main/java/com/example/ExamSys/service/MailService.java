@@ -26,6 +26,12 @@ public class MailService {
 
 	private final Logger log = LoggerFactory.getLogger(MailService.class);
 	
+	/**
+	 * 发送简单的内容邮件
+	 * @param to：邮箱地址
+	 * @param title：邮件标题
+	 * @param content：文字内容
+	 */
 	public void sendSimpleMail(String to, String title, String content) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
@@ -36,6 +42,13 @@ public class MailService {
 		log.info("{} 邮件发送成功", to);
 	}
 	
+	/**
+	 * 发送带附件的邮件
+	 * @param to：邮箱地址
+	 * @param title：邮件标题
+	 * @param content：文字内容
+	 * @param fileList：文件列表
+	 */
 	public void sendAttachmentsMail(String to, String title, String content, List<File> fileList) {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {

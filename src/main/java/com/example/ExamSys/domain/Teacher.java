@@ -34,13 +34,11 @@ public class Teacher implements Serializable{
 	@JoinColumn(unique = true)
 	private User user;
 	
-	@NotNull
 	@Pattern(regexp = Constants.NAME_REGEX)
 	@Size(max = 50)
-	@Column(name = "name", length = 50, nullable = false)
+	@Column(name = "name", length = 50)
 	private String name;
 	
-	@NotNull
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "gender")
 	private Gender gender;
@@ -66,11 +64,6 @@ public class Teacher implements Serializable{
 	
 	@Column(name = "training_name")
 	private String trainingName;
-	
-	@Pattern(regexp = Constants.PHONE_REGEX)
-	@Size(min = 5, max = 50)
-	@Column(name = "phone_number")
-	private String phoneNumber;
 	
 	@Column(name = "motto")
 	private String motto;
@@ -161,14 +154,6 @@ public class Teacher implements Serializable{
 
 	public void setTrainingName(String trainingName) {
 		this.trainingName = trainingName;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 	
 	public String getMotto() {
