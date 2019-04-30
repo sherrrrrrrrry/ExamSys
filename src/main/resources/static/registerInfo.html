@@ -72,8 +72,8 @@
 									性别：
 									<select class="form-control" id="gender" required name="gender" 
 										data-validation-required-message="Please choose your gender">
-										<option value="male">男</option>
-										<option value="female">女</option>
+										<option value="BOY">男</option>
+										<option value="GIRL">女</option>
 									</select>
 									<p class="help-block"></p>
 								</div>
@@ -112,7 +112,6 @@
 									</select>
 									<input id="schoollacation" type="hidden" value="" />
 									<p class="help-block"></p>
-									<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
 								</div>
 							</div>
 							<div class="control-group">
@@ -173,8 +172,7 @@
 			var s2 = document.getElementById('s2').value;
 			var s3 = document.getElementById('s3').value;
 			schoollacation = "" + s1 + s2 + s3;
-			console.log(schoollacation);
-			//return schoollacation;
+			return schoollacation;
 		}
 
 		function ageinfo() {
@@ -189,16 +187,22 @@
 		
 		function infoFinish(){
 			var userInfoDTO = $('#personalInfo').serializeObject();
+			var fileInput = document.getElementById('test-image-file');
+			var personalpic = fileInput.files[0];
+			
+			userInfoDTO.login="aa";
+			
 			$.ajax({
 				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
+				//dataType: "JSON", // 数据格式:JSON
 				contentType: "application/json",
 				url: "/account/personalInfo",
-				data: JSON.stringify(userInfoDTO),
+				data: JSON.stringify(userInfoDTO)+ "&personalpic=" + personalpic,
 			}).success(function(data) {
-				var username = data.username;
-				$.cookie('username', username);
-				window.location.href = "index.html";
+				console.log(data);
+				//var username = data.username;
+				//$.cookie('username', username);
+				//window.location.href = "index.html";
 			}).fail(function(err) {
 				console.log(err);
 			})

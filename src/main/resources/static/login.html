@@ -11,6 +11,7 @@
 <link href="css/fancybox/jquery.fancybox.css" rel="stylesheet">
 <link href="css/flexslider.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="css/paperCreate.css">
 
 
 
@@ -57,58 +58,62 @@
 		</section>
 		<section id="content">
 			<div class="container">
-				<!-- Form itself -->
-				<form id="loginForm" style="width: 300px; margin: 0 auto" novalidate
-					action="/account/login" method="post"  onSubmit="return login();">
-					<div class="row">
-						<div class="control-group">
-							<div class="controls">
-								登录名：
-								<input type="text" name="username" class="form-control" id="loginname" required
-									data-validation-required-message="Please enter your login name" />
-								<p class="help-block"></p>
+				<div class="xxk_box" style="width: 60%; margin: 0 auto;">
+				<div class="xxk_conn">
+				<div class="xxk_xzqh_box login " style="border-radius:10px;">
+					<!-- Form itself -->
+					<form id="loginForm" style="width: 300px; margin: 0 auto" novalidate action="/account/login"
+						method="post" onSubmit="return login();">
+						<div class="row">
+							<div class="control-group">
+								<div class="controls">
+									登录名：
+									<input type="text" name="username" class="form-control" id="loginname" required
+										data-validation-required-message="Please enter your login name" />
+									<p class="help-block"></p>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									密码：
+									<input type="password" name="password" class="form-control" id="password" required
+										data-validation-required-message="Please enter your password" />
+									<p class="help-block"></p>
+								</div>
 							</div>
 						</div>
-						<div class="control-group">
-							<div class="controls">
-								密码：
-								<input type="password" name="password" class="form-control" id="password" required
-									data-validation-required-message="Please enter your password" />
-								<p class="help-block"></p>
-							</div>
+						<div style="text-align: center;">
+							<button type="submit" class="btn btn-primary"
+								style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">登录</button>
 						</div>
+					</form>
 					</div>
-					<div class="pricing-action">
-						<button type="submit" class="btn btn-primary"
-							style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">登录</button>
-					</div>
-				</form>
-
-
+</div>
+				</div>
 			</div>
 
 		</section>
 	</div>
 
-<script type="text/javascript">
-function login(){
-	var userLoginDTO = $('#loginForm').serializeObject();
-	var username = document.getElementById("username").value;
-	$.ajax({
-		type: "POST", // 用POST方式传输
-		dataType: "JSON", // 数据格式:JSON
-		contentType: "application/json",
-		url: "/account/login",
-		data: JSON.stringify(userLoginDTO),
-	}).success(function(message) {
-		$.cookie('username', username);
-		window.location.href = "index.html";
-	}).fail(function(err) {
-		console.log(err);
-	})
-	return false;
-}
-</script>
+	<script type="text/javascript">
+		function login() {
+			var userLoginDTO = $('#loginForm').serializeObject();
+			var username = document.getElementById("username").value;
+			$.ajax({
+				type : "POST", // 用POST方式传输
+				dataType : "JSON", // 数据格式:JSON
+				contentType : "application/json",
+				url : "/account/login",
+				data : JSON.stringify(userLoginDTO),
+			}).success(function(message) {
+				$.cookie('username', username);
+				window.location.href = "index.html";
+			}).fail(function(err) {
+				console.log(err);
+			})
+			return false;
+		}
+	</script>
 
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.easing.1.3.js"></script>

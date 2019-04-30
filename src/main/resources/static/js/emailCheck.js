@@ -122,7 +122,7 @@ function registerCheck() {
 		}).success(function(message) {
 			layertest('注册成功!');
 			console.log(message);
-			window.location.href = "../registerInfo.html";
+			window.location.href = "../index.html";
 		}).fail(function(err) {
 			console.log(err);
 			layertest('注册失败!');

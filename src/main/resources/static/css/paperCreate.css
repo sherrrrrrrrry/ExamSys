@@ -7,7 +7,7 @@ img { vertical-align: middle; }
 ul, li { list-style: none; }
 em, i { font-style: normal; }
 /**/ 
-.all_660 { width: 660px; margin: 0 auto; font-family: "寰蒋闆呴粦"; font-size: 14px; color: #333; }
+.all_660 { width: 660px; margin: 0 auto; font-family: "瀵邦喛钂嬮梿鍛寸拨"; font-size: 14px; color: #333; }
 .dcwj_table { border-top: 1px solid #ccc; border-right: 1px solid #ccc; }
 .dcwj_table td { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; height: 32px; padding: 0 5px; font-size: 12px; }
 .dcwj_table .td_title { text-align: center; }
@@ -30,13 +30,13 @@ color: #666;
 .wjdc_list li .tm_btitlt { font-size: 16px; padding: 5px 0; color: #666; }
 .wjdc_list li label { margin-left: 0; }
 .wjdc_list li label input { margin-right: 5px; }
-.wjdc_list li label .wenb_ipnput { height: 100px; line-height: 24px; width: 600px; border: 1px solid #ccc; font-family: "寰蒋闆呴粦"; font-size: 12px; padding-left: 5px; color: #666; }
+.wjdc_list li label .wenb_ipnput { height: 100px; line-height: 24px; width: 600px; border: 1px solid #ccc; font-family: "瀵邦喛钂嬮梿鍛寸拨"; font-size: 12px; padding-left: 5px; color: #666; }
 .tip_wz { color: #026fda; }
-.wjdc_list li label .wenb_input { border: 1px solid #ccc; height: 22px; line-height: 22px; font-family: "寰蒋闆呴粦"; font-size: 12px; padding-left: 5px; width: 210px; margin-left: 5px; }
-/*閫夐」鍗�*/
+.wjdc_list li label .wenb_input { border: 1px solid #ccc; height: 22px; line-height: 22px; font-family: "瀵邦喛钂嬮梿鍛寸拨"; font-size: 12px; padding-left: 5px; width: 210px; margin-left: 5px; }
+/*闁銆嶉崡锟�*/
 .xxk_box { margin-top: 20px; }
 .xxk_title { height: auto; overflow: hidden; }
-.xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 25%; text-align: center; border-right: 1px solid #fff; }
+.xxk_title li { background: #ddd; float: left; height: 40px; line-height: 40px; width: 20%; text-align: center; border-right: 1px solid #fff; }
 .xxk_title li.on { background: #0058ad; color: #fff; }
 .xxk_conn .xxk_xzqh_box { padding: 20px; background: #f2f2f2; }
 
@@ -44,8 +44,8 @@ color: #666;
 	display:none;
 }
 
-.input_wenbk { font-family: "寰蒋闆呴粦"; width: 530px; height: 33px; line-height: 33px; padding-left: 10px; border: 1px solid #ccc; background: #FFF; color: #666; }
-.btwen_text { font-family: "寰蒋闆呴粦"; height: 66px; width: 608px; margin-bottom: 15px; }
+.input_wenbk { font-family: "瀵邦喛钂嬮梿鍛寸拨"; width: 530px; height: 33px; line-height: 33px; padding-left: 10px; border: 1px solid #ccc; background: #FFF; color: #666; }
+.btwen_text { font-family: "瀵邦喛钂嬮梿鍛寸拨"; height: 66px; width: 608px; margin-bottom: 15px; }
 .kzjxx_iteam { height: 35px; overflow: hidden; margin-bottom: 10px; line-height: 35px; }
 .kzjxx_iteam input { float: left; }
 .kzjxx_iteam span { float: left; }
@@ -70,7 +70,7 @@ a.zjxx { display: block; background: url(../img/jiajia.png) no-repeat left; heig
 .tswjdc_table td { text-align: center; width: 15%; line-height: 30px; }
 .tswjdc_table td.lefttd_qk { text-align: left; padding-left: 10px; }
 .jzwent_input { width: 330px; }
-.leftbtwen_text { font-family: "寰蒋闆呴粦"; width: 108px; height: 160px; line-height: 33px; padding-left: 10px; border: 1px solid #ccc; background: #FFF; color: #666; }
+.leftbtwen_text { font-family: "瀵邦喛钂嬮梿鍛寸拨"; width: 108px; height: 160px; line-height: 33px; padding-left: 10px; border: 1px solid #ccc; background: #FFF; color: #666; }
 .ritwenz_xx { font-size: 14px; padding-bottom: 10px; height: 24px; line-height: 24px; }
 .ritwenz_xx a { display: inline-block; height: 22px; line-height: 22px; border: 1px solid #ccc; color: #999; font-size: 12px; font-weight: 400; padding: 0 5px; margin-left: 10px; border-radius: 5px; }
 .ritwenz_xx a.xzqk { border: 1px solid #0099ff; color: #0099ff; }

@@ -8,7 +8,7 @@
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
 </head>
-<body onload="promptinfo();ageinfo()">
+<body onload="setup();promptinfo();ageinfo()">
 	<div class="topbarpage"></div>
 	<div class="headerpage"></div>
 	<section id="inner-headline">
@@ -23,10 +23,12 @@
 			</div>
 		</div>
 	</section>
-	<section class="section-padding gray-bg">
-		<div class="container"  style="width: 80%;">
-
-			<form id="personalInfo" novalidate action="/account/personalInfo" enctype="multipart/form-data" method="post" onSubmit="return infoEdit();">
+	<section id="content">
+		<div class="container">
+			<!-- Form itself -->
+			<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate
+				action="/account/personalInfo" enctype="multipart/form-data" method="post"
+				onSubmit="return infoFinish();">
 				<div class="row">
 					<div class="col-md-6">
 						<div class="control-group">
@@ -42,8 +44,8 @@
 								性别：
 								<select class="form-control" id="gender" required name="gender"
 									data-validation-required-message="Please choose your gender">
-									<option value="male">男</option>
-									<option value="female">女</option>
+									<option value="BOY">男</option>
+									<option value="GIRL">女</option>
 								</select>
 								<p class="help-block"></p>
 							</div>
@@ -82,7 +84,6 @@
 								</select>
 								<input id="schoollacation" type="hidden" value="" />
 								<p class="help-block"></p>
-								<!--<input onclick="alert(promptinfo())" type="submit" value="提交" />-->
 							</div>
 						</div>
 						<div class="control-group">
@@ -121,13 +122,15 @@
 						</div>
 					</div>
 				</div>
-				<div class="pricing-action" style="background-color: inherit;">
+				<div class="pricing-action">
 					<button type="submit" class="btn btn-primary"
 						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">完成</button>
 				</div>
 			</form>
 
+
 		</div>
+
 	</section>
 
 	<script src="../js/jquery.js"></script>
@@ -143,13 +146,17 @@
 	<script src="../js/jquery.magnific-popup.min.js"></script>
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
+	<script src="../js/uploadImg.js"></script>
 	<script type="text/javascript" src="../js/province.js"></script>
-	
+
 	<script type="text/javascript">
+		//var username = $.cookie('username');
+		var username = "user1";
 
 		$(function() {
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
+
 		});
 
 		function promptinfo() {
@@ -158,25 +165,7 @@
 			var s2 = document.getElementById('s2').value;
 			var s3 = document.getElementById('s3').value;
 			schoollacation = "" + s1 + s2 + s3;
-			console.log(schoollacation);
-			//return schoollacation;
-		}
-
-		function infoEdit(){
-			var userInfoDTO = $('#personalInfo').serializeObject();
-			$.ajax({
-				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
-				contentType: "application/json",
-				url: "/account/personalInfo",
-				data: JSON.stringify(userInfoDTO),
-			}).success(function(data) {
-				layertest('信息修改成功!');
-				window.location.href = "personInfo.html";
-			}).fail(function(err) {
-				console.log(err);
-			})
-			return false;
+			return schoollacation;
 		}
 
 		function ageinfo() {
@@ -187,6 +176,29 @@
 				opt.innerHTML = i;
 				select.appendChild(opt);
 			}
+		}
+
+		function infoEdit() {
+			var userInfoDTO = $('#personalInfo').serializeObject();
+			var fileInput = document.getElementById('test-image-file');
+			var personalpic = fileInput.files[0];
+
+			userInfoDTO.login = username;
+
+			$.ajax({
+				type : "POST", // 用POST方式传输
+				//dataType: "JSON", // 数据格式:JSON
+				contentType : "multipart/form-data",
+				url : "/account/personalInfo",
+				data : JSON.stringify(userInfoDTO)+"&personalpic="+personalpic,
+			}).success(function(data) {
+				console.log(data);
+				layertest('信息修改成功!');
+				window.location.href = "personInfo.html";
+			}).fail(function(err) {
+				console.log(err);
+			})
+			return false;
 		}
 	</script>
 </body>
