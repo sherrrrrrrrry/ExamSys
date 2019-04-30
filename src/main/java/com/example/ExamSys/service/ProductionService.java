@@ -29,7 +29,9 @@ public class ProductionService {
 	
 	private static String studentProductionParentPath = Constants.STUDENT_PRODUCTION_PATH;
 	
-	private static String personalPhotoPath = Constants.PERSONAL_PHOTO_PATH;
+	private static String studentPersonalPhotoPath = Constants.STUDENT_PERSONAL_PHOTO_PATH;
+	
+	private static String teacherPersonalPhotoPath = Constants.TEACHER_PERSONAL_PHOTO_PATH;
 	
 	@Autowired
 	private StudentRepository studentRepository;
@@ -136,7 +138,7 @@ public class ProductionService {
 			}
 			String photoName = login + "_" + file.getName();
 			
-			String url = saveProductionInLocalFS(personalPhotoPath, file, photoName);
+			String url = saveProductionInLocalFS(studentPersonalPhotoPath, file, photoName);
 
 			if(url == null) {
 				logger.error("user:{} Failed to save the production Name:{}", userId, file.getName());
@@ -154,7 +156,7 @@ public class ProductionService {
 			}
 			String photoName = login + "_" + file.getName();
 			
-			String url = saveProductionInLocalFS(personalPhotoPath, file, photoName);
+			String url = saveProductionInLocalFS(teacherPersonalPhotoPath, file, photoName);
 
 			if(url == null) {
 				logger.error("user:{} Failed to save the production Name:{}", userId, file.getName());

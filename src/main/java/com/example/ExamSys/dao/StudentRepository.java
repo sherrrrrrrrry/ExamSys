@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ExamSys.domain.Student;
 import com.example.ExamSys.domain.User;
+import com.example.ExamSys.domain.enumeration.Gender;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>{
@@ -27,6 +28,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query("select s.photoUrl from Student s where s.user.login=?1")
 	String findPhotoUrlByLogin(String login);
 	
+	@Query("select s from Student s where s.user = (select u from User u where u.login = ?1)")
+	Student findOneByLogin(String login);
+	
 	@Modifying
 	@Transactional
 	@EntityGraph(attributePaths = {"user"})
@@ -37,4 +41,11 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Transactional
 	@Query("update Student s set s.photoUrl=?1 where s.id=?2")
 	void updatePhotoUrlById(String photoUrl, Long id);
+	
+	@Modifying
+	@Transactional
+	@Query("update Student s set s.name=?1, s.gender=?2, s.age=?3, s.school=?4, s.schoolProvince=?5, s.schoolCity=?6, s.schoolRegion=?7, s.trainingName=?8, "
+			+ "s.motto=?9 where s.user = (select u from User u where u.login = ?10)")
+	void updateInfoByLogin(String name, Gender gender, int age, String school, String schoolProvince, String schoolCity, String schoolRegion
+			, String trainingName, String motto, String login);
 }

@@ -40,8 +40,6 @@ public class UserInfoDTO {
 	private String trainingAgency;
 	
 	private String motto;
-	
-	private MultipartFile personalpic;
 
 	public String getRealname() {
 		return realname;
@@ -121,14 +119,6 @@ public class UserInfoDTO {
 
 	public void setMotto(String motto) {
 		this.motto = motto;
-	}
-
-	public MultipartFile getPersonalpic() {
-		return personalpic;
-	}
-
-	public void setPersonalpic(MultipartFile personalpic) {
-		this.personalpic = personalpic;
 	}
 
 }

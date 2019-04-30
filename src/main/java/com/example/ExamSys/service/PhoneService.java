@@ -54,16 +54,32 @@ public class PhoneService {
         
         try {
             CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData().getClass());
-            
+            JSONObject json_test = new JSONObject(response.getData());
+            if(json_test.getString("Code").equals("OK")) {
+                HashMap<Boolean, String> results = new HashMap<Boolean, String>();
+                results.put(true, "ok");
+                return results; 
+            } else {
+            	HashMap<Boolean, String> results = new HashMap<Boolean, String>();
+                results.put(false, json_test.getString("Message"));
+                return results; 
+            }
         } catch (ServerException e) {
-            e.printStackTrace();
+        	log.warn(e.toString());
+        	HashMap<Boolean, String> results = new HashMap<Boolean, String>();
+            results.put(false, "Message Server Wrong!");
+            return results; 
         } catch (ClientException e) {
-            e.printStackTrace();
+        	log.warn(e.toString());
+        	HashMap<Boolean, String> results = new HashMap<Boolean, String>();
+            results.put(false, "Message Client Wrong!");
+            return results; 
+        } catch(Exception e) {
+        	log.warn(e.toString());
+        	HashMap<Boolean, String> results = new HashMap<Boolean, String>();
+            results.put(false, "Data Analyze Wrong!");
+            return results; 
         }
-        HashMap<Boolean, String> results = new HashMap<Boolean, String>();
-        results.put(true, "ok");
-        return results;
 	}
 	
 	public HashMap<Boolean, String> test(String to, String content){

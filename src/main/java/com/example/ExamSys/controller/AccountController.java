@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TeacherRepository;
@@ -237,7 +239,6 @@ public class AccountController {
 			randomNum = verifyService.getAndSendVerify(email);
 		} catch(Exception e) {
 			log.info("{}短信验证码发送出错", email);
-			System.out.println(e);
 			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
 			
 		}
@@ -346,41 +347,60 @@ public class AccountController {
 	}
 	
 	/**
-	 * 学生个人信息录入
+	 * 个人信息录入
 	 * 参数: userId 用户id
 	 * 返回值: StudentDTO
 	 * username, realname, gender, age, phone, province, city, town, school
 	 * trainingagency, motto, personalpic
 	 */
-	@RequestMapping(value = "/personalInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "/savepersonalInfo", method = RequestMethod.POST)
 	public ResponseEntity<String> recordPersonalInfo(@Valid @RequestBody UserInfoDTO userInfoDTO){
 		
 		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(userInfoDTO.getLogin());
-		Boolean bool = true;
 		
 		if(authorities == null || authorities.isEmpty())
 			return ResponseEntity.badRequest().header("Authority", "no Authority").body(null);
 		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
+			
+			studentRepository.updateInfoByLogin(userInfoDTO.getRealname(), userInfoDTO.getGender(), userInfoDTO.getAge(), userInfoDTO.getSchool(), 
+					userInfoDTO.getProvince(), userInfoDTO.getCity(), userInfoDTO.getTown(), userInfoDTO.getTrainingAgency(), userInfoDTO.getMotto(), userInfoDTO.getLogin());
+			
+			return ResponseEntity.ok().body("");
+			
+		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
+			
+			teacherRepository.updateInfoByLogin(userInfoDTO.getRealname(), userInfoDTO.getGender(), userInfoDTO.getAge(), userInfoDTO.getSchool(), 
+					userInfoDTO.getProvince(), userInfoDTO.getCity(), userInfoDTO.getTown(), userInfoDTO.getTrainingAgency(), userInfoDTO.getMotto(), userInfoDTO.getLogin());
+			
+			return ResponseEntity.ok().body("");
+		}
+		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
+	}	
+	
+	/**
+	 * 个人照片上传
+	 * 参数: userId 用户id
+	 * 返回值: StudentDTO
+	 * username, realname, gender, age, phone, province, city, town, school
+	 * trainingagency, motto, personalpic
+	 */
+	@RequestMapping(value = "/savepersonalPho", method = RequestMethod.POST)
+	public ResponseEntity<String> recordPersonalPhoto(@RequestParam("login") String login, @RequestParam("file") MultipartFile file){
 		
-			Student student = new Student();
-			student.setAge(userInfoDTO.getAge());
-			student.setGender(userInfoDTO.getGender());
-			student.setName(userInfoDTO.getRealname());
-			student.setSchool(userInfoDTO.getSchool());
-			student.setSchoolProvince(userInfoDTO.getProvince());
-			student.setSchoolCity(userInfoDTO.getCity());
-			student.setSchoolRegion(userInfoDTO.getTown());
-			student.setTrainingName(userInfoDTO.getTrainingAgency());
-			student.setMotto(userInfoDTO.getMotto());
-			student.setUser(userRepository.findOneByLogin(userInfoDTO.getLogin()).get());
-			studentRepository.save(student);
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
+		Boolean bool = true;
+		
+		if(authorities == null || authorities.isEmpty())
+			return ResponseEntity.badRequest().header("Authority", "no Authority").body(null);
+		
+		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
 			try {
-				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", userInfoDTO.getPersonalpic().getOriginalFilename());
-				IOUtils.copy(userInfoDTO.getPersonalpic().getInputStream(), new FileOutputStream(upl));
+				File upl = File.createTempFile(login + "_", file.getOriginalFilename());
+				IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
 				
-				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Student");
+				bool = productionService.upLoadPersonalPhoto(login, upl, "Student");
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.info(e.toString());
 				bool = false;
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
@@ -390,26 +410,13 @@ public class AccountController {
 			return ResponseEntity.ok().body("");
 			
 		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
-			
-			Teacher teacher = new Teacher();
-			teacher.setAge(userInfoDTO.getAge());
-			teacher.setGender(userInfoDTO.getGender());
-			teacher.setName(userInfoDTO.getRealname());
-			teacher.setSchool(userInfoDTO.getSchool());
-			teacher.setSchoolProvince(userInfoDTO.getProvince());
-			teacher.setSchoolCity(userInfoDTO.getCity());
-			teacher.setSchoolRegion(userInfoDTO.getTown());
-			teacher.setTrainingName(userInfoDTO.getTrainingAgency());
-			teacher.setMotto(userInfoDTO.getMotto());
-			teacher.setUser(userRepository.findOneByLogin(userInfoDTO.getLogin()).get());
-			teacherRepository.save(teacher);
 			try {
-				File upl = File.createTempFile(userInfoDTO.getLogin() + "_", userInfoDTO.getPersonalpic().getOriginalFilename());
-				IOUtils.copy(userInfoDTO.getPersonalpic().getInputStream(), new FileOutputStream(upl));
+				File upl = File.createTempFile(login + "_", file.getOriginalFilename());
+				IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
 				
-				bool = productionService.upLoadPersonalPhoto(userInfoDTO.getLogin(), upl, "Teacher");
+				bool = productionService.upLoadPersonalPhoto(login, upl, "Teacher");
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.info(e.toString());
 				bool = false;
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
@@ -420,4 +427,54 @@ public class AccountController {
 		}
 		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
 	}	
+	
+	
+	@RequestMapping(value = "/getpersonalPho", method = RequestMethod.POST)
+	public ResponseEntity<String> recordPersonalPhoto(@RequestParam("login") String login){
+		
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
+		if(authorities == null || authorities.isEmpty())
+			return ResponseEntity.badRequest().header("Authority", "no Authority").body("no Authority");
+		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
+			try {
+				Student student = studentRepository.findOneByLogin(login);
+				JSONObject json = new JSONObject();
+				json.put("realname", student.getName());
+				json.put("gender", student.getGender());
+				json.put("age", student.getAge());
+				json.put("school", student.getSchool());
+				json.put("province", student.getSchoolProvince());
+				json.put("city", student.getSchoolCity());
+				json.put("town", student.getSchoolRegion());
+				json.put("trainingAgency", student.getTrainingName());
+				json.put("motto", student.getMotto());
+				
+				return ResponseEntity.ok().body(json.toString());
+			} catch (Exception e) {
+				log.info(e.toString());
+				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
+			}
+			
+		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
+			try {
+				Teacher teacher = teacherRepository.findOneByLogin(login);
+				JSONObject json = new JSONObject();
+				json.put("realname", teacher.getName());
+				json.put("gender", teacher.getGender());
+				json.put("age", teacher.getAge());
+				json.put("school", teacher.getSchool());
+				json.put("province", teacher.getSchoolProvince());
+				json.put("city", teacher.getSchoolCity());
+				json.put("town", teacher.getSchoolRegion());
+				json.put("trainingAgency", teacher.getTrainingName());
+				json.put("motto", teacher.getMotto());
+				
+				return ResponseEntity.ok().body(json.toString());
+			} catch (Exception e) {
+				log.info(e.toString());
+				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
+			}
+		}
+		return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
+	}
 }
