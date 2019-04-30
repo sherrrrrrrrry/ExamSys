@@ -429,7 +429,7 @@ public class AccountController {
 	}	
 	
 	
-	@RequestMapping(value = "/getpersonalPho", method = RequestMethod.POST)
+	@RequestMapping(value = "/getpersonalInfo", method = RequestMethod.POST)
 	public ResponseEntity<String> recordPersonalPhoto(@RequestParam("login") String login){
 		
 		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
