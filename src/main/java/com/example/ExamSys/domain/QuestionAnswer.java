@@ -44,6 +44,10 @@ public class QuestionAnswer implements Serializable {
     @Value("${some.key:false}")
     private boolean isMarked;
 
+    @JsonBackReference
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Teacher teacher;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -75,4 +79,8 @@ public class QuestionAnswer implements Serializable {
     public boolean isMarked() { return isMarked; }
 
     public void setMarked(boolean marked) { isMarked = marked; }
+
+    public Teacher getTeacher() { return teacher; }
+
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
 }

@@ -30,7 +30,13 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	
 	@Query("select s from Student s where s.user = (select u from User u where u.login = ?1)")
 	Student findOneByLogin(String login);
-	
+
+	@Query("select s.level from Student s where s.user = (select u from User u where u.login = ?1)")
+	int getLevel(String login);
+
+	@Query("select s.id from Student s where s.user = (select u from User u where u.login = ?1)")
+	Long getIDbyUsername(String username);
+
 	@Modifying
 	@Transactional
 	@EntityGraph(attributePaths = {"user"})

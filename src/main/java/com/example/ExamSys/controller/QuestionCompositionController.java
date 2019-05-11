@@ -1,8 +1,10 @@
 package com.example.ExamSys.controller;
 
+import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * 组卷功能，这里只提供从QuedtionList里读现有试卷的功能*/
 
 @RestController
 @RequestMapping("/questioncomposition")
@@ -35,22 +40,39 @@ public class QuestionCompositionController {
     @Resource
     private QuestionListService questionListService;
 
-    /**
-     * 获取所有试卷名
-     */
+    @Autowired
+    private StudentRepository studentRepository;
 
-    @RequestMapping("/questionbank_Name")
-    public Map<Integer, String> getQuestionBankName() {
-        List<String> questionBankNames = questionBankService.getBankNames();
-        if (questionBankNames != null) {
-            Map<Integer, String> questionBankName = new HashMap<>();
-            for (int i = 0; i < questionBankNames.size(); i++) {
-                questionBankName.put(i, questionBankNames.get(i));
-            }
-            return questionBankName;
-        } else {
-            return null;
+//    /**
+//     * 获取所有试卷名
+//     */
+//
+//    @RequestMapping("/questionbank_Name")
+//    public Map<Integer, String> getQuestionBankName() {
+//        List<String> questionBankNames = questionBankService.getBankNames();
+//        if (questionBankNames != null) {
+//            Map<Integer, String> questionBankName = new HashMap<>();
+//            for (int i = 0; i < questionBankNames.size(); i++) {
+//                questionBankName.put(i, questionBankNames.get(i));
+//            }
+//            return questionBankName;
+//        } else {
+//            return null;
+//        }
+//    }
+    /**
+     * 根据学生的level，随机分配一张试卷
+     * POST：username*/
+    @RequestMapping(value = "/getBankName",method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity getBankName_random(HttpServletRequest request){
+        String username = request.getParameter("username");
+        int level = studentRepository.getLevel(username);
+        Long stuID = studentRepository.getIDbyUsername(username);
+        String bankname = questionBankService.getBankNamesbyLevel_Random(level,stuID);//随机获得该等级下的一张试卷
+        if (bankname == null){
+            ResponseEntity.ok().body(null);//如果所有试卷都做过了，就返回空
         }
+        return ResponseEntity.ok().body(bankname);
     }
 
     /**

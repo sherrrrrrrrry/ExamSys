@@ -94,6 +94,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(answer);
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -122,6 +123,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(new_answer);//将更新后的答案存入数据库
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
@@ -135,6 +137,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(request.getParameter("answer"));
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -144,6 +147,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(request.getParameter("answer"));
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
@@ -157,6 +161,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(request.getParameter("answer"));
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -166,6 +171,7 @@ public class ExamAnswerController {
                 questionAnswer.setAnswer(request.getParameter("answer"));
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }

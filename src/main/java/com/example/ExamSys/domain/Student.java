@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
 
 import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.domain.enumeration.Gender;
+import org.hibernate.annotations.JoinColumnOrFormula;
 
 @Entity
 @Table(name = "student_info")
@@ -71,6 +72,8 @@ public class Student implements Serializable{
 	@Column(name = "motto")
 	private String motto;
 
+	@Column(name = "level")
+    private int level;
 //
 //	@OneToMany(mappedBy = "student", orphanRemoval = true)
 //	private Set<Production> productions = new HashSet<>();
@@ -86,6 +89,7 @@ public class Student implements Serializable{
 
 	@OneToMany(mappedBy = "student", orphanRemoval = true)
     private Set<QuestionAnswer> questionAnswers = new HashSet<>();
+
 
 	public Long getId() {
 		return id;
@@ -191,6 +195,10 @@ public class Student implements Serializable{
 //		this.productions = productions;
 //	}
 
+
+    public int getLevel() { return level; }
+
+    public void setLevel(int level) { this.level = level; }
 
     public Set<Transcript> getTranscripts() { return transcripts; }
 

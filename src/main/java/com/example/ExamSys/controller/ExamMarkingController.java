@@ -51,7 +51,7 @@ public class ExamMarkingController {
     private  QuestionShortService questionShortService;
 
     /**
-     * 选择判断打分 试卷名：name  用户名：username
+     * 选择判断自动打分 试卷名：name  用户名：username
      * **/
     @RequestMapping(value = "/Marking_cj", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity ExamMarkingSave(HttpServletRequest request){
@@ -178,6 +178,12 @@ public class ExamMarkingController {
         }
         questionAnswerService.updateisModified(true,questionAnswer.getId());
         return ResponseEntity.ok().body(score);
+    }
+    /**
+     * 查找所有需要阅卷的试卷*/
+    @RequestMapping(value = "/tobeMarked", method = RequestMethod.GET, headers = "Accept=application/json")
+    public ResponseEntity GetunMarkedExam(HttpServletRequest request){
+        return null;
     }
     /**
      * 查找简答和展示题 试卷名：name  用户名：username

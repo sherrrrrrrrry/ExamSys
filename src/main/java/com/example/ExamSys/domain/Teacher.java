@@ -1,18 +1,10 @@
 package com.example.ExamSys.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -67,6 +59,9 @@ public class Teacher implements Serializable{
 	
 	@Column(name = "motto")
 	private String motto;
+
+	@OneToMany(mappedBy = "teacher", orphanRemoval = true)
+	private Set<QuestionAnswer> questionAnswers = new HashSet<>();
 
 	public Long getId() {
 		return id;
