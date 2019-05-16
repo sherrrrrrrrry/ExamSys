@@ -18,4 +18,6 @@ public final class Constants {
 	
 	public static final String TEACHER_PERSONAL_PHOTO_PATH = System.getProperty("user.home") +
 			File.separator + "ExamSys" + File.separator + "TEACHER_PHOTO";
+	
+	public static final String[] AUTHORITIES= {"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"};
 }

@@ -39,4 +39,19 @@ public class ProductionController {
 		else
 			return ResponseEntity.badRequest().body("upload failed");
 	}
+	
+	@PostMapping("/exam/uploadproductions")
+	public ResponseEntity upLoadProductions(@RequestParam("login") String login, @RequestParam("file") MultipartFile file) {
+		try {
+			File upl = File.createTempFile(login + "_", file.getOriginalFilename());
+			IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+
+			String url = this.productionService.upLoadStudentProduction(login, upl);
+			System.out.println(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("upload failed");
+		}
+		return ResponseEntity.ok().build();
+	}
 }

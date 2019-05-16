@@ -17,6 +17,12 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query("select s.user.id from Student s where s.id = ?1")
 	Long findUserIdById(Long id);
 	
+	@Query("select s.user.id from Student s where s.user = (select u from User u where u.login = ?1)")
+	Long findUserIdByLogin(String login);
+
+	@Query("select s.user from Student s where s.user = (select u from User u where u.login = ?1)")
+	User findUserByLogin(String login);
+	
 	@Query("select s.user from Student s where s.id = ?1")
 	User findUserById(Long id);
 	

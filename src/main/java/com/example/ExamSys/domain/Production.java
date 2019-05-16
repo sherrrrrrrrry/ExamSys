@@ -30,7 +30,7 @@ public class Production implements Serializable{
 	private User user;
 
 	@Size(max = 50)
-	@Column(name = "name", length = 50, nullable = false)
+	@Column(name = "name", length = 50, nullable = true)
 	private String name;
 	
 	@Size(max = 256)

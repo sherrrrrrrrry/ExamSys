@@ -35,7 +35,7 @@ public class Teacher implements Serializable{
 	@Column(name = "gender")
 	private Gender gender;
 	
-	@Column(name = "age")
+	@Column(name = "age", nullable=false)
 	private int age;
 	
 	@Size(max = 256)

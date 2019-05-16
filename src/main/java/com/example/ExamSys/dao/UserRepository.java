@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	Optional<User> findOneByPhoneNumber(String phoneNumber);
 	
-	Set<User> findAllByEnabledFalse();
+	List<User> findAllByEnabledFalse();
 	
 	Optional<User> findOneById(Long id);
 	

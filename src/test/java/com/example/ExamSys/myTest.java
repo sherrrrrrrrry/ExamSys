@@ -23,8 +23,9 @@ public class myTest {
 	}
 	
 	public static void main(String[] args) {
-		Map<String, Object> p = new HashMap<String, Object>();
-		Object x = p.get("123").toString();
-		System.out.println(x);
+//		Map<String, Object> p = new HashMap<String, Object>();
+//		Object x = p.get("123").toString();
+//		System.out.println(x);
+		System.out.println(System.currentTimeMillis());
 	}
 }

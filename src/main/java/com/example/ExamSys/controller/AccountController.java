@@ -1,30 +1,35 @@
 package com.example.ExamSys.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TeacherRepository;
 import com.example.ExamSys.dao.UserRepository;
@@ -167,6 +172,8 @@ public class AccountController {
 										userRepository.save(user);
 										Student student = new Student();
 										student.setUser(user);
+										student.setAge(0);
+										student.setLevel(0);
 										studentRepository.save(student);
 									} else {
 										User user = userService.createUserPhone(userDTO.getLogin(),
@@ -179,6 +186,7 @@ public class AccountController {
 										userRepository.save(user);
 										Teacher teacher = new Teacher();
 										teacher.setUser(user);
+										teacher.setAge(0);
 										teacherRepository.save(teacher);
 									}
 									return new ResponseEntity<>(HttpStatus.CREATED);
@@ -474,9 +482,13 @@ public class AccountController {
 		return ResponseEntity.badRequest().header("Authority", "no Authority Student or Teacher").body(null);
 	}
 	
-	
+	/**
+	 * 获得个人信息
+	 * @param login 用户名
+	 * @return
+	 */
 	@RequestMapping(value = "/getpersonalInfo", method = RequestMethod.POST)
-	public ResponseEntity<String> recordPersonalPhoto(@RequestParam("login") String login){
+	public ResponseEntity<String> getPersonalInfo(@RequestParam("login") String login){
 		
 		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
 		if(authorities == null || authorities.isEmpty())
@@ -523,4 +535,77 @@ public class AccountController {
 		}
 		return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
 	}
+	
+	/**
+	 * 获得个人照片
+	 * @param login 用户名
+	 * @return
+	 */
+	@RequestMapping(value = "/getpersonalPho", produces = MediaType.IMAGE_JPEG_VALUE)
+	@ResponseBody	
+	public byte[] getPersonalPho(@RequestParam("login") String login){
+		
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
+		if(authorities == null || authorities.isEmpty())
+			return null;
+		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
+			try {
+				Student student = studentRepository.findOneByLogin(login);
+				String url = student.getPhotoUrl();
+				if(url == null || url.equals("")) {
+					return new byte[0];
+				}
+				File file = new File(url);
+				FileInputStream inputStream = new FileInputStream(file);
+
+				byte[] bytes = new byte[inputStream.available()];
+
+				inputStream.read(bytes, 0, inputStream.available());
+				inputStream.close();
+				return bytes;
+				
+			} catch (Exception e) {
+				log.info(e.toString());
+				e.printStackTrace();
+				return new byte[0];
+			}
+			
+		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
+			try {
+				Teacher teacher = teacherRepository.findOneByLogin(login);
+				String url = teacher.getPhotoUrl();
+				if(url == null || url.equals("")) {
+					return new byte[0];
+				}
+				File file = new File(url);
+				FileInputStream inputStream = new FileInputStream(file);
+
+				byte[] bytes = new byte[inputStream.available()];
+
+				inputStream.read(bytes, 0, inputStream.available());
+				inputStream.close();
+				return bytes;
+				
+			} catch (Exception e) {
+				log.info(e.toString());
+				e.printStackTrace();
+				return new byte[0];
+			}
+		}
+		return new byte[0];
+	}
+	
+	@RequestMapping(value = "/getAuhority", method = RequestMethod.POST)
+	public ResponseEntity<String> getAuthority(@RequestParam("login") String login){
+		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
+		if(authorities == null || authorities.isEmpty())
+			return null;
+		for(int i=0; i< Constants.AUTHORITIES.length; i++) {
+			if(authorities.contains(new Authority(Constants.AUTHORITIES[i]))){
+				return ResponseEntity.ok().body(Constants.AUTHORITIES[i]);
+			}
+		}
+		return ResponseEntity.badRequest().header("message", "You have no authority").body(null);
+	}
+	
 }

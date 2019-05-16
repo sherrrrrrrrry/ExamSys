@@ -45,6 +45,29 @@ public class ProductionService {
 	@Autowired
 	private ProductionRepository productionRepository;
 	
+	public String upLoadStudentProduction(String userName, File file) {
+	/**
+	 * 保存作品，参数：用户名，文件
+	 */
+		Long userId = studentRepository.findUserIdByLogin(userName);
+		
+		String productionName = createProductionName(userId);
+		String url = saveProductionInLocalFS(studentProductionParentPath, file, productionName);
+		
+		if(url == null) {
+			logger.error("user:{} Failed to save the production Name:{}", userId, file.getName());
+			return null;
+		}
+		
+		User user = studentRepository.findUserByLogin(userName);
+		Production production = new Production();
+		production.setUser(user);
+		production.setProductionUrl(url);
+		productionRepository.save(production);
+		logger.info("user: {} save the production successfully Name: {}", userId, file.getName());
+		return url;
+	}
+	
 	public boolean upLoadStudentProduction(Long stuid, String name, File file) {
 		String oldProductionUrl = null;
 		Long userId = studentRepository.findUserIdById(stuid);
@@ -106,6 +129,20 @@ public class ProductionService {
 			e.printStackTrace();
 		}
 		return productionPath;
+	}
+	/*
+	 * 创建作品文件名称，根据用户id和时间戳
+	 */
+	private String createProductionName(Long userId) {
+		StringBuilder productionName = new StringBuilder();
+		
+		if(userId != null)
+			productionName.append(userId);
+		else productionName.append("unknownuser");
+		productionName.append("_");
+		
+		productionName.append(System.currentTimeMillis());
+		return productionName.toString();
 	}
 	/*
 	 * 创建作品文件名称，根据用户id和文件名
