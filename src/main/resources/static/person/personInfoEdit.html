@@ -26,9 +26,7 @@
 	<section id="content">
 		<div class="container">
 			<!-- Form itself -->
-			<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate
-				action="/account/personalInfo" enctype="multipart/form-data" method="post"
-				onSubmit="return infoFinish();">
+			<form id="personalInfo" style="width: 80%; margin: 0 auto" novalidate>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="control-group">
@@ -60,18 +58,16 @@
 							</div>
 						</div>
 
-						<div class="control-group">
+						<!--<div class="control-group">
 							<div class="controls">
 								联系电话：
 								<input type="tel" class="form-control" id="phone" required name="phone"
 									data-validation-required-message="Please enter your phone number" />
 								<p class="help-block"></p>
 							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="control-group">
-							<div class="controls">
+						</div>  -->
+						
+						<div class="controls">
 								<span style="display: block">学校所在地：</span>
 								<select class="form-control" style="width: 32.5%; display: inline" name="province" id="s1">
 									<option></option>
@@ -85,6 +81,10 @@
 								<input id="schoollacation" type="hidden" value="" />
 								<p class="help-block"></p>
 							</div>
+					</div>
+					<div class="col-md-6">
+						<div class="control-group">
+							
 						</div>
 						<div class="control-group">
 							<div class="controls">
@@ -123,7 +123,7 @@
 					</div>
 				</div>
 				<div class="pricing-action">
-					<button type="submit" class="btn btn-primary"
+					<button type="button" class="btn btn-primary" onclick="infoEdit()"
 						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">完成</button>
 				</div>
 			</form>
@@ -151,12 +151,12 @@
 
 	<script type="text/javascript">
 		//var username = $.cookie('username');
-		var username = "user1";
+		var username = "userone";
 
 		$(function() {
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
-
+			getUserInfo(username);
 		});
 
 		function promptinfo() {
@@ -180,25 +180,70 @@
 
 		function infoEdit() {
 			var userInfoDTO = $('#personalInfo').serializeObject();
-			var fileInput = document.getElementById('test-image-file');
-			var personalpic = fileInput.files[0];
 
 			userInfoDTO.login = username;
+			console.log(JSON.stringify(userInfoDTO));
 
 			$.ajax({
-				type : "POST", // 用POST方式传输
-				//dataType: "JSON", // 数据格式:JSON
-				contentType : "multipart/form-data",
-				url : "/account/personalInfo",
-				data : JSON.stringify(userInfoDTO)+"&personalpic="+personalpic,
+				type : "POST", 
+				contentType : "application/json",
+				url : "/account/savepersonalInfo",
+				data : JSON.stringify(userInfoDTO),
 			}).success(function(data) {
-				console.log(data);
-				layertest('信息修改成功!');
+				console.log('信息修改成功!');
+			}).fail(function(err) {
+				console.log(err);
+			})
+			
+			
+			var fileInput = document.getElementById('test-image-file');
+			var personalpic = fileInput.files[0];
+			var pic = new FormData();
+			pic.append('login',username);
+			pic.append('file',personalpic);
+			$.ajax({
+				type : "POST", // 用POST方式传输
+				contentType:false,
+	            processData:false,
+				url : "/account/savepersonalPho",
+				data : pic,
+			}).success(function(data) {
 				window.location.href = "personInfo.html";
 			}).fail(function(err) {
 				console.log(err);
 			})
+			
 			return false;
+		}
+		
+		function getUserInfo(username){
+			var userLogin = new FormData();
+			userLogin.append('login',username);
+			
+			$.ajax({
+				type : "POST", 
+				contentType:false,
+	            processData:false,
+				url : "/account/getpersonalInfo",
+				data : userLogin,
+			}).success(function(data) {
+				console.log(data);
+				jsondata=$.parseJSON(data);
+				$("#username").val(username);
+				$("#gender").val(jsondata.gender);
+				$("#phone").val(jsondata.phone);
+				$("#location").val(jsondata.province+jsondata.city+jsondata.town);
+				
+				$("#s1").find("option[text="+jsondata.province+"]").attr("selected",true);
+				
+				$("#trainingagency").val(jsondata.trainingAgency);
+				$("#realname").val(jsondata.realname);
+				$("#age").val(jsondata.age);
+				$("#school").val(jsondata.school);
+				$("#motto").val(jsondata.motto);
+			}).fail(function(err) {
+				console.log(err);
+			})
 		}
 	</script>
 </body>

@@ -31,55 +31,55 @@
 				<div class="col-md-8">
 					<div class="col-md-6">
 						<div>
-							<h5 class="person-info-title" id="username">用户名：</h5>
-							<span class="person-info">Sherry</span>
+							<h5 class="person-info-title">用户名：</h5>
+							<span class="person-info" id="username"></span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5 class="person-info-title" id="gender">性别：</h5>
-							<span class="person-info">女</span>
+							<h5 class="person-info-title">性别：</h5>
+							<span class="person-info" id="gender"></span>
+							<p class="help-block"></p>
+						</div>
+						<!--<div>
+							<h5 class="person-info-title">联系电话：</h5>
+							<span class="person-info" id="phone"></span>
+							<p class="help-block"></p>
+						</div> -->
+						<div>
+							<h5 class="person-info-title">学校所在地：</h5>
+							<span class="person-info" id="location"></span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5 class="person-info-title" id="phone">联系电话：</h5>
-							<span class="person-info">13333333333</span>
-							<p class="help-block"></p>
-						</div>
-						<div>
-							<h5 class="person-info-title" id="location">学校所在地：</h5>
-							<span class="person-info">江苏省南京市鼓楼区</span>
-							<p class="help-block"></p>
-						</div>
-						<div>
-							<h5 class="person-info-title" id="trainingagency">培训机构名称：</h5>
-							<span class="person-info">南京培训机构</span>
+							<h5 class="person-info-title">培训机构名称：</h5>
+							<span class="person-info" id="trainingagency"></span>
 							<p class="help-block"></p>
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div>
-							<h5 class="person-info-title" id="realname">真实姓名：</h5>
-							<span class="person-info">郭雪</span>
+							<h5 class="person-info-title">真实姓名：</h5>
+							<span class="person-info" id="realname"></span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5 class="person-info-title" id="age">年龄：</h5>
-							<span class="person-info">10</span>
+							<h5 class="person-info-title">年龄：</h5>
+							<span class="person-info" id="age"></span>
+							<p class="help-block"></p>
+						</div>
+						<!--<div>
+							<h5 class="person-info-title">邮箱：</h5>
+							<span class="person-info" id="email"></span>
+							<p class="help-block"></p>
+						</div>-->
+						<div>
+							<h5 class="person-info-title">学校名称：</h5>
+							<span class="person-info" id="school"></span>
 							<p class="help-block"></p>
 						</div>
 						<div>
-							<h5 class="person-info-title" id="email">邮箱：</h5>
-							<span class="person-info">1355342423@qq.com</span>
-							<p class="help-block"></p>
-						</div>
-						<div>
-							<h5 class="person-info-title" id="school">学校名称：</h5>
-							<span class="person-info">南京小学</span>
-							<p class="help-block"></p>
-						</div>
-						<div>
-							<h5 class="person-info-title" id="motto">座右铭：</h5>
-							<span class="person-info">好好学习天天向上</span>
+							<h5 class="person-info-title">座右铭：</h5>
+							<span class="person-info" id="motto"></span>
 							<p class="help-block"></p>
 						</div>
 					</div>
@@ -122,15 +122,45 @@
 	<script src="../js/custom.js"></script>
 	<script type="text/javascript">
 		$(function() {
+			//var username = $.cookie('username');
+			var username = "userone";
+			
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
 			
+			getUserInfo(username);
 			
 			$("#infoEdit").click(function() {
 				window.location.href = "personInfoEdit.html";
 			});
-			
 		});
+		
+		function getUserInfo(username){
+			var userLogin = new FormData();
+			userLogin.append('login',username);
+			
+			$.ajax({
+				type : "POST", 
+				contentType:false,
+	            processData:false,
+				url : "/account/getpersonalInfo",
+				data : userLogin,
+			}).success(function(data) {
+				console.log(data);
+				jsondata=$.parseJSON(data);
+				$("#username").text(username);
+				$("#gender").text(jsondata.gender);
+				$("#phone").text(jsondata.phone);
+				$("#location").text(jsondata.province+jsondata.city+jsondata.town);
+				$("#trainingagency").text(jsondata.trainingAgency);
+				$("#realname").text(jsondata.realname);
+				$("#age").text(jsondata.age);
+				$("#school").text(jsondata.school);
+				$("#motto").text(jsondata.motto);
+			}).fail(function(err) {
+				console.log(err);
+			})
+		}
 	</script>
 </body>
 </html>
