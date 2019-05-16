@@ -219,6 +219,7 @@
 	<script src="js/animate.js"></script>
 	<script src="js/custom.js"></script>
 	<script src="js/jquery.cookie.js"></script>
+	<script src="js/all.js"></script>
 
 	<script type="text/javascript">
 		$(function() {
@@ -230,6 +231,9 @@
 			}else{
 				$(".topbarpage").load("topbar.html");
 			} 
+			window.onload=function(){
+				getUserAuth(username);
+			}
 			
 			$(".headerpage").load("header.html");
 			$(".footerpage").load("footer.html");

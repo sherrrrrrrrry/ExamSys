@@ -595,7 +595,7 @@ public class AccountController {
 		return new byte[0];
 	}
 	
-	@RequestMapping(value = "/getAuhority", method = RequestMethod.POST)
+	@RequestMapping(value = "/getAuthority", method = RequestMethod.POST)
 	public ResponseEntity<String> getAuthority(@RequestParam("login") String login){
 		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
 		if(authorities == null || authorities.isEmpty())

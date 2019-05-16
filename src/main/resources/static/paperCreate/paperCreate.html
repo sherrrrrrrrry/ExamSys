@@ -34,8 +34,11 @@
 				</div>
 
 				<div>
+				<div>
 					请填写试卷名称:
 					<input id="paperName" type="text" class="input_wenbk" value="选项">
+				</div>
+				<div>
 					请选择试卷level:
 					<select id="paperLevel">
 						<option value="1">1</option>
@@ -43,6 +46,7 @@
 						<option value="3">3</option>
 					</select>
 					<button type="button" onclick="paperNameSub()">试卷名称提交</button>
+					</div>
 				</div>
 
 				<!--选项卡区域  模板区域---------------------------------------------------------------------------------------------------------------------------------------->
@@ -422,6 +426,7 @@
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
+	<script src="../js/all.js"></script>
 
 	<script type="text/javascript">
 		$(function() {
@@ -431,9 +436,11 @@
 			} else {
 				$(".topbarpage").load("../topbar.html");
 			}
-
-			$(".headerpage").load("../header.html");
-			$(".footerpage").load("../footer.html");
+			window.onload=function(){
+				getUserAuth(username);
+			}
+			$(".headerpage").load("/header.html");
+			$(".footerpage").load("/footer.html");
 		});
 	</script>
 

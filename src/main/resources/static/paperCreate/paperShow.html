@@ -64,6 +64,8 @@
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
 	<script src="../js/jquery.params.js"></script>
+	<script src="../js/all.js"></script>
+
 	<script type="text/javascript">
 		
 		$(function() {
@@ -73,9 +75,11 @@
 			}else{
 				$(".topbarpage").load("../topbar.html");
 			} 
-			
-			$(".headerpage").load("../header.html");
-			$(".footerpage").load("../footer.html");
+			window.onload=function(){
+				getUserAuth(username);
+			}
+			$(".headerpage").load("/header.html");
+			$(".footerpage").load("/footer.html");
 			
 			var name = $.query.get("paperName");
 			var index = 1;

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>myTests</title>
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../css/fancybox/jquery.fancybox.css" rel="stylesheet">
+<link href="../css/flexslider.css" rel="stylesheet" />
+<link href="../css/style.css" rel="stylesheet" />
+<link href="../css/person.css" rel="stylesheet" />
+<link href="../datatablemedia/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="topbarpage"></div>
+	<div class="headerpage"></div>
+	<section id="inner-headline">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<h2 class="pageTitle">试卷列表</h2>
+				</div>
+				<div class="col-md-12">
+					<p class="pull-right"></p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="section-padding gray-bg">
+
+		<div class="container" style="width: 80%;">
+
+			<div class="row">
+				<table id="paperList" style="background-color: #f6f6f6;" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>试卷ID</th>
+							<th>试卷名称</th>
+							<th>试卷等级</th>
+							<th>考试学生</th>
+							<th>批改试卷</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th>试卷ID</th>
+							<th>试卷名称</th>
+							<th>试卷等级</th>
+							<th>考试学生</th>
+							<th>批改试卷</th>
+						</tr>
+					</tfoot>
+				</table>
+
+			</div>
+		</div>
+
+	</section>
+	<div class="footerpage"></div>
+
+	<script src="../js/jquery.js"></script>
+	<script src="../js/jquery.easing.1.3.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery.fancybox.pack.js"></script>
+	<script src="../js/jquery.fancybox-media.js"></script>
+	<script src="../js/jquery.flexslider.js"></script>
+	<script src="../js/animate.js"></script>
+	<!-- Vendor Scripts -->
+	<script src="../js/modernizr.custom.js"></script>
+	<script src="../js/jquery.isotope.min.js"></script>
+	<script src="../js/jquery.magnific-popup.min.js"></script>
+	<script src="../js/animate.js"></script>
+	<script src="../js/custom.js"></script>
+	<script src="../js/jquery.cookie.js"></script>
+	<script src="../js/jquery.params.js"></script>
+	<script src="../datatablemedia/js/jquery.dataTables.js"></script>
+	<script src="../js/all.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var username = $.cookie('username');
+			if (username != null) {
+				$(".topbarpage").load("/topbarLogin.html");
+			} else {
+				$(".topbarpage").load("/topbar.html");
+			}
+			window.onload=function(){
+				getUserAuth(username);
+			}
+			$(".headerpage").load("/header.html");
+			$(".footerpage").load("/footer.html");
+
+			paperListTable();
+
+			/*$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/questioncomposition/questionbank_Name', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					console.log(JSON.stringify(data));
+					$.each(data,function(i){
+						
+						$("#paperList tbody").append("<tr><td>"+i+"</td><td>"+data[i]+"</td><td>教师名字</td><td><button type='button' onclick='getPaperByName("+JSON.stringify(data[i])+")'>去考试</a></td></tr>");
+			         });
+				}
+			});*/
+
+			$("#paperCreate").click(function() {
+				window.location.href = "paperCreate.html";
+			});
+
+			/**
+			 * 批改试卷
+			 */
+			$('a#viewPaper').click(function() {
+				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
+				console.log(data);
+				alert("批改试卷：" + data.paperID + "," + data.paperName);
+				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+			});
+
+
+		});
+
+		function getPaperByName(paperName) {
+			window.location.href = "paperShow.html?paperName=" + paperName;
+		}
+
+		function paperListTable() {
+			var data = [{
+				"paperID" : "1",
+				"paperName" : "Java",
+				"paperLevel" : "3",
+				"testStudent":"Tom"
+			}, {
+				"paperID" : "2",
+				"paperName" : "C++",
+				"paperLevel" : "2",
+				"testStudent":"Jerry"
+			}];
+			$('#paperList').dataTable({
+				data : data,
+				"ajax" : '/questioncomposition/questionbank_Name',
+				"searching" : true,//是否支持搜索
+				autoFill : true,
+				bAutoWidth : true,
+				"oLanguage" : {
+					"sLengthMenu" : "每页显示 _MENU_ 条",
+					"sZeroRecords" : "没有找到符合条件的数据",
+					"sInfo" : "当前第 _START_ - _END_ 条　共计 _TOTAL_ 条",
+					"sInfoEmpty" : "没有记录",
+					"sInfoFiltered" : "(从 _MAX_ 条记录中过滤)",
+					"sSearch" : "搜索",
+					"sProcessing" : "数据加载中...",
+					"oPaginate" : {
+						"sFirst" : "首页",
+						"sPrevious" : "上一页",
+						"sNext" : "下一页",
+						"sLast" : "尾页"
+					}
+				},
+				"pagingType" : "full_numbers",
+				"info" : false,//是否显示页脚信息
+
+				pageLength : 4,//显示个数table
+				//对应没列显示的数据
+				columns : [{
+					"data" : "paperID"
+				}, {
+					"data" : "paperName"
+				}, {
+					"data" : "paperLevel"
+				}, {
+					"data" : "testStudent"
+				}, {
+					"data" : "viewPaperButton"
+				}],
+				"aoColumnDefs" : [//设置列的属性，此处设置第一列不排序
+				{
+					"targets" : -1,
+					"class" : "but_xq",
+					"data" : null,
+					"bSortable" : false,
+					"defaultContent" : "<p><a id=\"viewPaper\" href=\"#\">批改试卷</a></p>"
+				}
+
+				]
+
+			});
+		}
+	</script>
+</body>
+</html>
