@@ -22,7 +22,7 @@
 <script type="text/javascript">
 $(function() {
 	$("#signout").live("click", function() {
-		$.cookie('username', null);
+		$.cookie("username", null, {path:"/"});
 	});
 });
 </script>

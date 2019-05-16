@@ -36,21 +36,39 @@ function sendAddmes() {
 	AddInterValObj = window.setInterval(SetAddnTime, 1000); // 启动计时器，1秒执行一次
 	　　 // 向后台发送处理数据
 	var email = document.getElementById("email").value;
-	console.log(email);
-	$.ajax({　　
-		type: "POST", // 用POST方式传输
-		dataType: "JSON", // 数据格式:JSON
-		contentType: "application/json",
-		url: '/account/sendmessage?email=' + email, // 目标地址
-		error: function(data) {
-			console.log(data);　　
-		},
-		success: function(data) {
-			hash = data.hash;
-			codeTimestamp = data.time;　　
-		}
-	});
-	// }
+	if(email){
+		console.log(email);
+		$.ajax({　　
+			type: "POST", // 用POST方式传输
+			dataType: "JSON", // 数据格式:JSON
+			contentType: "application/json",
+			url: '/account/sendmessageemail?email=' + email, // 目标地址
+			error: function(data) {
+				console.log(data);　　
+			},
+			success: function(data) {
+				hash = data.hash;
+				codeTimestamp = data.time;　　
+			}
+		});
+	}
+	else{
+		var phoneNumber = document.getElementById("phone").value;
+		console.log(phoneNumber);
+		$.ajax({　　
+			type: "POST", // 用POST方式传输
+			dataType: "JSON", // 数据格式:JSON
+			contentType: "application/json",
+			url: '/account/sendmessagephone?phoneNumber=' + phoneNumber, // 目标地址
+			error: function(data) {
+				console.log(data);　　
+			},
+			success: function(data) {
+				hash = data.hash;
+				codeTimestamp = data.time;　　
+			}
+		});
+	}
 }
 
 // timer处理函数
@@ -79,16 +97,32 @@ function SetAddnTime() {
  */
 
 // code 验证
-function code_test() {
-	if ($('#verificationCode').val() == '') {
-		layertest('验证码不能为空');
-		$('#verificationCode').addClass('error');
+function email_code_test() {
+	if ($('#verificationCodeEmail').val() == '') {
+		layertest('邮箱验证码不能为空');
+		$('#verificationCodeEmail').addClass('emailerror');
 	} else {
-		$('#verificationCode').removeClass('error');
+		$('#verificationCodeEmail').removeClass('emailerror');
 	}
 }
+
+function phone_code_test() {
+	if ($('#verificationCodePhone').val() == '') {
+		layertest('手机验证码不能为空');
+		$('#verificationCodePhone').addClass('phoneerror');
+	} else {
+		$('#verificationCodePhone').removeClass('phoneerror');
+	}
+}
+
 $(document).on('blur', '.code', function() {
-	code_test();
+	var email = document.getElementById("email").value;
+	if(email){
+		email_code_test();
+	}else{
+		phone_code_test();
+	}
+	
 });
 
 // layer modal
@@ -107,19 +141,22 @@ function loading(content) {
 }
 
 function registerCheck() {
-	var verificationCode = document.getElementById("verificationCode").value;
-	var userDTO = $('#registerForm').serializeObject();
-	if ($('.error').length > 0) {
-		layertest('请您填写验证码');
+	var verificationCode = document.getElementById("verificationCodeEmail").value;
+	var EmailUserDTO = $('#registerForm').serializeObject();
+	if ($('.emailerror').length > 0) {
+		layertest('请您填写邮箱验证码');
 		return false;
 	} else {
 		$.ajax({
 			type: "POST", // 用POST方式传输
 			dataType: "JSON", // 数据格式:JSON
 			contentType: "application/json",
-			url: "/account/register?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode,
-			data: JSON.stringify(userDTO),
+			url: "/account/registeremail?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode,
+			data: JSON.stringify(EmailUserDTO),
 		}).success(function(message) {
+			$.cookie('username',EmailUserDTO.login);
+			console.log(EmailUserDTO.login);
+			console.log(JSON.stringify(EmailUserDTO).login);
 			layertest('注册成功!');
 			console.log(message);
 			window.location.href = "../index.html";
@@ -130,6 +167,33 @@ function registerCheck() {
 		return false;
 	}
 }
+
+function registerPhoneCheck() {
+	var verificationCode = document.getElementById("verificationCodePhone").value;
+	var PhoneUserDTO = $('#registerPhoneForm').serializeObject();
+	if ($('.phoneerror').length > 0) {
+		layertest('请您填写手机验证码');
+		return false;
+	} else {
+		$.ajax({
+			type: "POST", // 用POST方式传输
+			dataType: "JSON", // 数据格式:JSON
+			contentType: "application/json",
+			url: "/account/registerphone?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode,
+			data: JSON.stringify(PhoneUserDTO),
+		}).success(function(message) {
+			layertest('注册成功!');
+			$.cookie('username',JSON.stringify(PhoneUserDTO).username);
+			console.log(message);
+			window.location.href = "../index.html";
+		}).fail(function(err) {
+			console.log(err);
+			layertest('注册失败!');
+		})
+		return false;
+	}
+}
+
 // update btn click
 /*
  * $(document).on('submit','#registerForm',function(event){

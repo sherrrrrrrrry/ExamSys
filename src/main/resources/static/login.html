@@ -62,8 +62,7 @@
 				<div class="xxk_conn">
 				<div class="xxk_xzqh_box login " style="border-radius:10px;">
 					<!-- Form itself -->
-					<form id="loginForm" style="width: 300px; margin: 0 auto" novalidate action="/account/login"
-						method="post" onSubmit="return login();">
+					<form id="loginForm" style="width: 300px; margin: 0 auto" novalidate>
 						<div class="row">
 							<div class="control-group">
 								<div class="controls">
@@ -83,7 +82,7 @@
 							</div>
 						</div>
 						<div style="text-align: center;">
-							<button type="submit" class="btn btn-primary"
+							<button type="button" class="btn btn-primary" onclick="login()"
 								style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">登录</button>
 						</div>
 					</form>
@@ -98,12 +97,12 @@
 	<script type="text/javascript">
 		function login() {
 			var userLoginDTO = $('#loginForm').serializeObject();
-			var username = document.getElementById("username").value;
+			var username = document.getElementById("loginname").value;
 			$.ajax({
 				type : "POST", // 用POST方式传输
 				dataType : "JSON", // 数据格式:JSON
 				contentType : "application/json",
-				url : "/account/login",
+				url : "/login",
 				data : JSON.stringify(userLoginDTO),
 			}).success(function(message) {
 				$.cookie('username', username);
@@ -111,7 +110,6 @@
 			}).fail(function(err) {
 				console.log(err);
 			})
-			return false;
 		}
 	</script>
 

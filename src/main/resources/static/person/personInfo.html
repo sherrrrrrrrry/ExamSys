@@ -37,49 +37,49 @@
 						</div>
 						<div>
 							<h5 class="person-info-title">性别：</h5>
-							<span class="person-info" id="gender"></span>
+							<span class="person-info" id="gender">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 						<!--<div>
 							<h5 class="person-info-title">联系电话：</h5>
-							<span class="person-info" id="phone"></span>
+							<span class="person-info" id="phone">暂未填写</span>
 							<p class="help-block"></p>
 						</div> -->
 						<div>
 							<h5 class="person-info-title">学校所在地：</h5>
-							<span class="person-info" id="location"></span>
+							<span class="person-info" id="location">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 						<div>
 							<h5 class="person-info-title">培训机构名称：</h5>
-							<span class="person-info" id="trainingagency"></span>
+							<span class="person-info" id="trainingagency">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div>
 							<h5 class="person-info-title">真实姓名：</h5>
-							<span class="person-info" id="realname"></span>
+							<span class="person-info" id="realname">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 						<div>
 							<h5 class="person-info-title">年龄：</h5>
-							<span class="person-info" id="age"></span>
+							<span class="person-info" id="age">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 						<!--<div>
 							<h5 class="person-info-title">邮箱：</h5>
-							<span class="person-info" id="email"></span>
+							<span class="person-info" id="email">暂未填写</span>
 							<p class="help-block"></p>
 						</div>-->
 						<div>
 							<h5 class="person-info-title">学校名称：</h5>
-							<span class="person-info" id="school"></span>
+							<span class="person-info" id="school">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 						<div>
 							<h5 class="person-info-title">座右铭：</h5>
-							<span class="person-info" id="motto"></span>
+							<span class="person-info" id="motto">暂未填写</span>
 							<p class="help-block"></p>
 						</div>
 					</div>
@@ -120,13 +120,16 @@
 	<script src="../js/jquery.magnific-popup.min.js"></script>
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
+	<script src="../js/jquery.cookie.js"></script>
 	<script type="text/javascript">
 		$(function() {
-			//var username = $.cookie('username');
-			var username = "userone";
+			var username = $.cookie('username');
+			$("#username").text(username);
+			//var username = "userone";
 			
 			$(".topbarpage").load("topbarLogout.html");
 			$(".headerpage").load("headerPerson.html");
+			$(".footerpage").load("../footer.html");
 			
 			getUserInfo(username);
 			
@@ -148,7 +151,6 @@
 			}).success(function(data) {
 				console.log(data);
 				jsondata=$.parseJSON(data);
-				$("#username").text(username);
 				$("#gender").text(jsondata.gender);
 				$("#phone").text(jsondata.phone);
 				$("#location").text(jsondata.province+jsondata.city+jsondata.town);
