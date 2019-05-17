@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,9 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -543,9 +542,11 @@ public class AccountController {
 	 * @param login 用户名
 	 * @return
 	 */
-	@RequestMapping(value = "/getpersonalPho", produces = MediaType.IMAGE_JPEG_VALUE)
+//	@RequestMapping(value = "/getpersonalPho", produces = MediaType.IMAGE_JPEG_VALUE)
+	@RequestMapping(value = "/getpersonalPho", method = RequestMethod.POST)
 	@ResponseBody	
-	public byte[] getPersonalPho(@RequestParam("login") String login){
+//	public byte[] getPersonalPho(@RequestParam("login") String login){
+	public ResponseEntity<String> getPersonalPho(@RequestParam("login") String login){
 		
 		Set<Authority> authorities = userRepository.findAuthoritiesByLogin(login);
 		if(authorities == null || authorities.isEmpty())
@@ -555,7 +556,8 @@ public class AccountController {
 				Student student = studentRepository.findOneByLogin(login);
 				String url = student.getPhotoUrl();
 				if(url == null || url.equals("")) {
-					return new byte[0];
+//					return new byte[0];
+					return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body(null);
 				}
 				File file = new File(url);
 				FileInputStream inputStream = new FileInputStream(file);
@@ -564,12 +566,17 @@ public class AccountController {
 
 				inputStream.read(bytes, 0, inputStream.available());
 				inputStream.close();
-				return bytes;
 				
-			} catch (Exception e) {
+				String data = Base64.encodeBase64String(bytes);
+				
+//				return bytes;
+				return ResponseEntity.ok().body(data);
+				
+				} catch (Exception e) {
 				log.info(e.toString());
 				e.printStackTrace();
-				return new byte[0];
+//				return new byte[0];
+				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body(null);
 			}
 			
 		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
@@ -577,7 +584,8 @@ public class AccountController {
 				Teacher teacher = teacherRepository.findOneByLogin(login);
 				String url = teacher.getPhotoUrl();
 				if(url == null || url.equals("")) {
-					return new byte[0];
+//					return new byte[0];
+					return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body(null);
 				}
 				File file = new File(url);
 				FileInputStream inputStream = new FileInputStream(file);
@@ -586,15 +594,20 @@ public class AccountController {
 
 				inputStream.read(bytes, 0, inputStream.available());
 				inputStream.close();
-				return bytes;
+				
+				String data = Base64.encodeBase64String(bytes);
+//				return bytes;
+				return ResponseEntity.ok().body(data);
 				
 			} catch (Exception e) {
 				log.info(e.toString());
 				e.printStackTrace();
-				return new byte[0];
+//				return new byte[0];
+				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body(null);
 			}
 		}
-		return new byte[0];
+//		return new byte[0];
+		return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body(null);
 	}
 	
 	@RequestMapping(value = "/getAuthority", method = RequestMethod.POST)
@@ -610,17 +623,17 @@ public class AccountController {
 		return ResponseEntity.badRequest().header("message", "You have no authority").body(null);
 	}
 	
-//	@RequestMapping(value = "/deleteStudentList", method = RequestMethod.POST)
-//	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
-//		log.info("正在删除所选学生");
-//		try {
-//			studentRepository.deleteByLogins(logins);
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//			log.info("删除所选学生失败");
-//			return ResponseEntity.badRequest().body(false);
-//		}
-//		log.info("删除所选学生成功");
-//		return ResponseEntity.ok().body(true);
-//	}
+	@RequestMapping(value = "/deleteStudentList", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
+		log.info("正在删除所选学生");
+		try {
+			userRepository.deleteByLogins(logins);
+		} catch(Exception e) {
+			e.printStackTrace();
+			log.info("删除所选学生失败");
+			return ResponseEntity.badRequest().body(false);
+		}
+		log.info("删除所选学生成功");
+		return ResponseEntity.ok().body(true);
+	}
 }

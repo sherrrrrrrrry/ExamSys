@@ -16,13 +16,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.domain.enumeration.Gender;
-import org.hibernate.annotations.JoinColumnOrFormula;
 
 @Entity
 @Table(name = "student_info")
@@ -34,7 +35,8 @@ public class Student implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+	@Cascade(CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(unique = true)
 	private User user;
 	

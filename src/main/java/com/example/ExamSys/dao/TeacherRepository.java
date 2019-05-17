@@ -15,7 +15,7 @@ import com.example.ExamSys.domain.enumeration.Gender;
 public interface TeacherRepository extends JpaRepository<Teacher, Long>{
 	
 	@EntityGraph(attributePaths = {"user"})
-	@Query("select t from Teacher t")
+	@Query("select t from Teacher t where t.user.enabled=true")
 	List<Teacher> findAllLazy();
 
 	@Query("select s.photoUrl from Teacher s where s.user.login=?1")
