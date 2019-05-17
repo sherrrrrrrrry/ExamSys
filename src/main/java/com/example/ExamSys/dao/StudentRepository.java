@@ -19,8 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	
 	@Modifying
 	@Transactional
-	@EntityGraph(attributePaths = {"user"})
-	@Query("delete from Student s where s.user.login in (:logins)")
+	@Query("delete from Student s where s.user.id=(select u.id from User u where u.login in (:logins))")
 	void deleteByLogins(@Param("logins") List<String> logins);
 	
 	@Modifying

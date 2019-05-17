@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ExamSys.domain.Student;
@@ -13,6 +14,11 @@ import com.example.ExamSys.domain.Teacher;
 import com.example.ExamSys.domain.enumeration.Gender;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>{
+	
+	@Modifying
+	@Transactional
+	@Query("delete from Teacher t where t.user.id=(select u.id from User u where u.login in (:logins))")
+	void deleteByLogins(@Param("logins") List<String> logins);
 	
 	@EntityGraph(attributePaths = {"user"})
 	@Query("select t from Teacher t where t.user.enabled=true")

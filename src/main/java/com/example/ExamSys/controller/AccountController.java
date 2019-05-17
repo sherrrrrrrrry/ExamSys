@@ -14,7 +14,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -621,19 +621,5 @@ public class AccountController {
 			}
 		}
 		return ResponseEntity.badRequest().header("message", "You have no authority").body(null);
-	}
-	
-	@RequestMapping(value = "/deleteStudentList", method = RequestMethod.POST)
-	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
-		log.info("正在删除所选学生");
-		try {
-			userRepository.deleteByLogins(logins);
-		} catch(Exception e) {
-			e.printStackTrace();
-			log.info("删除所选学生失败");
-			return ResponseEntity.badRequest().body(false);
-		}
-		log.info("删除所选学生成功");
-		return ResponseEntity.ok().body(true);
 	}
 }

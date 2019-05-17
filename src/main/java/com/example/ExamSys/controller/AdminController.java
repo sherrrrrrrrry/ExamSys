@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,16 +112,19 @@ public class AdminController {
 	}
 	
 	/**
-	 * 删除所选学生
+	 * 删除选择的学生账户
 	 * @param logins
 	 * @return
 	 */
+	@Transactional
 	@RequestMapping(value = "/deleteStudentList", method = RequestMethod.POST)
 	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
 		log.info("正在删除所选学生");
 		try {
-			studentRepository.deleteByLogin(logins.get(0));
+			studentRepository.deleteByLogins(logins);
+			userRepository.deleteByLogins(logins);
 		} catch(Exception e) {
+			e.printStackTrace();
 			log.info("删除所选学生失败");
 			return ResponseEntity.badRequest().body(false);
 		}
@@ -128,6 +132,26 @@ public class AdminController {
 		return ResponseEntity.ok().body(true);
 	}
 	
+	/**
+	 * 删除选择的老师账户
+	 * @param logins
+	 * @return
+	 */
+	@Transactional
+	@RequestMapping(value = "/deleteTeacherList", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> deleteTeacherList(@RequestBody List<String> logins){
+		log.info("正在删除所选老师");
+		try {
+			teacherRepository.deleteByLogins(logins);
+			userRepository.deleteByLogins(logins);
+		} catch(Exception e) {
+			e.printStackTrace();
+			log.info("删除所选老师失败");
+			return ResponseEntity.badRequest().body(false);
+		}
+		log.info("删除所选老师成功");
+		return ResponseEntity.ok().body(true);
+	}
 	/**
 	 * 获取教师列表
 	 * @return
