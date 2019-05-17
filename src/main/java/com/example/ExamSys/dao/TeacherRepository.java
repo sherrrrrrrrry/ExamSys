@@ -1,5 +1,7 @@
 package com.example.ExamSys.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,6 +13,10 @@ import com.example.ExamSys.domain.Teacher;
 import com.example.ExamSys.domain.enumeration.Gender;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>{
+	
+	@EntityGraph(attributePaths = {"user"})
+	@Query("select t from Teacher t")
+	List<Teacher> findAllLazy();
 
 	@Query("select s.photoUrl from Teacher s where s.user.login=?1")
 	String findPhotoUrlByLogin(String login);

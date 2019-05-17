@@ -27,6 +27,11 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	Optional<User> findOneById(Long id);
 	
+	@Modifying
+	@Transactional
+	@Query("delete from User u where u.login in (:logins)")
+	void deleteByLogins(@Param("logins") List<String> logins);
+	
 	@Query("select u.authorities from User u where u.login = ?1")
 	Set<Authority> findAuthoritiesByLogin(String login);
 	
@@ -35,8 +40,8 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	@Modifying
 	@Transactional
-	@Query("UPDATE User user set user.enabled=true where user.id in (:ids)")
-	void setEnabledTrueByIdIn(@Param("ids") List<Long> ids);
+	@Query("UPDATE User user set user.enabled=true where user.login in (:logins)")
+	void setEnabledTrueByIdIn(@Param("logins") List<String> logins);
 	
 	@Modifying
 	@Transactional

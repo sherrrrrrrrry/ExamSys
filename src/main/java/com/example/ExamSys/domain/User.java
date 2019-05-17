@@ -41,7 +41,7 @@ public class User implements Serializable, UserDetails{
 	private Long id;
 	
 	@NotNull
-	@Pattern(regexp = Constants.LOGIN_REGEX)
+	@Pattern(regexp = Constants.NAME_REGEX)
 	@Size(min = 1, max = 50)
 	@Column(length = 50, unique = true, nullable = false)
 	private String login; //用户名

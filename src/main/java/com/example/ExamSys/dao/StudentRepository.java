@@ -1,9 +1,12 @@
 package com.example.ExamSys.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,22 @@ import com.example.ExamSys.domain.enumeration.Gender;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>{
+	
+	@Modifying
+	@Transactional
+	@EntityGraph(attributePaths = {"user"})
+	@Query("delete from Student s where s.user.login in (:logins)")
+	void deleteByLogins(@Param("logins") List<String> logins);
+	
+	@Modifying
+	@Transactional
+	@EntityGraph(attributePaths = {"user"})
+	@Query("delete from Student s where s.user.login = ?1")
+	void deleteByLogin(String login);
+	
+	@EntityGraph(attributePaths = {"user"})
+	@Query("select s from Student s")
+	List<Student> findAllLazy();
 	
 	@Query("select s.user.id from Student s where s.id = ?1")
 	Long findUserIdById(Long id);
