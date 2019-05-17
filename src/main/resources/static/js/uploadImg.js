@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
 	    // 判断文件大小
 	    var size = file.size;
 	    if(size >= 1*1024*1024){
-	    	alert('文件大于1兆不行!');
+	    	alert('文件请小于1M!');
 	        return false;
 	    }
 	    // 获取File信息:

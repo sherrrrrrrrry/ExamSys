@@ -88,7 +88,7 @@
 				<div class="col-md-4">
 					<div>
 						<h5 id="personalpic">生活照：</h5>
-						<img src="../img/team2.jpg" style="width: 180px; height: 230px;" />
+						
 						<p class="help-block"></p>
 					</div>
 
@@ -127,14 +127,17 @@
 			$("#username").text(username);
 			//var username = "userone";
 			
-			$(".topbarpage").load("topbarLogout.html");
-			$(".headerpage").load("headerPerson.html");
-			$(".footerpage").load("../footer.html");
+			$(".topbarpage").load("/person/topbarLogout.html");
+			$(".headerpage").load("/person/headerPerson.html");
+			$(".footerpage").load("/footer.html");
 			
-			getUserInfo(username);
-			
+			window.onload=function(){
+				getUserInfo(username);
+				getUserPic(username);
+			}
+
 			$("#infoEdit").click(function() {
-				window.location.href = "personInfoEdit.html";
+				window.location.href = "/person/personInfoEdit.html";
 			});
 		});
 		
@@ -163,6 +166,30 @@
 				console.log(err);
 			})
 		}
+		
+		function getUserPic(username){
+			var userLogin = new FormData();
+			userLogin.append('login',username);
+			
+			$.ajax({
+				type : "POST", 
+				contentType:false,
+	            processData:false,
+				url : "/account/getpersonalPho",
+				data : userLogin,
+			}).success(function(data) {
+				if(data){
+					$("#personalpic").after("<img id='pic' src='' style='width: 180px; height: 230px;' />");
+					$("#pic").attr("src","data:image/gif;base64,"+data);
+				}else{
+					$("#personalpic").after("<span>暂未填写</span>");
+				}
+				
+			}).fail(function(err) {
+				console.log(err);
+			})
+		}
+		
 	</script>
 </body>
 </html>

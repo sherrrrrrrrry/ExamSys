@@ -97,7 +97,7 @@
 						<div class="control-group">
 							<div class="controls">
 								培训机构名称：
-								<input type="text" class="form-control" id="trainingagency" required name="trainingagency"
+								<input type="text" class="form-control" id="trainingagency" required name="trainingAgency"
 									data-validation-required-message="Please enter your training agency" />
 								<p class="help-block"></p>
 							</div>
@@ -148,10 +148,10 @@
 	<script src="../js/custom.js"></script>
 	<script src="../js/uploadImg.js"></script>
 	<script type="text/javascript" src="../js/province.js"></script>
+	<script src="../js/jquery.cookie.js"></script>
 
 	<script type="text/javascript">
-		//var username = $.cookie('username');
-		var username = "userone";
+		var username = $.cookie('username');
 
 		$(function() {
 			$(".topbarpage").load("topbarLogout.html");

@@ -14,7 +14,6 @@ function getUserAuth(username){
 		url : "/account/getAuthority",
 		data : userLogin,
 	}).success(function(data) {
-		console.log(data);
 		if(data=="ROLE_STUDENT"){
 			$(".studentnav").css("display","inline-block");
 			$(".teachernav").css("display","none");
