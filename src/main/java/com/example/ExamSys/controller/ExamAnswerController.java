@@ -152,30 +152,30 @@ public class ExamAnswerController {
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
         }
-        else if (questionType == QuestionType.Show){
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
-            if (questionAnswer==null){
-                questionAnswer = new QuestionAnswer();
-                questionAnswer.setNumber(index);//简答和展示题的题号
-                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-                questionAnswer.setAnswer(request.getParameter("answer"));
-                questionAnswer.setStudent(student);
-                questionAnswer.setQuestionBank(questionBank);
-                questionAnswer.setMarked(false);
-                questionAnswerService.save(questionAnswer);
-                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
-            }
-            else{
-                questionAnswer.setNumber(index);//简答和展示题的题号
-                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-                questionAnswer.setAnswer(request.getParameter("answer"));
-                questionAnswer.setStudent(student);
-                questionAnswer.setQuestionBank(questionBank);
-                questionAnswer.setMarked(false);
-                questionAnswerService.save(questionAnswer);
-                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
-            }
-        }
+//        else if (questionType == QuestionType.Show){
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+//            if (questionAnswer==null){
+//                questionAnswer = new QuestionAnswer();
+//                questionAnswer.setNumber(index);//简答和展示题的题号
+//                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+//                questionAnswer.setAnswer(request.getParameter("answer"));
+//                questionAnswer.setStudent(student);
+//                questionAnswer.setQuestionBank(questionBank);
+//                questionAnswer.setMarked(false);
+//                questionAnswerService.save(questionAnswer);
+//                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
+//            }
+//            else{
+//                questionAnswer.setNumber(index);//简答和展示题的题号
+//                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+//                questionAnswer.setAnswer(request.getParameter("answer"));
+//                questionAnswer.setStudent(student);
+//                questionAnswer.setQuestionBank(questionBank);
+//                questionAnswer.setMarked(false);
+//                questionAnswerService.save(questionAnswer);
+//                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
+//            }
+//        }
         else{
             return ResponseEntity.badRequest().header("Questiontype","No such questiontype!").body(null);
         }

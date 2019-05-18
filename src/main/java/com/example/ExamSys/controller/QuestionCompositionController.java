@@ -26,23 +26,27 @@ import java.util.Map;
 @RequestMapping("/questioncomposition")
 public class QuestionCompositionController {
 
-    @Resource
+    @Autowired
     private QuestionBankService questionBankService;
 
-    @Resource
+    @Autowired
     private QuestionShortService questionShortService;
 
-    @Resource
+    @Autowired
+    private QuestionShowService questionShowService;
+
+    @Autowired
     private QuestionChoiceService questionChoiceService;
 
-    @Resource
+    @Autowired
     private QuestionJudgmentService questionJudgmentService;
 
-    @Resource
+    @Autowired
     private QuestionListService questionListService;
 
     @Autowired
     private StudentRepository studentRepository;
+
 
 //    /**
 //     * 获取所有试卷名
@@ -112,10 +116,11 @@ public class QuestionCompositionController {
                     QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
                     question.put("type", "short");
                     question.put("question", questionShort);
-//            else{
-//                //展示题 还没做！
-//                return null;
-//            }
+                } else if (type == QuestionType.Show){
+                    QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+                    question.put("type","show");
+                    question.put("question",questionShow);
+                    return null;
                 }
                 return ResponseEntity.ok().body(question);
 

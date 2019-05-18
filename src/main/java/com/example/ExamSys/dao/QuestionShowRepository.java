@@ -11,4 +11,7 @@ public interface QuestionShowRepository extends JpaRepository<QuestionShow,Long>
     @Modifying
     @Query("delete from QuestionShow q where q.id=?1")
     void deleteById(Long id);
+
+    @Query("select q from QuestionShow q where q.id = ?1")
+    QuestionShow findByIndex(Long id);
 }

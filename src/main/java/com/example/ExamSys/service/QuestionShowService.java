@@ -12,8 +12,19 @@ public class QuestionShowService {
     @Resource
     QuestionShowRepository questionShowRepository;
 
-    public QuestionShow save(QuestionShow questionShow){
+    public QuestionShow save(QuestionShow questionShow) {
         questionShowRepository.save(questionShow);
         return questionShow;
+    }
+
+    @Transactional
+    public QuestionShow findByIndex(Long id) {
+        try {
+            return questionShowRepository.findByIndex(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+
+        }
     }
 }
