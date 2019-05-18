@@ -6,7 +6,6 @@
 function getUserAuth(username){
 	var userLogin = new FormData();
 	userLogin.append('login',username);
-	
 	$.ajax({
 		type : "POST", 
 		contentType:false,

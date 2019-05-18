@@ -33,22 +33,6 @@
 				<div class="yd_box">
 				</div>
 
-				<div>
-				<div>
-					请填写试卷名称:
-					<input id="paperName" type="text" class="input_wenbk" value="选项">
-				</div>
-				<div>
-					请选择试卷level:
-					<select id="paperLevel">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-					</select>
-					<button type="button" onclick="paperNameSub()">试卷名称提交</button>
-					</div>
-				</div>
-
 				<!--选项卡区域  模板区域---------------------------------------------------------------------------------------------------------------------------------------->
 
 				<div class="xxk_box">
@@ -248,6 +232,11 @@
 					</div>
 				</div>
 
+				<div class="pricing-action" style="background-color: white;">
+					<button class="btn btn-primary" onclick="finishCreate()"
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">完成试卷录入</button>
+
+				</div>
 
 				<div class="xxk_box" style="display: none;">
 					<div class="xxk_conn">
@@ -427,6 +416,7 @@
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
 	<script src="../js/all.js"></script>
+	<script src="../js/jquery.params.js"></script>
 
 	<script type="text/javascript">
 		$(function() {

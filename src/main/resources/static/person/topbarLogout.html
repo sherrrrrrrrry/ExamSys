@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div class="topbar">
+	<div class="topbar">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
@@ -19,12 +19,19 @@
 		</div>
 	</div>
 
-<script type="text/javascript">
-$(function() {
-	$("#signout").live("click", function() {
-		$.cookie("username", null, {path:"/"});
-	});
-});
-</script>
+	<script type="text/javascript">
+		$(function() {
+			$("#signout").live("click", function() {
+				//delCookie(username);
+				$.cookie("username", null, {path:"/"});
+			});
+		});
+
+		function delCookie(name) {
+			var expires = new Date();
+			expires.setTime(expires.getTime() - 1);
+			document.cookie = name + "=" + name + ";expires=" + expires.toGMTString();
+		}
+	</script>
 </body>
 </html>

@@ -224,9 +224,7 @@
 	<script type="text/javascript">
 		$(function() {
 			var username = $.cookie('username');
-			//var username = null;
-			$.cookie('username', username);
-			if(username!=null){
+			if(username!=null&&username!="null"){
 				$(".topbarpage").load("topbarLogin.html");
 			}else{
 				$(".topbarpage").load("topbar.html");

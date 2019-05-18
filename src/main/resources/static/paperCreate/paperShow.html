@@ -12,6 +12,11 @@
 <link href="../css/gallery-1.css" rel="stylesheet">
 <link href="../css/magnific-popup.css" rel="stylesheet">
 <link href="../css/layer.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.movie_box {
+	border: none;
+}
+</style>
 
 </head>
 <body>
@@ -19,31 +24,26 @@
 	<div class="headerpage"></div>
 	<section id="inner-headline">
 		<div class="container">
-			<div class="row" id="getPaperName">
-
-			</div>
+			<div class="row" id="getPaperName"></div>
 		</div>
 	</section>
-	<section class="section-padding gray-bg">
+	<section class="section-padding">
 
-		<div class="container" style="width: 80%; margin-top: 5em;">
+		<div class="container"
+			style="width: 70%; margin-top: 5em; background-color: #f6f6f6; border-radius: 10px;">
 
 			<div class="row">
-				
-				<div class="yd_box">
+
+				<div class="yd_box"></div>
+				<div class="pricing-action" style="background-color: inherit;">
+					<button class="btn btn-primary" id="lastQuestionanswer"
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">上一题</button>
+
+					<button class="btn btn-primary" id="nextQuestion"
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">下一题</button>
+
 				</div>
-                <div class="pricing-action" style="background-color:#f6f6f6">
-                    <button class="btn btn-primary" id="nextQuestion"
-                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">下一题</button>
 
-                </div>
-
-                <div class="pricing-action" style="background-color:#f6f6f6">
-                    <button class="btn btn-primary" id="lastQuestionanswer"
-                            style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">上一题</button>
-
-                </div>
-			
 			</div>
 		</div>
 
@@ -150,6 +150,7 @@
 				},
 				success: function(data) {
 					var questionType=data.type;
+					console.log(data);
 					var ydbox = $(".yd_box");
 					if(questionType=="singlechoice"){
 						ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="0"></div></div>');
@@ -177,7 +178,12 @@
 					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
 			            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【简答】</span></div></li>');
 			            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-			            insertOption.append('<li><label><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" value="请填写您的答案"></textarea></label></li>');
+			            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li>');
+					}else if(questionType=="show"){
+					    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="4"></div></div>');
+			            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【作品展示】</span></div></li>');
+			            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
+			            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li>');
 					}
 				}
 			});

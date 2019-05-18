@@ -155,8 +155,6 @@ function registerCheck() {
 			data: JSON.stringify(EmailUserDTO),
 		}).success(function(message) {
 			$.cookie('username',EmailUserDTO.login);
-			console.log(EmailUserDTO.login);
-			console.log(JSON.stringify(EmailUserDTO).login);
 			layertest('注册成功!');
 			console.log(message);
 			window.location.href = "../index.html";
@@ -183,7 +181,7 @@ function registerPhoneCheck() {
 			data: JSON.stringify(PhoneUserDTO),
 		}).success(function(message) {
 			layertest('注册成功!');
-			$.cookie('username',JSON.stringify(PhoneUserDTO).username);
+			$.cookie('username',PhoneUserDTO.username);
 			console.log(message);
 			window.location.href = "../index.html";
 		}).fail(function(err) {
