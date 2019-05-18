@@ -6,14 +6,20 @@ import com.example.ExamSys.domain.*;
 
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.service.*;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,25 +27,28 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/Exam")
 public class ExamAnswerController {
-    @Resource
+    @Autowired
     private QuestionListService questionListService;
 
-    @Resource
+    @Autowired
     private QuestionAnswerService questionAnswerService;
 
-    @Resource
+    @Autowired
     private QuestionBankService questionBankService;
 
     @Autowired
     private StudentRepository studentRepository;
 
-    @Resource
+    @Autowired
     private UserService userService;
 
-    @Resource
+    @Autowired
     private QuestionChoiceService questionChoiceService;
 
+    @Autowired
+    private ProductionService productionService;
     /**
+     *   备注：此方法用于选择，判断，简答。展示题用saveShow方法
      *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer
      **/
     @RequestMapping(value = "/questionanswer_save", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -181,6 +190,73 @@ public class ExamAnswerController {
         }
     }
 
+
+    /**
+     *   备注：展示题
+     *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer
+     **/
+    @RequestMapping(value = "/questionanswer_save_show", method = RequestMethod.POST)
+    public ResponseEntity saveShow(@RequestParam("name") String name, @RequestParam("username") String username,@RequestParam("index") int index, @RequestParam("file") MultipartFile[] files){
+
+        //确认考生
+        Optional<User> user = userService.findOneByLogin(username);
+        if (!user.isPresent()){
+            return ResponseEntity.badRequest().header("User","No such user!").body(null);
+        }
+        Student student = studentRepository.findStuByUser(user.get());
+        if (student== null){
+            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
+        }
+        //确认试卷
+        QuestionBank questionBank = questionBankService.findByName(name);
+        if (questionBank == null){
+            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+        }
+        //确认试题
+        QuestionList questionList = questionListService.findByNameandNumber(name,index);
+        if (questionList==null){
+            return ResponseEntity.badRequest().header("Question","No such question!").body(null);
+        }
+
+        for (MultipartFile file: files) {
+            File upl = null;
+            String url = "";
+            try {
+                upl = File.createTempFile(username + "_", file.getOriginalFilename());
+                IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+                url = productionService.upLoadStudentProduction(username, upl);
+                Student stu = studentRepository.findStuByUsername(username);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().header("File","File upload failed!").body(null);
+            }
+
+                QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+            if (questionAnswer==null){
+                questionAnswer = new QuestionAnswer();
+                questionAnswer.setNumber(index);//简答和展示题的题号
+                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+                questionAnswer.setAnswer(url);//答案即作品存储的地址
+                questionAnswer.setStudent(student);
+                questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
+                questionAnswerService.save(questionAnswer);
+                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
+            }
+            else{
+                questionAnswer.setNumber(index);//简答和展示题的题号
+                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+                questionAnswer.setAnswer(url);
+                questionAnswer.setStudent(student);
+                questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
+                questionAnswerService.save(questionAnswer);
+                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
+            }
+        }
+        return ResponseEntity.badRequest().header("Production","Production upload failed!").body(null);
+
+    }
     public String answerSave(String current_answer, int index, String answer){
         String[] answers = answer.split(";");
         if (answers.length<index){

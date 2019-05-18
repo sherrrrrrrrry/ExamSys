@@ -59,11 +59,11 @@ public class ProductionService {
 			return null;
 		}
 		
-		User user = studentRepository.findUserByLogin(userName);
-		Production production = new Production();
-		production.setUser(user);
-		production.setProductionUrl(url);
-		productionRepository.save(production);
+//		User user = studentRepository.findUserByLogin(userName);
+//		Production production = new Production();
+//		production.setUser(user);
+//		production.setProductionUrl(url);
+//		productionRepository.save(production);
 		logger.info("user: {} save the production successfully Name: {}", userId, file.getName());
 		return url;
 	}
