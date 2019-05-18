@@ -95,23 +95,6 @@
 
 			paperListTable();
 
-			/*$.ajax({　　
-				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
-				contentType: "application/json",
-				url: '/questioncomposition/questionbank_Name', // 目标地址
-				error: function(data) {
-					console.log(data);　　
-				},
-				success: function(data) {
-					console.log(JSON.stringify(data));
-					$.each(data,function(i){
-						
-						$("#paperList tbody").append("<tr><td>"+i+"</td><td>"+data[i]+"</td><td>教师名字</td><td><button type='button' onclick='getPaperByName("+JSON.stringify(data[i])+")'>去考试</a></td></tr>");
-			         });
-				}
-			});*/
-
 			$("#paperCreate").click(function() {
 				window.location.href = "paperCreate.html";
 			});
@@ -145,7 +128,7 @@
 			}];
 			$('#paperList').dataTable({
 				data : data,
-				"ajax" : '/questioncomposition/questionbank_Name',
+				//"ajax" : '/questioncomposition/questionbank_Name',
 				"searching" : true,//是否支持搜索
 				autoFill : true,
 				bAutoWidth : true,

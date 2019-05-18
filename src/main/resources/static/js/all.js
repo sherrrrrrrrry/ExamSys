@@ -37,3 +37,9 @@ function getUserAuth(username){
 }
 
 
+function reloadData(curTable,dataList) {
+    var currentPage = curTable.page()
+    curTable.clear()
+    curTable.rows.add(dataList)
+    curTable.page(currentPage).draw( false );
+}

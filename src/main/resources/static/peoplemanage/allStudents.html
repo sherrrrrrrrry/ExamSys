@@ -113,13 +113,25 @@
 			
 			
 			/**
-			 * 查看试卷
+			 * 删除学生
 			 */
-			$('a#deleteStudent').click(function() {
+			$('a#deleteStudent').live("click",function() {
 				var data = $('#allStudents').DataTable().row($(this).parents('tr')).data();
-				console.log(data);
-				alert("删除学生：" + data.name);
-				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+				var deleteStudentData = [];
+				deleteStudentData.push(data.login);
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+					data: JSON.stringify(deleteStudentData),
+					url: '/admin/deleteStudentList', // 目标地址
+					error: function(data) {
+						console.log(data);　　
+					},
+					success: function(data) {
+						reloadStudents();
+					}
+				});
 			});
 
 
@@ -175,6 +187,31 @@
 
 				]
 
+			});
+		}
+		
+		function reloadStudents(){
+			var curTable= $('#allStudents').DataTable();
+			
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/admin/getStudentList', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].phoneNumber){
+							data[i].phoneNumber="暂无";
+						}
+						if(!data[i].email){
+							data[i].email="暂无";
+						}
+					}
+					reloadData(curTable,data);
+				}
 			});
 		}
 	</script>

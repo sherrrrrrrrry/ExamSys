@@ -57,7 +57,7 @@
 						</table>
 					</div>
 					<div class="xxk_xzqh_box notteachers " style="display: none">
-					<table id="notTeachers" style="background-color: #f6f6f6;" cellspacing="0" width="100%">
+						<table id="notTeachers" style="background-color: #f6f6f6;" cellspacing="0" width="100%">
 							<thead>
 								<tr>
 									<th>姓名</th>
@@ -104,6 +104,7 @@
 	<script src="../js/all.js"></script>
 
 	<script type="text/javascript">
+	var teachers,notTeachers;
 		$(function() {
 			var username = $.cookie('username');
 			if (username != null) {
@@ -124,66 +125,62 @@
 				$(".xxk_conn").children(".xxk_xzqh_box").eq(xxkjs).show().siblings().hide();
 			});
 			
-			$.ajax({　　
-				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
-				contentType: "application/json",
-				url: '/admin/getTeacherList', // 目标地址
-				error: function(data) {
-					console.log(data);　　
-				},
-				success: function(data) {
-					for(var i=0;i<data.length;i++){
-						if(!data[i].phoneNumber){
-							data[i].phoneNumber="暂无";
-						}
-						if(!data[i].email){
-							data[i].email="暂无";
-						}
-					}
-					teachersListTable(data);
-				}
-			});
+
+			loadTeacherList();
+			loadNotTeacher();	
 			
-			$.ajax({　　
-				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
-				contentType: "application/json",
-				url: '/admin/getUnactivatedList', // 目标地址
-				error: function(data) {
-					console.log(data);　　
-				},
-				success: function(data) {
-					for(var i=0;i<data.length;i++){
-						if(!data[i].phoneNumber){
-							data[i].phoneNumber="暂无";
-						}
-						if(!data[i].email){
-							data[i].email="暂无";
-						}
+			/**
+			 * 删除教师
+			 */
+			$('a#deleteTeacher').live("click",function() {
+				var data = $('#activatedTeachers').DataTable().row($(this).parents('tr')).data();
+				var deleteTeacherData = [];
+				deleteTeacherData.push(data.login);
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+					data: JSON.stringify(deleteTeacherData),
+					url: '/admin/deleteTeacherList', // 目标地址
+					error: function(data) {
+						console.log(data);　　
+					},
+					success: function(data) {
+						reloadTeachers();
 					}
-					notTeachersTable(data);
-				}
+				});
 			});
 			
 			/**
-			 * 删除激活后的教师
+			 * 激活教师
 			 */
-			$('a#deleteTeacher').click(function() {
-				var data = $('#activatedTeachers').DataTable().row($(this).parents('tr')).data();
-				console.log(data);
-				alert("删除教师：" + data.name);
-				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+			$('a#activate').live("click",function() {
+				var data = $('#notTeachers').DataTable().row($(this).parents('tr')).data();
+				var activateData = [];
+				activateData.push(data.login);
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+					data: JSON.stringify(activateData),
+					url: '/admin/activate', // 目标地址
+					error: function(data) {
+						console.log(data);　　
+					},
+					success: function(data) {
+						reloadNotTeachers();
+						reloadTeachers();
+					}
+				});
 			});
 
 
 		});
-
+		
 		function teachersListTable(teachersData) {
 			
 			$('#activatedTeachers').dataTable({
 				data : teachersData,
-				//"ajax" : '/admin/getStudentList',
 				"searching" : true,//是否支持搜索
 				autoFill : true,
 				bAutoWidth : true,
@@ -202,6 +199,9 @@
 						"sLast" : "尾页"
 					}
 				},
+				buttons: [
+				          'copy', 'excel', 'pdf'
+				      ],
 				"pagingType" : "full_numbers",
 				"info" : false,//是否显示页脚信息
 
@@ -223,10 +223,31 @@
 					"data" : null,
 					"bSortable" : false,
 					"defaultContent" : "<p><a id=\"deleteTeacher\" href=\"#\">删除</a></p>"
+				}]
+
+			});
+		}
+		
+		function loadTeacherList(){
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/admin/getTeacherList', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].phoneNumber){
+							data[i].phoneNumber="暂无";
+						}
+						if(!data[i].email){
+							data[i].email="暂无";
+						}
+					}
+					teachersListTable(data);
 				}
-
-				]
-
 			});
 		}
 		
@@ -274,11 +295,85 @@
 					"class" : "but_xq",
 					"data" : null,
 					"bSortable" : false,
-					"defaultContent" : "<p><a id=\"activateTeacher\" href=\"#\">通过</a></p>"
+					"defaultContent" : "<p><a id=\"activate\" href=\"#\">通过</a></p>"
 				}
 
 				]
 
+			});
+		}
+		
+		function loadNotTeacher(){
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/admin/getUnactivatedList', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].phoneNumber){
+							data[i].phoneNumber="暂无";
+						}
+						if(!data[i].email){
+							data[i].email="暂无";
+						}
+					}
+					notTeachersTable(data);
+				}
+			});
+		}
+	
+		
+		function reloadTeachers(){
+			var curTable= $('#activatedTeachers').DataTable();
+			
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/admin/getTeacherList', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].phoneNumber){
+							data[i].phoneNumber="暂无";
+						}
+						if(!data[i].email){
+							data[i].email="暂无";
+						}
+					}
+					reloadData(curTable,data);
+				}
+			});
+		}
+		
+		function reloadNotTeachers(){
+			var curTable= $('#notTeachers').DataTable();
+			
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/admin/getUnactivatedList', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].phoneNumber){
+							data[i].phoneNumber="暂无";
+						}
+						if(!data[i].email){
+							data[i].email="暂无";
+						}
+					}
+					reloadData(curTable,data);
+				}
 			});
 		}
 		
