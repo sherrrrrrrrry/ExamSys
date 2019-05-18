@@ -26,5 +26,3 @@
 logs/*.log
 logs/
 /logs/
-/target/
-target/

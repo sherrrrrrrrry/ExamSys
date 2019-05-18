@@ -106,7 +106,7 @@
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
 				console.log(data);
 				alert("查看试卷：" + data.paperID + "," + data.paperName);
-				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+				window.location.href = "paperShow.html?paperName="+ data.paperName;
 			});
 
 
@@ -119,7 +119,7 @@
 		function paperListTable() {
 			var data = [{
 				"paperID" : "1",
-				"paperName" : "Java",
+				"paperName" : "",
 				"paperLevel" : "3"
 			}, {
 				"paperID" : "2",

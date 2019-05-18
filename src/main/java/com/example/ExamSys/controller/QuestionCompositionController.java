@@ -4,6 +4,7 @@ import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.service.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +73,9 @@ public class QuestionCompositionController {
         if (bankname == null){
             ResponseEntity.ok().body(null);//如果所有试卷都做过了，就返回空
         }
-        return ResponseEntity.ok().body(bankname);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("bankname",bankname);
+        return ResponseEntity.ok().body(jsonObject.toString());
     }
 
     /**

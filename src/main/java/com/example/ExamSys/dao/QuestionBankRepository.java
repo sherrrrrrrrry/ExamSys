@@ -19,7 +19,10 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Long
 
     @Query("select name from QuestionBank")
     List<String> getBankNames();
-    
+
+    @Query("select q from QuestionBank q")
+    List<QuestionBank> getQuestionBanklist();
+
     QuestionBank findOneById(Long id);
 
     @Query("select q.name from QuestionBank q where q.level = ?1")

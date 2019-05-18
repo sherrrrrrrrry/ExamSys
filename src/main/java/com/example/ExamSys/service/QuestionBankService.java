@@ -40,6 +40,8 @@ public class QuestionBankService {
     public List<String> getBankNames(){return questionBankRepository.getBankNames();}
 
     @Transactional
+    public List<QuestionBank> getQuestionBanklist(){return questionBankRepository.getQuestionBanklist();}
+    @Transactional
     public String getBankNamesbyLevel_Random(int level,Long stuID){
       //  List<String> banknames = questionBankRepository.getBankNamesbyLevel(level);
         List<Long> bankIDs = questionBankRepository.getBankIdsbyLevel(level);

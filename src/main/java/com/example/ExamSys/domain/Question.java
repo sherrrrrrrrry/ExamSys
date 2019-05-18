@@ -2,6 +2,9 @@ package com.example.ExamSys.domain;
 
 import com.example.ExamSys.domain.enumeration.QuestionType;
 
+
+/**
+ * 临时*/
 public class Question {
 
     private Long id;
