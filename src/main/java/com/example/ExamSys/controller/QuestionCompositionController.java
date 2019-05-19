@@ -142,7 +142,7 @@ public class QuestionCompositionController {
 
 
         } else {
-            return ResponseEntity.badRequest().header("question", "No such question!").body(null);
+            return ResponseEntity.ok().header("question", "No such question!").body(null);
         }
 
     }
