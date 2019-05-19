@@ -174,7 +174,7 @@ public class AccountController {
 										Student student = new Student();
 										student.setUser(user);
 										student.setAge(0);
-										student.setLevel(0);
+										student.setLevel(1);
 										studentRepository.save(student);
 									} else {
 										User user = userService.createUserPhone(userDTO.getLogin(),

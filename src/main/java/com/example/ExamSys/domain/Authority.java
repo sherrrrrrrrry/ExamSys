@@ -9,6 +9,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.security.core.GrantedAuthority;
+
 @Entity
 @Table(name = "authority")
 //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -67,4 +69,6 @@ public class Authority implements Serializable{
             "name='" + name + '\'' +
             "}";
     }
+	
+	
 }
