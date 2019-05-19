@@ -131,7 +131,6 @@ public class QuestionCompositionController {
                     QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
                     question.put("type","show");
                     question.put("question",questionShow);
-                    return null;
                 }
                 return ResponseEntity.ok().body(question);
 

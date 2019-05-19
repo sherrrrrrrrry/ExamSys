@@ -126,7 +126,7 @@ public class QuestionBankController {
     }
 
     /**
-     * 添加作品展示题：content = , type = , index =
+     * 添加作品展示题：content = , type = , index = , name =
      */
     @RequestMapping(value ="/questionshow_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity saveShow(HttpServletRequest request){

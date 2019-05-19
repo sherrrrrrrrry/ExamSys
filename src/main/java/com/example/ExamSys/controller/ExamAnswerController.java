@@ -193,7 +193,7 @@ public class ExamAnswerController {
 
     /**
      *   备注：展示题
-     *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer
+     *   保存答案 题号：index, 用户名：username, 试卷名:name, 作品：file
      **/
     @RequestMapping(value = "/questionanswer_save_show", method = RequestMethod.POST)
     public ResponseEntity saveShow(@RequestParam("name") String name, @RequestParam("username") String username,@RequestParam("index") int index, @RequestParam("file") MultipartFile[] files){
@@ -218,21 +218,23 @@ public class ExamAnswerController {
             return ResponseEntity.badRequest().header("Question","No such question!").body(null);
         }
 
-        for (MultipartFile file: files) {
-            File upl = null;
-            String url = "";
-            try {
-                upl = File.createTempFile(username + "_", file.getOriginalFilename());
-                IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
-                url = productionService.upLoadStudentProduction(username, upl);
-                Student stu = studentRepository.findStuByUsername(username);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity.badRequest().header("File","File upload failed!").body(null);
-            }
 
-                QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
-            if (questionAnswer==null){
+        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+        String url = "";
+        if (questionAnswer==null) {
+
+            for (MultipartFile file : files) {
+                File upl = null;
+
+                try {
+                    upl = File.createTempFile(username + "_", file.getOriginalFilename());
+                    IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+                    url = productionService.upLoadStudentProduction(username, upl);
+                    Student stu = studentRepository.findStuByUsername(username);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.badRequest().header("File", "File upload failed!").body(null);
+                }
                 questionAnswer = new QuestionAnswer();
                 questionAnswer.setNumber(index);//简答和展示题的题号
                 questionAnswer.setQuestiontype("2");//将展示的类型设为2
@@ -241,9 +243,10 @@ public class ExamAnswerController {
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
-                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
+                return ResponseEntity.ok().header("attention", "new answer!").body(questionAnswer);
             }
-            else{
+        }
+        else{
                 questionAnswer.setNumber(index);//简答和展示题的题号
                 questionAnswer.setQuestiontype("2");//将展示的类型设为2
                 questionAnswer.setAnswer(url);
@@ -252,8 +255,8 @@ public class ExamAnswerController {
                 questionAnswer.setMarked(false);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
-            }
         }
+
         return ResponseEntity.badRequest().header("Production","Production upload failed!").body(null);
 
     }
