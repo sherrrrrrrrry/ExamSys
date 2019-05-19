@@ -237,9 +237,9 @@ public class ExamMarkingController {
     }
 
     /**
-     * 简答和展示题分数保存 试卷名：name  用户名：username 题号：index 分数：score
+     * 简答分数保存 试卷名：name  用户名：username 题号：index 分数：score
      * **/
-    @RequestMapping(value = "/Marking_sa ve", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/Marking_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity saveSSAnswer(HttpServletRequest request) {
         String name = request.getParameter("name");
         //确认考生

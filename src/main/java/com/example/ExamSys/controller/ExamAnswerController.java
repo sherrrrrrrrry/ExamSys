@@ -1,6 +1,7 @@
 package com.example.ExamSys.controller;
 
 
+import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.domain.*;
 
@@ -161,30 +162,32 @@ public class ExamAnswerController {
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
         }
-//        else if (questionType == QuestionType.Show){
-//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
-//            if (questionAnswer==null){
-//                questionAnswer = new QuestionAnswer();
-//                questionAnswer.setNumber(index);//简答和展示题的题号
-//                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-//                questionAnswer.setAnswer(request.getParameter("answer"));
-//                questionAnswer.setStudent(student);
-//                questionAnswer.setQuestionBank(questionBank);
-//                questionAnswer.setMarked(false);
-//                questionAnswerService.save(questionAnswer);
-//                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
-//            }
-//            else{
-//                questionAnswer.setNumber(index);//简答和展示题的题号
-//                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-//                questionAnswer.setAnswer(request.getParameter("answer"));
-//                questionAnswer.setStudent(student);
-//                questionAnswer.setQuestionBank(questionBank);
-//                questionAnswer.setMarked(false);
-//                questionAnswerService.save(questionAnswer);
-//                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
-//            }
-//        }
+        else if (questionType == QuestionType.Show){
+            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+            if (questionAnswer==null){
+                questionAnswer = new QuestionAnswer();
+                questionAnswer.setNumber(index);//简答和展示题的题号
+                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+                questionAnswer.setAnswer(request.getParameter("answer"));
+                questionAnswer.setStudent(student);
+                questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
+                questionAnswerService.save(questionAnswer);
+                return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
+            }
+            else{
+
+                String answer = questionAnswer.getAnswer();
+                questionAnswer.setNumber(index);//简答和展示题的题号
+                questionAnswer.setQuestiontype("2");//将展示的类型设为2
+                questionAnswer.setAnswer(updateAnswer(answer,request.getParameter("answer")));//更新展示题答案中的文字部分
+                questionAnswer.setStudent(student);
+                questionAnswer.setQuestionBank(questionBank);
+                questionAnswer.setMarked(false);
+                questionAnswerService.save(questionAnswer);
+                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
+            }
+        }
         else{
             return ResponseEntity.badRequest().header("Questiontype","No such questiontype!").body(null);
         }
@@ -220,44 +223,56 @@ public class ExamAnswerController {
 
 
         QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
-        String url = "";
+        Student stu = studentRepository.findStuByUsername(username);
         if (questionAnswer==null) {
-
+            String url = "";
             for (MultipartFile file : files) {
                 File upl = null;
 
                 try {
                     upl = File.createTempFile(username + "_", file.getOriginalFilename());
                     IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
-                    url = productionService.upLoadStudentProduction(username, upl);
-                    Student stu = studentRepository.findStuByUsername(username);
+                    url += productionService.upLoadStudentProduction(username, upl);
+                    url += "<==>";
                 } catch (IOException e) {
                     e.printStackTrace();
                     return ResponseEntity.badRequest().header("File", "File upload failed!").body(null);
                 }
-                questionAnswer = new QuestionAnswer();
-                questionAnswer.setNumber(index);//简答和展示题的题号
-                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-                questionAnswer.setAnswer(url);//答案即作品存储的地址
-                questionAnswer.setStudent(student);
-                questionAnswer.setQuestionBank(questionBank);
-                questionAnswer.setMarked(false);
-                questionAnswerService.save(questionAnswer);
-                return ResponseEntity.ok().header("attention", "new answer!").body(questionAnswer);
             }
-        }
-        else{
-                questionAnswer.setNumber(index);//简答和展示题的题号
-                questionAnswer.setQuestiontype("2");//将展示的类型设为2
-                questionAnswer.setAnswer(url);
-                questionAnswer.setStudent(student);
-                questionAnswer.setQuestionBank(questionBank);
-                questionAnswer.setMarked(false);
-                questionAnswerService.save(questionAnswer);
-                return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
+            questionAnswer = new QuestionAnswer();
+            questionAnswer.setNumber(index);//简答和展示题的题号
+            questionAnswer.setQuestiontype("2");//将展示的类型设为2
+            questionAnswer.setAnswer(url);//答案即作品存储的地址
+            questionAnswer.setStudent(student);
+            questionAnswer.setQuestionBank(questionBank);
+            questionAnswer.setMarked(false);
+            questionAnswerService.save(questionAnswer);
+            return ResponseEntity.ok().header("attention", "new answer!").body(questionAnswer);
         }
 
-        return ResponseEntity.badRequest().header("Production","Production upload failed!").body(null);
+        else {//已有答案，则覆盖
+            String url = "";
+            for (MultipartFile file : files) {
+                File upl = null;
+                try {
+                    upl = File.createTempFile(username + "_", file.getOriginalFilename());
+                    IOUtils.copy(file.getInputStream(), new FileOutputStream(upl));
+                    url += productionService.upLoadStudentProduction(username, upl);
+                    url += "<==>";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.badRequest().header("File", "File upload failed!").body(null);
+                }
+            }
+            questionAnswer.setNumber(index);//简答和展示题的题号
+            questionAnswer.setQuestiontype("2");//将展示的类型设为2
+            questionAnswer.setAnswer(updateProduction(questionAnswer.getAnswer(),url));
+            questionAnswer.setStudent(student);
+            questionAnswer.setQuestionBank(questionBank);
+            questionAnswer.setMarked(false);
+            questionAnswerService.save(questionAnswer);
+            return ResponseEntity.ok().header("attention", " answer is updated!").body(questionAnswer);
+        }
 
     }
     public String answerSave(String current_answer, int index, String answer){
@@ -275,6 +290,37 @@ public class ExamAnswerController {
             }
             return answer;
         }
+    }
+
+    /**
+     * 用于更新展示题中的文字部分**/
+    public String updateAnswer(String content, String answer){
+        String[] answers = content.split("<==>");
+        String result = "";
+        result+=answer;
+        result+="<==>";
+        for (String temp:answers){
+            if (temp.contains(Constants.STUDENT_PRODUCTION_PATH)){//包含作品路径
+                result+=temp;
+                result+="<==>";
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 用于更新展示题中的作品部分**/
+    public String updateProduction(String content, String url){
+        String[] answers = content.split("<==>");
+        String result = "";
+        for (String temp:answers){
+            if (!temp.contains(Constants.STUDENT_PRODUCTION_PATH)){//不包含作品路径，则为展示题中的文字部分
+                result+= temp;
+                result+="<==>";
+            }
+        }
+        result+=url;
+        return result;
     }
 
 
