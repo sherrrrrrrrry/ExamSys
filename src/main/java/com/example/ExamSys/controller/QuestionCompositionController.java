@@ -5,6 +5,8 @@ import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.service.*;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/questioncomposition")
 public class QuestionCompositionController {
+
+    private final Logger LOG = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
     private QuestionBankService questionBankService;
@@ -70,16 +74,23 @@ public class QuestionCompositionController {
      * POST：username*/
     @RequestMapping(value = "/getBankName",method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity getBankName_random(HttpServletRequest request){
+        LOG.info("正在分配试卷");
         String username = request.getParameter("username");
         int level = studentRepository.getLevel(username);
         Long stuID = studentRepository.getIDbyUsername(username);
         String bankname = questionBankService.getBankNamesbyLevel_Random(level,stuID);//随机获得该等级下的一张试卷
         if (bankname == null){
-            ResponseEntity.ok().body(null);//如果所有试卷都做过了，就返回空
+            return ResponseEntity.ok().body(null);//如果所有试卷都做过了，就返回空
         }
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("bankname",bankname);
-        return ResponseEntity.ok().body(jsonObject.toString());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("bankname",bankname);
+            jsonObject.put("level",level);
+            return ResponseEntity.ok().body(jsonObject.toString());
+        }catch (Exception e){
+            LOG.error("创建JSONObject 失败！");
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     /**
