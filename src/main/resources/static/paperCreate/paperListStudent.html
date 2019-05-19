@@ -92,45 +92,35 @@
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
 				contentType: "application/json",
-				url: '/questioncomposition/questionbank_Name', // 目标地址
+				url: '/questioncomposition/getBankName?username='+username, // 目标地址
 				error: function(data) {
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(data);
-					for(var i=0;i<data.length;i++){
-						if(!data[i].paperID){
-							data[i].paperID=i+1;
+					
+					var studentPaper=[];
+					studentPaper.push(data);
+					for(var i=0;i<studentPaper.length;i++){
+						if(!studentPaper[i].paperID){
+							studentPaper[i].paperID=i+1;
 						}
 					}
-					paperListTable(data);
+					console.log(studentPaper);
+					paperListTable(studentPaper);
 				}
 			});
 
 			/**
 			 * 参加测试
 			 */
-			$('a#goTest').click(function() {
+			$('a#goTest').live("click",function() {
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
-				window.location.href = "paperShow.html?paperName="+ data.paperName;
+				window.location.href = "paperShow.html?paperName="+ data.bankname;
 			});
 
 		});
 
-		function getPaperByName(paperName) {
-			window.location.href = "paperShow.html?paperName=" + paperName;
-		}
-
 		function paperListTable(studentsPaper) {
-			/*var studentsPaper = [{
-				"paperID" : "1",
-				"paperName" : "试卷一",
-				"paperLevel" : "3"
-			}, {
-				"paperID" : "2",
-				"paperName" : "试卷二",
-				"paperLevel" : "2"
-			}];*/
 			$('#paperList').dataTable({
 				data : studentsPaper,
 				"searching" : true,//是否支持搜索
@@ -159,9 +149,9 @@
 				columns : [{
 					"data" : "paperID"
 				}, {
-					"data" : "paperName"
+					"data" : "bankname"
 				}, {
-					"data" : "paperLevel"
+					"data" : "level"
 				}, {
 					"data" : "viewPaperButton"
 				}],
