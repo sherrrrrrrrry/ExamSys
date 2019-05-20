@@ -98,15 +98,18 @@
 		function login() {
 			var userLoginDTO = $('#loginForm').serializeObject();
 			var username = document.getElementById("loginname").value;
+			var password = document.getElementById("password").value;
 			$.ajax({
 				type : "POST", // 用POST方式传输
 				dataType : "JSON", // 数据格式:JSON
 				contentType : "application/json",
-				url : "/login",
-				data : JSON.stringify(userLoginDTO),
+				url : "/login?username="+username+"&password="+password,
 			}).success(function(message) {
-				$.cookie('username', username);
-				window.location.href = "index.html";
+				if(message != null && message != "null"){
+					$.cookie('username', username);
+					window.location.href = "index.html";
+				}
+				
 			}).fail(function(err) {
 				console.log(err);
 			})
