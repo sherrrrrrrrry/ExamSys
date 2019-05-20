@@ -201,6 +201,7 @@
 			var pic = new FormData();
 			pic.append('login',username);
 			pic.append('file',personalpic);
+			console.log(personalpic);
 			$.ajax({
 				type : "POST", // 用POST方式传输
 				contentType:false,

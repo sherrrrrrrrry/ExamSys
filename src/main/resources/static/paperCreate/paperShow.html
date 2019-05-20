@@ -41,9 +41,9 @@
 
 					<button class="btn btn-primary" id="nextQuestion"
 						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">下一题</button>
-					
+
 					<button class="btn btn-primary" id="submitPaper"
-						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);display:none;">提交</button>
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84); display: none;">提交</button>
 
 				</div>
 
@@ -96,7 +96,13 @@
 			$("#nextQuestion").click(function() {
                 var questionType = $(".dx_box").attr("data-t");
 				var answer = getAnswer(questionType);
-				sendAnswer(username,name,index,answer);
+				if(questionType=="4"){
+					sendAnswer(username,name,index,answer);
+					sendFiles(username,name,index);
+				}else{
+					sendAnswer(username,name,index,answer);
+				}
+				
 				$(".yd_box").empty();
 				index++;
 				getQuestion(name,index);
@@ -114,6 +120,7 @@
 					receiveAnswer(username,name,index);
 				}
 			});
+			
 			
 			
 		});
@@ -138,7 +145,7 @@
             	var answer = $('.movie_box input[name="a"]:checked').val();
             	return answer;
             }
-            if (questionType == "3") {
+            if (questionType == "3"||questionType == "4") {
             	var answer = $('.movie_box textarea[name=""]').val();
             	return answer;
             }
@@ -154,6 +161,9 @@
 				},
 				success: function(data) {
 					if(data!=null&&data!="null"){
+						$("#nextQuestion").css("display","inline-block");
+						$("#submitPaper").css("display","none");
+						
 						var questionType=data.type;
 						var ydbox = $(".yd_box");
 						if(questionType=="singlechoice"){
@@ -187,9 +197,11 @@
 						    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="4"></div></div>');
 				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data.question.content + '</i><span class="tip_wz">【作品展示】</span></div></li>');
 				            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
-				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li><li><div>上传作品图片：<input type="file" id="showFiles" accept="image/gif, image/jpeg, image/png, image/jpg" /><div id="showFilesPreview"><ul></ul></div></div></li>');
+				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li><li><form method="post" action="" id="passForm" enctype="multipart/form-data" multipart=""><div id="Pic_pass"><p >请上传作品照片(大小不超过4M，最多5张) </p><p></p><div class="picDiv"><div class="addImages"><input type="file" class="file" id="fileInput" onchange="filesShow(this)" multiple="" accept="image/png, image/jpeg, image/gif, image/jpg"><div class="text-detail"><span>+</span><p>点击上传</p></div></div></div></div><div class="msg" style="display: none;"></div></form></li>');
 				        }
 					}else{
+						var ydbox = $(".yd_box");
+						ydbox.append('<div style="width:200px;height:100px;font-size:20px;margin:0 auto;text-align:center;"><span>您的试卷已全部完成！</span></div>');
 						$("#nextQuestion").css("display","none");
 						$("#submitPaper").css("display","inline-block");
 					}
@@ -210,6 +222,33 @@
 				}
 				});
 		}
+		
+		var files=[];
+		function sendFiles(username,name,index){
+			var sendFilesAll = new FormData();
+			sendFilesAll.append('username',username);
+			sendFilesAll.append('name',name);
+			sendFilesAll.append('index',index);
+			for(var i=0;i<files.length;i++){
+				sendFilesAll.append('files',files[i]);
+			}
+			
+			
+		    $.ajax({　　
+				type: "POST", // 用POST方式传输
+				contentType:false,
+	            processData:false,
+				data: sendFilesAll,
+				url: '/Exam/questionanswer_save_show', // 目标地址
+				error: function(data) {
+					console.log(data);
+				},
+				success:function(data){
+					console.log("success");
+				}
+				});
+		}
+		
 
 		function receiveAnswer(username,name,index){
 			$.ajax({
@@ -218,10 +257,8 @@
 				data:{"username":username,"name":name,"index":index},
 				url:'/Exam/questionanswer_show',
 				error: function(data){
-					console.log('无答案');
 				},
 				success: function(data){
-					console.log(data);
 					if(data!=null&&data!="null"){
 						var answer = data.answer;
 						var questionType = $(".dx_box").attr("data-t");
@@ -255,33 +292,56 @@
 			
 		}
 		
-		
-		function showFiles(){
-			var fileInput = document.getElementById('showFiles'),
-			allFilesPreview = document.getElementById('showFilesPreview');
-			//allFilesPreview.append()
-			preview.style.backgroundImage = '';
-		    var file = fileInput.files[0];
-		    var size = file.size;
-		    if(size >= 1*1024*1024){
-		    	alert('文件请小于1M!');
-		        return false;
-		    }
-		    if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
-		    	alert('不是有效的图片文件!');
-		        return;
-		    }
-		    // 读取文件:
-		    var reader = new FileReader();
-		    reader.onload = function(e) {
-		    　		var data = e.target.result; 
-		    　		preview.style.display = 'block';
-		    　		preview.style.backgroundImage = 'url(' + data + ')';
-		    };
-		    reader.readAsDataURL(file);
-		    console.log(file);
+		var fileNum=1;
+		function filesShow(){
+			console.log(fileNum);
+			if(fileNum<6){
+		    	fileNum++;
+				//获取选择图片的对象
+				var userAgent = navigator.userAgent; //用于判断浏览器类型
+			    var docObj = document.getElementById('fileInput');
+			    var picDiv = $("#fileInput").parents(".picDiv");
+			    //得到所有的图片文件
+			    var fileList = docObj.files;
+			    files.push(fileList[0]);
+			    //循环遍历
+			    for (var i = 0; i < fileList.length; i++) {
+			        //动态添加html元素
+			        var picHtml = "<div class='imageDiv' > <img id='img" + fileList[i].name + "' /> <div class='cover'><i class='delbtn'>删除</i></div></div>";
+			        picDiv.prepend(picHtml);
+			        //获取图片imgi的对象
+			        var imgObjPreview = document.getElementById("img" + fileList[i].name);
+			        if (fileList && fileList[i]) {
+			            //图片属性
+			            imgObjPreview.style.display = 'block';
+			            imgObjPreview.style.width = '130px';
+			            imgObjPreview.style.height = '130px';
+			            if (userAgent.indexOf('MSIE') == -1) {
+			                //IE以外浏览器
+			                imgObjPreview.src = window.URL.createObjectURL(docObj.files[i]); //获取上传图片文件的物理路径;
+			            } else {
+			                //IE浏览器
+			                if (docObj.value.indexOf(",") != -1) {
+			                    var srcArr = docObj.value.split(",");
+			                    imgObjPreview.src = srcArr[i];
+			                } else {
+			                    imgObjPreview.src = docObj.value;
+			                }
+			            }
+			        }
+			    }
+
+			    /*删除功能*/
+			    $(".delbtn").click(function() {
+			        var _this = $(this);
+			        _this.parents(".imageDiv").remove();
+			        fileNum--;
+			    });
+			}else{
+				alert("作品照片最多上传5张！");
+			}
+			
 		}
-		
 	</script>
 </body>
 </html>

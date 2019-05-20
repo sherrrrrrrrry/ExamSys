@@ -199,8 +199,9 @@ public class ExamAnswerController {
      *   保存答案 题号：index, 用户名：username, 试卷名:name, 作品：file
      **/
     @RequestMapping(value = "/questionanswer_save_show", method = RequestMethod.POST)
-    public ResponseEntity saveShow(@RequestParam("name") String name, @RequestParam("username") String username,@RequestParam("index") int index, @RequestParam("file") MultipartFile[] files){
-
+    public ResponseEntity saveShow(@RequestParam("name") String name, @RequestParam("username") String username,@RequestParam("index") int index, @RequestParam("files") MultipartFile[] files){
+    	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    	System.out.println(files.length);
         //确认考生
         Optional<User> user = userService.findOneByLogin(username);
         if (!user.isPresent()){
@@ -226,6 +227,10 @@ public class ExamAnswerController {
         Student stu = studentRepository.findStuByUsername(username);
         if (questionAnswer==null) {
             String url = "";
+            if(files==null){
+            	return ResponseEntity.ok().header("attention", "no file!").body(null);
+            }
+            	
             for (MultipartFile file : files) {
                 File upl = null;
 
