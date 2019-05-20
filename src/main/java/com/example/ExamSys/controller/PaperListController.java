@@ -42,6 +42,7 @@ public class PaperListController {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("questionName",questionBankList.get(i).getName());
                     jsonObject.put("level",questionBankList.get(i).getLevel());
+                    jsonArray.put(jsonObject);
                 }catch (Exception e){
                     e.printStackTrace();
                     log.info(e.toString());

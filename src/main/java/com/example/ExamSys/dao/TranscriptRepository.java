@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.example.ExamSys.domain.Transcript;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface TranscriptRepository extends JpaRepository<Transcript, Long>{
@@ -19,4 +20,7 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Long>{
 
 	@Query("select t from Transcript t where t.questionBank = (select q from QuestionBank q where q.name = ?1) and t.student =(select s from Student s where s.name = ?2) and t.type = ?3")
 	Optional<Transcript> findOne(String bankname, String stuname, String type);
+
+	@Query("select t.questionBank from Transcript t where t.student.user.login = ?1")
+	Set<QuestionBank> findQuestionBank(String username);
 }
