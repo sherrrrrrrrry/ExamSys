@@ -32,8 +32,25 @@ public class QuestionBankService {
     }
 
     @Transactional
+    public int getLevelByName(String name){
+        try {
+            return questionBankRepository.getLevelByname(name);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
+    @Transactional
     public QuestionBank findByName(String name){
-        return questionBankRepository.findByName(name);
+        try {
+            return questionBankRepository.findByName(name);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Transactional

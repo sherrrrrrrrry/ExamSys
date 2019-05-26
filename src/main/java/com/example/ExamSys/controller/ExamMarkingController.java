@@ -4,6 +4,8 @@ import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
 import com.example.ExamSys.service.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,11 @@ public class ExamMarkingController {
 
     @Resource
     private  QuestionShortService questionShortService;
+
+    @Autowired
+    private QuestionShowService questionShowService;
+
+
 
     /**
      * 选择判断自动打分 试卷名：name  用户名：username
@@ -103,7 +110,7 @@ public class ExamMarkingController {
                 else{
                     totalScore.put(type,totalScore.get(type)+1);
                 }
-                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+1
+                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+1，分数+1
                     if (score.get(type)==null){
                         score.put(type,1);
                     }
@@ -181,10 +188,27 @@ public class ExamMarkingController {
     }
     /**
      * 查找所有需要阅卷的试卷*/
-    @RequestMapping(value = "/tobeMarked", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/tobeMarkedList", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity GetunMarkedExam(HttpServletRequest request){
-        return null;
+        HashMap<Integer, HashMap<String,String>> tobeMarkedList = questionAnswerService.getTobeMarked();
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0; i<tobeMarkedList.size();i++){
+            try{
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("username",tobeMarkedList.get(i).get("username"));
+                jsonObject.put("questionbankname",tobeMarkedList.get(i).get("questionbankname"));
+                jsonObject.put("level",tobeMarkedList.get(i).get("level"));
+                jsonArray.put(jsonObject);
+            }catch (Exception e){
+                e.printStackTrace();
+                log.info(e.toString());
+                return ResponseEntity.badRequest().body(null);
+            }
+        }
+        return ResponseEntity.ok().body(jsonArray.toString());
     }
+
+
     /**
      * 查找简答和展示题 试卷名：name  用户名：username
      * **/
@@ -237,7 +261,7 @@ public class ExamMarkingController {
     }
 
     /**
-     * 简答分数保存 试卷名：name  用户名：username 题号：index 分数：score
+     * 简答和展示题分数保存 试卷名：name  用户名：username 题号：index 分数：score
      * **/
     @RequestMapping(value = "/Marking_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity saveSSAnswer(HttpServletRequest request) {
@@ -268,6 +292,20 @@ public class ExamMarkingController {
         if (questionList.getType() == QuestionType.Short) {
             QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
             String type = questionShort.getType();
+            if (totalScore.get(type) == null) {
+                totalScore.put(type, 20); //!!!!!默认设置简答分数为20
+            } else {
+                totalScore.put(type, totalScore.get(type) + 20);
+            }
+            if (score.get(type) == null) {
+                score.put(type, Integer.parseInt(request.getParameter("score")));
+            } else {
+                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
+            }
+        }
+        if (questionList.getType() == QuestionType.Show) {
+            QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+            String type = questionShow.getType();
             if (totalScore.get(type) == null) {
                 totalScore.put(type, 20); //!!!!!默认设置简答分数为20
             } else {
