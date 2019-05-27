@@ -93,7 +93,25 @@
 			$(".headerpage").load("/header.html");
 			$(".footerpage").load("/footer.html");
 
-			paperListTable();
+			$.ajax({　　
+				type: "GET", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/paperListAdmin/questionbank_Name', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					
+					console.log(data);
+					for(var i=0;i<data.length;i++){
+						if(!data[i].paperID){
+							data[i].paperID=i+1;
+						}
+					}
+					paperListTable(data);
+				}
+			});
 
 			$("#paperCreate").click(function() {
 				window.location.href = "/paperCreate/paperNameCreate.html";
@@ -104,29 +122,15 @@
 			 */
 			$('a#viewPaper').live("click",function() {
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
-				window.location.href = "paperShow.html?paperName="+ data.paperName;
+				window.location.href = "paperAll.html?questionName="+ data.questionName;
 			});
 
 
 		});
 
-		function getPaperByName(paperName) {
-			window.location.href = "paperShow.html?paperName=" + paperName;
-		}
-
-		function paperListTable() {
-			var data = [{
-				"paperID" : "1",
-				"paperName" : "试卷一",
-				"paperLevel" : "1"
-			}, {
-				"paperID" : "2",
-				"paperName" : "C++",
-				"paperLevel" : "2"
-			}];
+		function paperListTable(adminPapers) {
 			$('#paperList').dataTable({
-				data : data,
-				//"ajax" : '/questioncomposition/questionbank_Name',
+				data : adminPapers,
 				"searching" : true,//是否支持搜索
 				autoFill : true,
 				bAutoWidth : true,
@@ -153,9 +157,9 @@
 				columns : [{
 					"data" : "paperID"
 				}, {
-					"data" : "paperName"
+					"data" : "questionName"
 				}, {
-					"data" : "paperLevel"
+					"data" : "level"
 				}, {
 					"data" : "viewPaperButton"
 				}],

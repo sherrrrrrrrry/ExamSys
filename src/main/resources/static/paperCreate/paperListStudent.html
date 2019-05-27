@@ -98,14 +98,13 @@
 				},
 				success: function(data) {
 					
-					var studentPaper=[];
-					studentPaper.push(data);
-					for(var i=0;i<studentPaper.length;i++){
-						if(!studentPaper[i][0].paperID){
-							studentPaper[i][0].append("paperID",i+1);
+					console.log(data);
+					for(var i=0;i<data.length;i++){
+						if(!data[i].paperID){
+							data[i].append("paperID",i+1);
 						}
 					}
-					paperListTable(studentPaper);
+					paperListTable(data);
 				}
 			});
 
