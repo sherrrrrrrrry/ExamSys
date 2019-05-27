@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class PaperListController {
         }catch (Exception e){
             return ResponseEntity.badRequest().header("").body(null);
         }
-        HashMap<Integer,Map<String, Object>> questionLists = new HashMap<>();
+        List<Map<String, Object>> questionLists = new LinkedList<>();
 
         if (questionList ==null){
             ResponseEntity.ok().header("question", "No question!").body(questionLists);
@@ -109,22 +110,22 @@ public class PaperListController {
                     int choicenumber = questionChoice.getChoices().size();
                     question.put("choicenumber",choicenumber);
                     question.put("question", questionChoice);
-                    questionLists.put(index,question);
+                    questionLists.add(index,question);
                 } else if (type == QuestionType.Judgment) {
                     QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.getQuestion_id());
                     question.put("type", "judgment");
                     question.put("question", questionJudgment);
-                    questionLists.put(index,question);
+                    questionLists.add(index,question);
                 } else if (type == QuestionType.Short) {
                     QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
                     question.put("type", "short");
                     question.put("question", questionShort);
-                    questionLists.put(index,question);
+                    questionLists.add(index,question);
                 } else if (type == QuestionType.Show){
                     QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
                     question.put("type","show");
                     question.put("question",questionShow);
-                    questionLists.put(index,question);
+                    questionLists.add(index,question);
                 }
 
 
