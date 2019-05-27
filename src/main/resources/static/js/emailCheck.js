@@ -169,6 +169,7 @@ function registerCheck() {
 function registerPhoneCheck() {
 	var verificationCode = document.getElementById("verificationCodePhone").value;
 	var PhoneUserDTO = $('#registerPhoneForm').serializeObject();
+	console.log(PhoneUserDTO);
 	if ($('.phoneerror').length > 0) {
 		layertest('请您填写手机验证码');
 		return false;
@@ -181,7 +182,7 @@ function registerPhoneCheck() {
 			data: JSON.stringify(PhoneUserDTO),
 		}).success(function(message) {
 			layertest('注册成功!');
-			$.cookie('username',PhoneUserDTO.username);
+			$.cookie('username',PhoneUserDTO.login);
 			console.log(message);
 			window.location.href = "../index.html";
 		}).fail(function(err) {

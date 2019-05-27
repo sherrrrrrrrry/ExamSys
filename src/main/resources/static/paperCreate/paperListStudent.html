@@ -101,8 +101,8 @@
 					var studentPaper=[];
 					studentPaper.push(data);
 					for(var i=0;i<studentPaper.length;i++){
-						if(!studentPaper[i].paperID){
-							studentPaper[i].paperID=i+1;
+						if(!studentPaper[i][0].paperID){
+							studentPaper[i][0].append("paperID",i+1);
 						}
 					}
 					paperListTable(studentPaper);

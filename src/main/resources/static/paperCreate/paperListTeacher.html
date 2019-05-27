@@ -34,18 +34,18 @@
 					<thead>
 						<tr>
 							<th>试卷ID</th>
+							<th>考试学生</th>
 							<th>试卷名称</th>
 							<th>试卷等级</th>
-							<th>考试学生</th>
 							<th>批改试卷</th>
 						</tr>
 					</thead>
 					<tfoot>
 						<tr>
 							<th>试卷ID</th>
+							<th>考试学生</th>
 							<th>试卷名称</th>
 							<th>试卷等级</th>
-							<th>考试学生</th>
 							<th>批改试卷</th>
 						</tr>
 					</tfoot>
@@ -89,10 +89,8 @@
 			$(".headerpage").load("/header.html");
 			$(".footerpage").load("/footer.html");
 
-			paperListTable();
-
-			/*$.ajax({　　
-				type: "POST", // 用POST方式传输
+			$.ajax({　　
+				type: "GET", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
 				contentType: "application/json",
 				url: '/ExamMarking/tobeMarkedList', // 目标地址
@@ -100,26 +98,26 @@
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(JSON.stringify(data));
-					$.each(data,function(i){
-						
-						$("#paperList tbody").append("<tr><td>"+i+"</td><td>"+data[i]+"</td><td>教师名字</td><td><button type='button' onclick='getPaperByName("+JSON.stringify(data[i])+")'>去考试</a></td></tr>");
-			         });
+					
+					console.log(data);
+					for(var i=0;i<data.length;i++){
+						if(!data[i].paperID){
+							data[i].paperID=i+1;
+						}
+					}
+					paperListTable(data);
 				}
-			});*/
-
-			$("#paperCreate").click(function() {
-				window.location.href = "paperCreate.html";
 			});
+			
 
 			/**
 			 * 批改试卷
 			 */
-			$('a#viewPaper').click(function() {
+			$('a#viewPaper').live("click", function() {
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
 				console.log(data);
-				alert("批改试卷：" + data.paperID + "," + data.paperName);
-				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+				alert("批改试卷：" + data.username + "," + data.questionbankname);
+				window.location.href = "paperMark.html?studentname="+ data.username+"&questionbankname="+data.questionbankname;
 			});
 
 
@@ -129,21 +127,9 @@
 			window.location.href = "paperShow.html?paperName=" + paperName;
 		}
 
-		function paperListTable() {
-			var data = [{
-				"paperID" : "1",
-				"paperName" : "Java",
-				"paperLevel" : "3",
-				"testStudent":"Tom"
-			}, {
-				"paperID" : "2",
-				"paperName" : "C++",
-				"paperLevel" : "2",
-				"testStudent":"Jerry"
-			}];
+		function paperListTable(teachersPaper) {
 			$('#paperList').dataTable({
-				data : data,
-				"ajax" : '/questioncomposition/questionbank_Name',
+				data : teachersPaper,
 				"searching" : true,//是否支持搜索
 				autoFill : true,
 				bAutoWidth : true,
@@ -170,11 +156,11 @@
 				columns : [{
 					"data" : "paperID"
 				}, {
-					"data" : "paperName"
+					"data" : "username"
 				}, {
-					"data" : "paperLevel"
+					"data" : "questionbankname"
 				}, {
-					"data" : "testStudent"
+					"data" : "level"
 				}, {
 					"data" : "viewPaperButton"
 				}],
