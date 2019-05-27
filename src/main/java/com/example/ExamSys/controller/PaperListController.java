@@ -65,7 +65,6 @@ public class PaperListController {
                     log.info(e.toString());
                     return ResponseEntity.badRequest().body(null);
                 }
-
             }
             return ResponseEntity.ok().body(jsonArray.toString());
         } else {
@@ -110,31 +109,27 @@ public class PaperListController {
                     int choicenumber = questionChoice.getChoices().size();
                     question.put("choicenumber",choicenumber);
                     question.put("question", questionChoice);
-                    questionLists.add(index,question);
+                    questionLists.add(question);
                 } else if (type == QuestionType.Judgment) {
                     QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.getQuestion_id());
                     question.put("type", "judgment");
                     question.put("question", questionJudgment);
-                    questionLists.add(index,question);
+                    questionLists.add(question);
                 } else if (type == QuestionType.Short) {
                     QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
                     question.put("type", "short");
                     question.put("question", questionShort);
-                    questionLists.add(index,question);
+                    questionLists.add(question);
                 } else if (type == QuestionType.Show){
                     QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
                     question.put("type","show");
                     question.put("question",questionShow);
-                    questionLists.add(index,question);
+                    questionLists.add(question);
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.badRequest().header("question", "something wrong happened!").body(null);
             }
-
-
             index ++;
             try {
                 questionList = questionListService.findByNameandNumber(bankName, index);

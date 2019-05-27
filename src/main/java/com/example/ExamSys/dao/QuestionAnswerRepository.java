@@ -29,6 +29,8 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
     @Query("select q from QuestionAnswer q where q.isMarked=0")
     List<QuestionAnswer> getTobeMarked();//返回所有需要阅卷的
 
+    @Query("select q from QuestionAnswer q where q.isMarked=0 and q.questionBank.id=?1 and q.student.id = ?2")
+    List<QuestionAnswer> getTobeMarkedByBankandStu(Long bankid, Long stuid);//返回所有需要阅卷的
     //"select s.level from Student s where s.user = (select u from User u where u.login = ?1)"
 
     @Modifying

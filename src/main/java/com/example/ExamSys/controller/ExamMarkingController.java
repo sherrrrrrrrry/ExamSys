@@ -1,5 +1,6 @@
 package com.example.ExamSys.controller;
 
+import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.domain.*;
 import com.example.ExamSys.domain.enumeration.QuestionType;
@@ -13,13 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.apache.commons.codec.binary.Base64;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
 @RestController
 @RequestMapping("/ExamMarking")
@@ -229,16 +230,37 @@ public class ExamMarkingController {
         if (questionBank == null){
             return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
         }
-        //找出试卷对应的题目
-        List<QuestionList> questionLists = questionListService.findByName(name);
-        if (questionLists == null){
-            return ResponseEntity.badRequest().header("QuestionBank","No questions are included!").body(null);
+        //找出待阅卷的试题
+        List<QuestionAnswer> questionAnswerList = questionAnswerService.getTobeMarkedByBankandStu(questionBank.getId(),student.getId());
+        if (questionAnswerList == null){
+            return ResponseEntity.badRequest().header("questionAnswer","No such answer!").body(null);
         }
-        //用于存储题号和答案
-        Map<Integer, String> answer = new HashMap<>();
+//        //找出试卷对应的题目
+//        List<QuestionList> questionLists = questionListService.findByName(name);
+//        if (questionLists == null){
+//            return ResponseEntity.badRequest().header("QuestionBank","No questions are included!").body(null);
+//        }
+        //用于存储题号,题目和答案
+        List<Map<String,String>> answerList = new LinkedList<>();
         QuestionAnswer questionAnswer = new QuestionAnswer();
-        for (QuestionList questionList: questionLists ){
+        int n=0;
+        for (QuestionAnswer questionAnswerEntity: questionAnswerList ){
+            Map<String, String> answer = new HashMap<>();
+            QuestionList questionList;
+            try{//根据答案找到对应的原题
+                questionList = questionListService.findByNameandNumber(name,questionAnswerEntity.getNumber());
+            }catch (Exception e){
+                return ResponseEntity.badRequest().header("No such question!").body(null);
+            }
             if (questionList.getType()==QuestionType.Short){
+                //获取题目
+                String content = "";
+                QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+                if (questionShort==null){
+                    return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
+                }
+                content = questionShort.getContent();
+
                 //确认答案
                 int index = questionList.getNumber();
                 questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
@@ -249,20 +271,97 @@ public class ExamMarkingController {
                     return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
                 }
 
-                answer.put(index, questionAnswer.getAnswer());
-
+                answer.put("index", index+"");
+                answer.put("content", content);
+                answer.put("answer", questionAnswer.getAnswer());
+                answerList.add(answer);
+                n++;
             }
-            else if(questionList.getType()==QuestionType.Show){
+            else if(questionList.getType()==QuestionType.Show){//作品展示题答案显示
+                //获取题目
+                String content = "";
+                QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+                if (questionShow==null){
+                    return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
+                }
+                content = questionShow.getContent();
 
+                //确认答案
+                int index = questionList.getNumber();
+                questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+                if (questionAnswer == null){
+                    return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
+                }
+                if (questionAnswer.isMarked()==true){
+                    return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
+                }
+
+                answer.put("index", index+"");
+                answer.put("content", content);
+                String narrativeAnswer = getnarrativeAnswer(questionAnswer.getAnswer());
+                String encodeUrls = getUrls(questionAnswer.getAnswer());
+                answer.put("narrativeAnswer", narrativeAnswer);
+                answer.put("urls",encodeUrls);
+                answerList.add(answer);
+                n++;
             }
         }
-        questionAnswerService.updateisModified(true,questionAnswer.getId());
-        return ResponseEntity.ok().body(answer);
+
+        return ResponseEntity.ok().body(answerList);
     }
+
+    public String getUrls(String answer){
+        String[] answers = answer.split("<==>");
+        String[] urls = new String[answers.length];
+        String encodeUrls ="";
+        int num=0;
+        for (String temp:answers){
+            if (temp.contains(Constants.STUDENT_PRODUCTION_PATH)){//包含作品路径
+                urls[num] = temp;
+                num++;
+            }
+        }
+        File[] files = new File[num];
+        try {
+            for (int i = 0; i < num; i++) {
+                files[i] = new File(urls[i]);
+                FileInputStream inputStream = new FileInputStream(files[i]);
+
+                byte[] bytes = new byte[inputStream.available()];
+
+                inputStream.read(bytes, 0, inputStream.available());
+                inputStream.close();
+
+                String data = Base64.encodeBase64String(bytes);
+                encodeUrls += data;
+                encodeUrls +="<==>";
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            log.info(e.toString());
+            return null;
+        }
+        return encodeUrls;
+    }
+
+    public String getnarrativeAnswer(String answer){
+        String[] answers = answer.split("<==>");
+        String result = null;
+        for (String temp:answers){
+            if (!temp.contains(Constants.STUDENT_PRODUCTION_PATH)){//不包含作品路径，则为作品展示题答案中的文字描述部分
+                result = temp;
+                break;
+            }
+        }
+        return result;
+    }
+
+
 
     /**
      * 简答和展示题分数保存 试卷名：name  用户名：username 题号：index 分数：score
      * **/
+    @Transactional
     @RequestMapping(value = "/Marking_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity saveSSAnswer(HttpServletRequest request) {
         String name = request.getParameter("name");
@@ -281,7 +380,8 @@ public class ExamMarkingController {
             return ResponseEntity.badRequest().header("Exam", "No such examination!").body(null);
         }
         //找出试卷对应的题目
-        QuestionList questionList = questionListService.findByNameandNumber(name, Integer.parseInt(request.getParameter("index")));
+        int index = Integer.parseInt(request.getParameter("index"));
+        QuestionList questionList = questionListService.findByNameandNumber(name, index);
         if (questionList == null) {
             return ResponseEntity.badRequest().header("QuestionBank", "No questions are included!").body(null);
         }
@@ -349,6 +449,10 @@ public class ExamMarkingController {
                 transcriptService.save(transcript);
             }
         }
+
+        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(), index);
+        questionAnswerService.updateisModified(true, questionAnswer.getId());
+
         return ResponseEntity.ok().body(null);
     }
 

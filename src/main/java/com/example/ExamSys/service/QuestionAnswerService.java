@@ -21,7 +21,11 @@ public class QuestionAnswerService {
     private QuestionBankService questionBankService;
     @Transactional
     public QuestionAnswer findByIDandNumber(Long id, int number){
-        return questionAnswerRepository.findByIDandNumber(id,number);
+        try {
+            return questionAnswerRepository.findByIDandNumber(id, number);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     @Transactional
@@ -34,6 +38,15 @@ public class QuestionAnswerService {
         questionAnswerRepository.updateisModified(isMarked,id);
     }
 
+
+    @Transactional
+    public List<QuestionAnswer> getTobeMarkedByBankandStu(Long bankid, Long stuid){
+        try{
+            return questionAnswerRepository.getTobeMarkedByBankandStu(bankid, stuid);
+        }catch(Exception e){
+            return null;
+        }
+    }
     @Transactional
     public HashMap<Integer, HashMap<String,String>> getTobeMarked(){
         //获取所有需要阅卷的试卷：包括 学生的用户名和试卷名
