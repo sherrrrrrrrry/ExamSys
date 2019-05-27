@@ -189,7 +189,7 @@ public class ExamMarkingController {
     /**
      * 查找所有需要阅卷的试卷*/
     @RequestMapping(value = "/tobeMarkedList", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity GetunMarkedExam(HttpServletRequest request){
+    public ResponseEntity<String> GetunMarkedExam(HttpServletRequest request){
         HashMap<Integer, HashMap<String,String>> tobeMarkedList = questionAnswerService.getTobeMarked();
         JSONArray jsonArray = new JSONArray();
         for (int i=0; i<tobeMarkedList.size();i++){

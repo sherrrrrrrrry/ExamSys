@@ -73,7 +73,7 @@ public class QuestionCompositionController {
      * 根据学生的level，随机分配一张试卷
      * POST：username*/
     @RequestMapping(value = "/getBankName",method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity getBankName_random(HttpServletRequest request){
+    public ResponseEntity<String> getBankName_random(HttpServletRequest request){
         LOG.info("正在分配试卷");
         String username = request.getParameter("username");
         int level = studentRepository.getLevel(username);
