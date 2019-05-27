@@ -98,8 +98,6 @@
 					console.log(data);　　
 				},
 				success: function(data) {
-					
-					console.log(data);
 					for(var i=0;i<data.length;i++){
 						if(!data[i].paperID){
 							data[i].paperID=i+1;
@@ -116,16 +114,12 @@
 			$('a#viewPaper').live("click", function() {
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
 				console.log(data);
-				alert("批改试卷：" + data.username + "," + data.questionbankname);
 				window.location.href = "paperMark.html?studentname="+ data.username+"&questionbankname="+data.questionbankname;
 			});
 
 
 		});
 
-		function getPaperByName(paperName) {
-			window.location.href = "paperShow.html?paperName=" + paperName;
-		}
 
 		function paperListTable(teachersPaper) {
 			$('#paperList').dataTable({
