@@ -276,6 +276,7 @@ public class ExamMarkingController {
                 answer.put("index", index+"");
                 answer.put("content", content);
                 answer.put("answer", questionAnswer.getAnswer());
+                answer.put("type", questionList.getType().name());
                 answerList.add(answer);
                 n++;
             }
@@ -304,6 +305,7 @@ public class ExamMarkingController {
                 String encodeUrls = getUrls(questionAnswer.getAnswer());
                 answer.put("narrativeAnswer", narrativeAnswer);
                 answer.put("urls",encodeUrls);
+                answer.put("type", questionList.getType().name());
                 answerList.add(answer);
                 n++;
             }
