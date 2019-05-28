@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>myTests</title>
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../css/fancybox/jquery.fancybox.css" rel="stylesheet">
+<link href="../css/flexslider.css" rel="stylesheet" />
+<link href="../css/style.css" rel="stylesheet" />
+<link href="../css/person.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/paperCreate.css">
+<link href="../css/gallery-1.css" rel="stylesheet">
+<link href="../css/magnific-popup.css" rel="stylesheet">
+<link href="../css/layer.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.movie_box {
+	border: none;
+}
+</style>
+
+</head>
+<body>
+	<div class="topbarpage"></div>
+	<div class="headerpage"></div>
+	<section id="inner-headline">
+		<div class="container">
+			<div class="row" id="getPaperName"></div>
+		</div>
+	</section>
+	<section class="section-padding">
+
+		<div class="container"
+			style="width: 70%; margin-top: 5em; background-color: #f6f6f6; border-radius: 10px;">
+
+			<div class="row">
+
+				<div class="yd_box"></div>
+				<div class="pricing-action" style="background-color: inherit;">
+					<div id="radar" style="height: 400px"></div>
+					<button class="btn btn-primary" id="returnList"
+						style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">返回</button>
+
+				</div>
+
+
+			</div>
+		</div>
+
+	</section>
+
+	<script src="../js/jquery.js"></script>
+	<script src="../js/jquery.easing.1.3.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery.fancybox.pack.js"></script>
+	<script src="../js/jquery.fancybox-media.js"></script>
+	<script src="../js/jquery.flexslider.js"></script>
+	<script src="../js/animate.js"></script>
+	<!-- Vendor Scripts -->
+	<script src="../js/modernizr.custom.js"></script>
+	<script src="../js/jquery.isotope.min.js"></script>
+	<script src="../js/jquery.magnific-popup.min.js"></script>
+	<script src="../js/animate.js"></script>
+	<script src="../js/custom.js"></script>
+	<script src="../js/jquery.cookie.js"></script>
+	<script src="../js/jquery.params.js"></script>
+	<script src="../js/all.js"></script>
+	<script src="../build/dist/echarts.js"></script>
+	<script src="../build/dist/theme/macarons.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var username = $.cookie('username');
+			if (username != null) {
+				$(".topbarpage").load("../topbarLogin.html");
+			} else {
+				$(".topbarpage").load("../topbar.html");
+			}
+			window.onload = function() {
+				getUserAuth(username);
+			}
+			$(".headerpage").load("/header.html");
+			$(".footerpage").load("/footer.html");
+
+			var questionbankname = $.query.get("questionbankname");
+			var student = $.query.get("student");
+			var radarData = [32, 32, 74, 0, 88];
+
+			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">' + questionbankname + '--' + student + '</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
+
+			$.ajax({　　
+				type: "GET", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/Examhistory/getRedarMap?name='+questionbankname+"&username="+student, // 目标地址
+				error: function(data) {
+					radarData = [0,0,28,28,90];
+					console.log("error");
+					console.log(data);　　
+				},
+				success: function(data) {
+					console.log(data);
+				}
+			});
+
+			$("#returnList").click(function() {
+				window.location.href = "/person/myTests.html";
+			});
+
+			require.config({
+				paths : {
+					echarts : '../build/dist'
+				}
+			});
+
+			// 使用
+			require(['echarts', 'echarts/chart/radar' // 使用柱状图就加载bar模块，按需加载
+			], function(ec) {
+				// 基于准备好的dom，初始化echarts图表
+				var myChart = ec.init(document.getElementById('radar'),'macarons');
+
+				var option = {
+					    title : {
+					        text: '试卷得分雷达图',
+					      //  subtext: '完全实况球员数据'
+					    },
+					    tooltip : {
+					        trigger: 'axis'
+					    },
+					    legend: {
+					        x : 'center',
+					        data:['学生综合成绩']
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            mark : {show: true},
+					            dataView : {show: true, readOnly: false},
+					            restore : {show: true},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    calculable : true,
+					    polar : [
+					        {
+					            indicator : [
+					                {text : '个人修养', max  : 100},
+					                {text : '创新能力', max  : 100},
+					                {text : '沟通协调能力', max  : 100},
+					                {text : '自我管理能力', max  : 100},
+					                {text : '工作压力承受能力', max  : 100}
+					            ],
+					            radius : 130
+					        }
+					    ],
+					    series : [
+					        {
+					            name: '学生考试成绩数据',
+					            type: 'radar',
+					            itemStyle: {
+					                normal: {
+					                    areaStyle: {
+					                        type: 'default'
+					                    }
+					                }
+					            },
+					            data : [
+					                {
+					                    value : radarData,
+					                    name : '学生'
+					                }
+					            ]
+					        }
+					    ]
+					};
+
+				// 为echarts对象加载数据 
+				myChart.setOption(option);
+			});
+
+		});
+	</script>
+</body>
+</html>

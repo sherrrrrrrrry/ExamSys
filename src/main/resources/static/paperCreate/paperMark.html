@@ -83,6 +83,7 @@
 			var questionbankname = $.query.get("questionbankname");
 			var student = $.query.get("studentname");
 			var index = 1;
+			var questionIndexList = [];
 			
 
 			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">'+questionbankname+'--'+student+'</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
@@ -96,26 +97,26 @@
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(data);
 					var ydbox = $(".yd_box");
 					var index=1;
 					for(var num=0;num<data.length;num++){
-						onequestion=data[num];
-						if(onequestion.type=="short"){
+						questionIndexList.push(data[num].index);
+						if(data[num].type=="Short"){
 						    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="3"></div></div>');
-				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + onequestion.question.content + '</i><span class="tip_wz">【简答】</span></div></li>');
+				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data[num].content + '</i><span class="tip_wz">【简答】</span></div></li>');
 				            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li>');
 				            ydbox.children(".movie_box:last-child").append('<span style="font-size:16px;">判分：</span><select class="shortScore"></select>');
 				            shortScore = 0;
 							for (var i = 1; i <= 21; i++) {
 								$(".shortScore").append("<option value='"+shortScore+"'>"+shortScore+"</option>");
-								shortScore = shortScore + 0.5;
+								shortScore = shortScore + 1;
 							}
+							ydbox.children(".movie_box:last-child").find('textarea[name=""]').text(data[num].answer);
 							index++;
-						}else if(onequestion.type=="show"){
+						}else if(data[num].type=="Show"){
 						    ydbox.append('<div class="movie_box"><ul class="wjdc_list"></ul><div class="dx_box" data-t="4"></div></div>');
-				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + onequestion.question.content + '</i><span class="tip_wz">【作品展示】</span></div></li>');
+				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data[num].content + '</i><span class="tip_wz">【作品展示】</span></div></li>');
 				            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li>');
 				        	ydbox.children(".movie_box:last-child").append('<span style="font-size:16px;">判分：</span><select class="showScore"></select>');
@@ -124,6 +125,7 @@
 								$(".showScore").append("<option value='"+showScore+"'>"+showScore+"</option>");
 								showScore = showScore + 1;
 							}
+							ydbox.children(".movie_box:last-child").find('textarea[name=""]').text(data[num].narrativeAnswer);
 							index++;
 						}
 					}
@@ -133,7 +135,28 @@
 			
 			
 			$("#returnList").click(function() {
-				window.location.href = "/paperCreate/paperListAdmin.html";
+				console.log(questionIndexList);
+				var questionScoreList = [];
+				$("select option:selected").each(function() {
+					questionScoreList.push($(this).text());
+				});
+				console.log(questionScoreList);
+				
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+					url: '/ExamMarking/Marking_save?name='+questionbankname+"&username="+student+"&index="+questionIndexList+"&score="+questionScoreList, // 目标地址
+					error: function(data) {
+						console.log("error");
+						console.log(data);　　
+					},
+					success: function(data) {
+						window.location.href = "/paperCreate/paperListTeacher.html";
+					}
+				});
+				
+				
 			});
 			
 			

@@ -26,12 +26,11 @@
 		</div>
 	</section>
 	<section class="section-padding gray-bg">
-		<div class="container"
-			style="width: 80%; border: solid 1px #ccc;; border-radius: 8px; background-color: #fff;">
+		<div class="container" style="background-color: inherit;">
 
 			<div class="pricing-action" style="background-color: inherit;">
 				<button class="btn btn-primary" id="gotoTest"
-					style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">去测试</button>
+					style="border-color: #002e5b; background-color: #002e5b; color: rgba(255, 255, 255, 0.84);">去新的测试</button>
 
 			</div>
 		</div>
@@ -47,7 +46,7 @@
 							<th>试卷等级</th>
 							<th>成绩</th>
 							<th>批改教师</th>
-							<th>查看试卷</th>
+							<th>查看雷达图</th>
 						</tr>
 					</thead>
 					<tfoot>
@@ -57,7 +56,7 @@
 							<th>试卷等级</th>
 							<th>成绩</th>
 							<th>批改教师</th>
-							<th>查看试卷</th>
+							<th>查看雷达图</th>
 						</tr>
 					</tfoot>
 				</table>
@@ -79,14 +78,17 @@
 	<script src="../js/jquery.magnific-popup.min.js"></script>
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
+	<script src="../js/jquery.cookie.js"></script>
 	<script src="../datatablemedia/js/jquery.dataTables.js"></script>
 	<script type="text/javascript">
 		$(function() {
-			$(".topbarpage").load("topbarLogout.html");
-			$(".headerpage").load("headerPerson.html");
+			var username = $.cookie('username');
+			$(".topbarpage").load("/person/topbarLogout.html");
+			$(".headerpage").load("/person/headerPerson.html");
+			$(".footerpage").load("/footer.html");
 
 			$("#gotoTest").click(function() {
-				window.location.href = "../paperList.html";
+				window.location.href = "/paperCreate/paperListStudent.html";
 			});
 
 			MyPaperListTable();
@@ -94,8 +96,8 @@
 			$('a#viewMyPaper').click(function() {
 				var data = $('#StuentsPaperList').DataTable().row($(this).parents('tr')).data();
 				console.log(data);
-				alert("查看试卷：" + data.paperID + "," + data.paperName);
-				//window.location.href = "paperShow.html?paperName="+ data.paperName;
+				alert("查看雷达图：" + data.paperID + "," + data.paperName);
+				window.location.href = "radarPaper.html?questionbankname="+ data.paperName+"&student="+username;
 			});
 
 		});
@@ -103,14 +105,14 @@
 		function MyPaperListTable() {
 			var data = [{
 				"paperID" : "1",
-				"paperName" : "Java",
+				"paperName" : "试卷一",
 				"paperLevel" : "3",
 				"score" : "90",
 				"teacher" : "张三"
 
 			}, {
 				"paperID" : "2",
-				"paperName" : "C++",
+				"paperName" : "试卷二",
 				"paperLevel" : "2",
 				"score" : "95",
 				"teacher" : "李四"
@@ -160,7 +162,7 @@
 					"class" : "but_xq",
 					"data" : null,
 					"bSortable" : false,
-					"defaultContent" : "<p><a id=\"viewMyPaper\" href=\"#\">查看试卷</a></p>"
+					"defaultContent" : "<p><a id=\"viewMyPaper\" href=\"#\">查看雷达图</a></p>"
 				}]
 
 			});
