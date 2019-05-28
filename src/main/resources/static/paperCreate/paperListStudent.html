@@ -94,17 +94,19 @@
 				contentType: "application/json",
 				url: '/questioncomposition/getBankName?username='+username, // 目标地址
 				error: function(data) {
-					console.log(data);　　
+					console.log(data);
+					console.log("error");　　
 				},
 				success: function(data) {
-					
-					console.log(data);
-					for(var i=0;i<data.length;i++){
-						if(!data[i].paperID){
-							data[i].append("paperID",i+1);
+					studentsPaper=[];
+					studentsPaper.push(data);
+					for(var i=0;i<studentsPaper.length;i++){
+						if(!studentsPaper[i].paperID){
+							studentsPaper[i].paperID=i+1;
 						}
 					}
-					paperListTable(data);
+					console.log(studentsPaper);
+					paperListTable(studentsPaper);
 				}
 			});
 
