@@ -249,6 +249,8 @@ public class ExamMarkingController {
             QuestionList questionList;
             try{//根据答案找到对应的原题
                 questionList = questionListService.findByNameandNumber(name,questionAnswerEntity.getNumber());
+                if(questionList == null)
+                	continue;
             }catch (Exception e){
                 return ResponseEntity.badRequest().header("No such question!").body(null);
             }
