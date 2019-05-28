@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TranscriptRepository;
 import com.example.ExamSys.domain.QuestionBank;
@@ -99,6 +101,18 @@ public class ExamHistoryController {
     		} catch(Exception e) {
     			return ResponseEntity.badRequest().header("Json","Construct json data wrong!").body(null);
     		}
+    	}
+    	
+    	for(String type : Constants.ABILITY_TYPE) {
+    		try {
+				if(json.get(type) == null) {
+					json.put(type, 0);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return ResponseEntity.badRequest().header("Json","Construct json data wrong!").body(null);
+			}
     	}
     	
     	return ResponseEntity.ok().body(json.toString());
