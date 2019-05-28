@@ -105,7 +105,7 @@ public class ExamHistoryController {
     	
     	for(String type : Constants.ABILITY_TYPE) {
     		try {
-				if(json.get(type) == null) {
+				if(!json.has(type)) {
 					json.put(type, 0);
 				}
 			} catch (JSONException e) {

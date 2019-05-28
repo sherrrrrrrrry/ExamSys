@@ -1,16 +1,16 @@
 package com.example.ExamSys.dao;
 
-import com.example.ExamSys.domain.QuestionBank;
-import com.example.ExamSys.domain.Student;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.ExamSys.domain.QuestionBank;
 import com.example.ExamSys.domain.Transcript;
-
-import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface TranscriptRepository extends JpaRepository<Transcript, Long>{
@@ -23,4 +23,7 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Long>{
 
 	@Query("select t.questionBank from Transcript t where t.student.user.login = ?1")
 	Set<QuestionBank> findQuestionBank(String username);
+	
+	@Query("select t from Transcript t where t.questionBank.id = ?1 and t.student.id = ?2")
+	List<Transcript> findAllByQuestionBankIdAndStudentId(Long questionBankId, Long StudentId);
 }

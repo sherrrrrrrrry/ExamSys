@@ -28,7 +28,7 @@ public class MyUserDetailsService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String login){
 		// TODO Auto-generated method stub
 		log.debug("Authenticating {}", login);
-		System.out.println(login);
+//		System.out.println(login);
 		User user = userRepository.findOneByLogin(login).orElse(null);
 		if(user == null) {
 			throw new UsernameNotFoundException("user:" + login + " not found.");
