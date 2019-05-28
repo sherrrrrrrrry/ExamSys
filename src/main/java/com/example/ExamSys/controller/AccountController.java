@@ -554,6 +554,8 @@ public class AccountController {
 		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
 			try {
 				Student student = studentRepository.findOneByLogin(login);
+				if(student == null)
+					return ResponseEntity.badRequest().header("PersonalInfo", "no this person's info").body(null);
 				String url = student.getPhotoUrl();
 				if(url == null || url.equals("")) {
 //					return new byte[0];
@@ -582,6 +584,8 @@ public class AccountController {
 		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
 			try {
 				Teacher teacher = teacherRepository.findOneByLogin(login);
+				if(teacher == null)
+					return ResponseEntity.badRequest().header("PersonalInfo", "no this person's info").body(null);
 				String url = teacher.getPhotoUrl();
 				if(url == null || url.equals("")) {
 //					return new byte[0];

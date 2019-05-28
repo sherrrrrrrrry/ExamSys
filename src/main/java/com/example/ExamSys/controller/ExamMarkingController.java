@@ -384,43 +384,110 @@ public class ExamMarkingController {
             return ResponseEntity.badRequest().header("Exam", "No such examination!").body(null);
         }
         //找出试卷对应的题目
-        int index = Integer.parseInt(request.getParameter("index"));
-        QuestionList questionList = questionListService.findByNameandNumber(name, index);
-        if (questionList == null) {
-            return ResponseEntity.badRequest().header("QuestionBank", "No questions are included!").body(null);
-        }
+
+//      int index = Integer.parseInt(request.getParameter("index"));
+        
+        String indexs = request.getParameter("index");
+        String[] indexList = indexs.split(",");
+        String scores = request.getParameter("score");
+        String[] scoreList = scores.split(",");
+//        QuestionList questionList = questionListService.findByNameandNumber(name, index);
 
         Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
         Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
+        for(int i = 0; i<indexList.length; i++) {
+        	int index = 0;
+        	try {
+        		index = Integer.parseInt(indexList[i]);
+        	} catch(Exception e) {
+        		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
+        	}
+        	QuestionList questionList = questionListService.findByNameandNumber(name, index);
+        	
+            if (questionList == null) {
+                return ResponseEntity.badRequest().header("QuestionBank", "No questions are included!").body(null);
+            }
+            
+            if (questionList.getType() == QuestionType.Short) {
+                QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+                String type = questionShort.getType();
+                if (totalScore.get(type) == null) {
+                    totalScore.put(type, 20); //!!!!!默认设置简答分数为20
+                } else {
+                    totalScore.put(type, totalScore.get(type) + 20);
+                }
+                if (score.get(type) == null) {
+                	try {
+                        score.put(type, Integer.parseInt(scoreList[i]));
+                	} catch(Exception e) {
+                		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
+                	}
+                } else {
+                	try {
+                        score.put(type, score.get(type) + Integer.parseInt(scoreList[i]));                		
+                	} catch(Exception e) {
+                		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
+                	}
+                }
+            }
+            if (questionList.getType() == QuestionType.Show) {
+                QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+                String type = questionShow.getType();
+                if (totalScore.get(type) == null) {
+                    totalScore.put(type, 20); //!!!!!默认设置简答分数为20
+                } else {
+                    totalScore.put(type, totalScore.get(type) + 20);
+                }
+                if (score.get(type) == null) {
+                	try {
+                        score.put(type, Integer.parseInt(scoreList[i]));
+                	} catch(Exception e) {
+                		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
+                	}
+                } else {
+                	try {
+                        score.put(type, score.get(type) + Integer.parseInt(scoreList[i]));
+                	} catch(Exception e) {
+                		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
+                	}
+                }
+            }
+        
+            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(), index);
+            questionAnswerService.updateisModified(true, questionAnswer.getId());
+        }
 
-        if (questionList.getType() == QuestionType.Short) {
-            QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
-            String type = questionShort.getType();
-            if (totalScore.get(type) == null) {
-                totalScore.put(type, 20); //!!!!!默认设置简答分数为20
-            } else {
-                totalScore.put(type, totalScore.get(type) + 20);
-            }
-            if (score.get(type) == null) {
-                score.put(type, Integer.parseInt(request.getParameter("score")));
-            } else {
-                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
-            }
-        }
-        if (questionList.getType() == QuestionType.Show) {
-            QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
-            String type = questionShow.getType();
-            if (totalScore.get(type) == null) {
-                totalScore.put(type, 20); //!!!!!默认设置简答分数为20
-            } else {
-                totalScore.put(type, totalScore.get(type) + 20);
-            }
-            if (score.get(type) == null) {
-                score.put(type, Integer.parseInt(request.getParameter("score")));
-            } else {
-                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
-            }
-        }
+//        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
+//        Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
+//
+//        if (questionList.getType() == QuestionType.Short) {
+//            QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+//            String type = questionShort.getType();
+//            if (totalScore.get(type) == null) {
+//                totalScore.put(type, 20); //!!!!!默认设置简答分数为20
+//            } else {
+//                totalScore.put(type, totalScore.get(type) + 20);
+//            }
+//            if (score.get(type) == null) {
+//                score.put(type, Integer.parseInt(request.getParameter("score")));
+//            } else {
+//                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
+//            }
+//        }
+//        if (questionList.getType() == QuestionType.Show) {
+//            QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+//            String type = questionShow.getType();
+//            if (totalScore.get(type) == null) {
+//                totalScore.put(type, 20); //!!!!!默认设置简答分数为20
+//            } else {
+//                totalScore.put(type, totalScore.get(type) + 20);
+//            }
+//            if (score.get(type) == null) {
+//                score.put(type, Integer.parseInt(request.getParameter("score")));
+//            } else {
+//                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
+//            }
+//        }
 
 
         //向成绩表中汇总
@@ -453,9 +520,6 @@ public class ExamMarkingController {
                 transcriptService.save(transcript);
             }
         }
-
-        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(), index);
-        questionAnswerService.updateisModified(true, questionAnswer.getId());
 
         return ResponseEntity.ok().body(null);
     }
