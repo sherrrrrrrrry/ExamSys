@@ -248,6 +248,7 @@ public class AccountController {
 			randomNum = verifyService.getAndSendVerify(email);
 		} catch(Exception e) {
 			log.info("{}短信验证码发送出错", email);
+			e.printStackTrace();
 			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
 			
 		}
@@ -277,6 +278,7 @@ public class AccountController {
 			randomNum = verifyService.getAndSendVerify(email);
 		} catch(Exception e) {
 			log.info("{}忘记密码短信验证码发送出错", email);
+			e.printStackTrace();
 			return ResponseEntity.badRequest().header("Email", "Verification code send failed").body(null);
 			
 		}
@@ -373,6 +375,7 @@ public class AccountController {
 			} catch (Exception e) {
 				log.info(e.toString());
 				bool = false;
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
 			if(bool == false) {
@@ -391,6 +394,7 @@ public class AccountController {
 			} catch (Exception e) {
 				log.info(e.toString());
 				bool = false;
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
 			if(bool == false) {
@@ -457,6 +461,7 @@ public class AccountController {
 			} catch (Exception e) {
 				log.info(e.toString());
 				bool = false;
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
 			if(bool == false) {
@@ -473,6 +478,7 @@ public class AccountController {
 			} catch (Exception e) {
 				log.info(e.toString());
 				bool = false;
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("Photo", "Photo save failed").body(null);
 			}
 			if(bool == false) {
@@ -497,6 +503,8 @@ public class AccountController {
 		if(authorities.contains(new Authority("ROLE_STUDENT"))) {
 			try {
 				Student student = studentRepository.findOneByLogin(login);
+				if(student == null)
+					return ResponseEntity.badRequest().header("PersonalInfo", "no this person's info").body(null);
 				JSONObject json = new JSONObject();
 				json.put("realname", student.getName());
 				json.put("gender", student.getGender());
@@ -511,12 +519,15 @@ public class AccountController {
 				return ResponseEntity.ok().body(json.toString());
 			} catch (Exception e) {
 				log.info(e.toString());
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
 			}
 			
 		} else if(authorities.contains(new Authority("ROLE_TEACHER"))) {
 			try {
 				Teacher teacher = teacherRepository.findOneByLogin(login);
+				if(teacher == null)
+					return ResponseEntity.badRequest().header("PersonalInfo", "no this person's info").body(null);
 				JSONObject json = new JSONObject();
 				json.put("realname", teacher.getName());
 				json.put("gender", teacher.getGender());
@@ -531,6 +542,7 @@ public class AccountController {
 				return ResponseEntity.ok().body(json.toString());
 			} catch (Exception e) {
 				log.info(e.toString());
+				e.printStackTrace();
 				return ResponseEntity.badRequest().header("PersonalInfo", "Get failed").body("Get failed");
 			}
 		}

@@ -47,6 +47,9 @@ public class QuestionAnswer implements Serializable {
     @JsonBackReference
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Teacher teacher;
+    
+    @Column(name = "score")
+    private Integer score;
 
     public Long getId() { return id; }
 
@@ -83,4 +86,14 @@ public class QuestionAnswer implements Serializable {
     public Teacher getTeacher() { return teacher; }
 
     public void setTeacher(Teacher teacher) { this.teacher = teacher; }
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+    
+    
 }

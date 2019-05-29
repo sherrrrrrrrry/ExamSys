@@ -1,10 +1,18 @@
 package com.example.ExamSys.controller;
 
-import com.example.ExamSys.config.Constants;
-import com.example.ExamSys.dao.StudentRepository;
-import com.example.ExamSys.domain.*;
-import com.example.ExamSys.domain.enumeration.QuestionType;
-import com.example.ExamSys.service.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -14,13 +22,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.commons.codec.binary.Base64;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.*;
+
+import com.example.ExamSys.config.Constants;
+import com.example.ExamSys.dao.QuestionAnswerRepository;
+import com.example.ExamSys.dao.StudentRepository;
+import com.example.ExamSys.dao.TeacherRepository;
+import com.example.ExamSys.domain.QuestionAnswer;
+import com.example.ExamSys.domain.QuestionBank;
+import com.example.ExamSys.domain.QuestionChoice;
+import com.example.ExamSys.domain.QuestionJudgment;
+import com.example.ExamSys.domain.QuestionList;
+import com.example.ExamSys.domain.QuestionShort;
+import com.example.ExamSys.domain.QuestionShow;
+import com.example.ExamSys.domain.Student;
+import com.example.ExamSys.domain.Teacher;
+import com.example.ExamSys.domain.Transcript;
+import com.example.ExamSys.domain.User;
+import com.example.ExamSys.domain.enumeration.QuestionType;
+import com.example.ExamSys.service.QuestionAnswerService;
+import com.example.ExamSys.service.QuestionBankService;
+import com.example.ExamSys.service.QuestionChoiceService;
+import com.example.ExamSys.service.QuestionJudgmentService;
+import com.example.ExamSys.service.QuestionListService;
+import com.example.ExamSys.service.QuestionShortService;
+import com.example.ExamSys.service.QuestionShowService;
+import com.example.ExamSys.service.TranscriptService;
+import com.example.ExamSys.service.UserService;
 
 @RestController
 @RequestMapping("/ExamMarking")
@@ -37,6 +64,9 @@ public class ExamMarkingController {
 
     @Autowired
     private StudentRepository studentRepository;
+    
+    @Autowired
+    private TeacherRepository teacherRepository;
 
     @Resource
     private UserService userService;
@@ -56,7 +86,8 @@ public class ExamMarkingController {
     @Autowired
     private QuestionShowService questionShowService;
 
-
+    @Autowired
+    private QuestionAnswerRepository questionAnswerRepository;
 
     /**
      * 选择判断自动打分 试卷名：name  用户名：username
@@ -370,13 +401,17 @@ public class ExamMarkingController {
     public ResponseEntity saveSSAnswer(HttpServletRequest request) {
         String name = request.getParameter("name");
         //确认考生
-        Optional<User> user = userService.findOneByLogin(request.getParameter("username"));
+        Optional<User> user = userService.findOneByLogin(request.getParameter("studentname"));
         if (!user.isPresent()) {
-            return ResponseEntity.badRequest().header("User", "No such user!").body(null);
+            return ResponseEntity.badRequest().header("User", "No such student!").body(null);
         }
         Student student = studentRepository.findStuByUser(user.get());
+        Teacher teacher = teacherRepository.findOneByLogin(request.getParameter("teachername"));
         if (student == null) {
             return ResponseEntity.badRequest().header("Student", "No such student!").body(null);
+        }
+        if(teacher == null) {
+        	return ResponseEntity.badRequest().header("Student", "No such teacher!").body(null);
         }
         //确认试卷
         QuestionBank questionBank = questionBankService.findByName(name);
@@ -454,7 +489,7 @@ public class ExamMarkingController {
             }
         
             QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(), index);
-            questionAnswerService.updateisModified(true, questionAnswer.getId());
+            questionAnswerRepository.updateMarkedAndTeacherAndScore(true, teacher, Integer.parseInt(scoreList[i]), questionAnswer.getId());
         }
 
 //        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
