@@ -97,6 +97,7 @@
 					console.log(data);　　
 				},
 				success: function(data) {
+					console.log(data);
 					var ydbox = $(".yd_box");
 					var index=1;
 					for(var num=0;num<data.length;num++){
@@ -119,7 +120,14 @@
 				            ydbox.children(".movie_box:last-child").find("ul").append('<li><div class="tm_btitlt"> <i class="nmb">' + index + '</i>. <i class="btwenzi">' + data[num].content + '</i><span class="tip_wz">【作品展示】</span></div></li>');
 				            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li>');
-				        	ydbox.children(".movie_box:last-child").append('<span style="font-size:16px;">判分：</span><select class="showScore"></select>');
+				            insertOption.append('<li><div class="picDiv"></div></li>');
+				            var picUrls = data[num].urls.split('<==>');
+				            console.log(picUrls.length);
+				            for(var k=0;k<picUrls.length-1;k++){
+				            	$(".picDiv").append("<img src='data:image/gif;base64,"+picUrls[k]+"' style='width: 180px; height: 180px;margin:10px 10px;border:1px dashed darkgray;' />");
+				            }
+				            
+				            ydbox.children(".movie_box:last-child").append('<span style="font-size:16px;">判分：</span><select class="showScore"></select>');
 							showScore = 0;
 							for (var i = 1; i <= 21; i++) {
 								$(".showScore").append("<option value='"+showScore+"'>"+showScore+"</option>");
@@ -158,8 +166,6 @@
 				
 				
 			});
-			
-			
 			
 			
 			function shortScore() {

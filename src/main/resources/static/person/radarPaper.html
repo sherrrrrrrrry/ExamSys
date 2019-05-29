@@ -83,22 +83,21 @@
 
 			var questionbankname = $.query.get("questionbankname");
 			var student = $.query.get("student");
-			var radarData = [32, 32, 74, 0, 88];
+			var radarData = [0, 0, 0, 0, 0];
 
 			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">' + questionbankname + '--' + student + '</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
 
 			$.ajax({　　
-				type: "GET", // 用POST方式传输
+				type: "GET", 
 				dataType: "JSON", // 数据格式:JSON
 				contentType: "application/json",
 				url: '/Examhistory/getRedarMap?name='+questionbankname+"&username="+student, // 目标地址
 				error: function(data) {
-					radarData = [0,0,28,28,90];
-					console.log("error");
+					console.log("radar error");
 					console.log(data);　　
 				},
 				success: function(data) {
-					console.log(data);
+					radarData = [data.CXNL,data.GRXY,data.GTXTNL,data.ZWGLNL,data.ZWGLNL];
 				}
 			});
 
