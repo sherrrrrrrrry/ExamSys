@@ -11,7 +11,7 @@
 <body>
 	<div class="topbarpage"></div>
 	<div class="headerpage"></div>
-	<section id="inner-headline">
+	<section id="inner-headline" style="margin-top:90px;">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
@@ -121,6 +121,7 @@
 	<script src="../js/animate.js"></script>
 	<script src="../js/custom.js"></script>
 	<script src="../js/jquery.cookie.js"></script>
+	<script src="../js/all.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			var username = $.cookie('username');
@@ -132,6 +133,7 @@
 			$(".footerpage").load("/footer.html");
 			
 			window.onload=function(){
+				getPersonalAuth(username);
 				getUserInfo(username);
 				getUserPic(username);
 			}
