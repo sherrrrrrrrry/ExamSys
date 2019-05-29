@@ -132,9 +132,7 @@ public class ExamHistoryController {
 	    		JSONObject json = new JSONObject();
 	    		json.put("paperName", questionAnswer.getQuestionBank().getName());
 	    		json.put("paperLevel", questionAnswer.getQuestionBank().getLevel());
-	    		System.out.println("!!!!!"+questionAnswer.getTeacher());
-	    		System.out.println("QQQQQQQQQ"+questionAnswer.getTeacher().getName());
-	    		json.put("teacher", questionAnswer.getTeacher().getName());
+	    		json.put("teacher", questionAnswer.getTeacher().getUser().getLogin());
 	    		ArrayList<Transcript> transcriptList = (ArrayList<Transcript>)transcriptRepository.findAllByQuestionBankIdAndStudentLogin(questionAnswer.getQuestionBank().getId(), studentName);
 	    		int score = 0;
 	    		for(Transcript transcript : transcriptList) {
