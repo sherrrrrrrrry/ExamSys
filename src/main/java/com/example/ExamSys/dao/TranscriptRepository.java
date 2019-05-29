@@ -26,4 +26,7 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Long>{
 	
 	@Query("select t from Transcript t where t.questionBank.id = ?1 and t.student.id = ?2")
 	List<Transcript> findAllByQuestionBankIdAndStudentId(Long questionBankId, Long StudentId);
+	
+	@Query("select t from Transcript t where t.questionBank.id = ?1 and t.student = (select s from Student s where s.user.login=?2)")
+	List<Transcript> findAllByQuestionBankIdAndStudentLogin(Long questionBankId, String login);
 }

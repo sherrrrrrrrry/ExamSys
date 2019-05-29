@@ -18,6 +18,10 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
 
     @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and number = ?2")
     QuestionAnswer findByIDandNumber(Long id, int number);
+    
+    @EntityGraph(attributePaths = {"questionBank","student","teacher"})
+    @Query("select q from QuestionAnswer q where q.isMarked=true and q.student = (select s from Student s where s.user.login = ?1) group by q.questionBank")
+    List<QuestionAnswer> findAllMarkedByLogin(String login);
 
     @Modifying
     @Transactional
