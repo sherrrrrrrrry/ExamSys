@@ -96,7 +96,25 @@
 				window.location.href = "/paperCreate/paperListStudent.html";
 			});
 
-			MyPaperListTable();
+			$.ajax({　　
+				type: "GET", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/Examhistory/getMarkedPapers?studentname='+username, // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					
+					for(var i=0;i<data.length;i++){
+						if(!data[i].paperID){
+							data[i].paperID=i+1;
+						}
+					}
+					console.log(data);
+					MyPaperListTable(data);
+				}
+			});
 			
 			$('a#viewMyPaper').click(function() {
 				var data = $('#StuentsPaperList').DataTable().row($(this).parents('tr')).data();
@@ -107,25 +125,10 @@
 
 		});
 
-		function MyPaperListTable() {
-			var data = [{
-				"paperID" : "1",
-				"paperName" : "试卷四",
-				"paperLevel" : "3",
-				"score" : "90",
-				"teacher" : "张三"
-
-			}, {
-				"paperID" : "2",
-				"paperName" : "试卷二",
-				"paperLevel" : "2",
-				"score" : "95",
-				"teacher" : "李四"
-			}];
+		function MyPaperListTable(myPaper) {
 
 			$('#StuentsPaperList').dataTable({
-				data : data,
-				//"ajax" : '/questioncomposition/questionbank_Name',
+				data : myPaper,
 				"searching" : true,//是否支持搜索
 				autoFill : true,
 				bAutoWidth : true,

@@ -224,6 +224,9 @@ public class ExamMarkingController {
     public ResponseEntity<String> GetunMarkedExam(){
         HashMap<Integer, HashMap<String,String>> tobeMarkedList = questionAnswerService.getTobeMarked();
         JSONArray jsonArray = new JSONArray();
+        if(tobeMarkedList == null){
+        	return ResponseEntity.ok().body(jsonArray.toString());
+        }
         for (int i=0; i<tobeMarkedList.size();i++){
             try{
                 JSONObject jsonObject = new JSONObject();
