@@ -108,7 +108,7 @@
 .gallery-item .gallery-details {
     text-align: center;
     padding-top: 20px;
-    background-color: #fff;
+    background-color: inherit;
     bor der: 2px solid #ecf0f1;
     border-top: 0;
     overflow: hidden;
