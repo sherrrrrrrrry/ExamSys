@@ -1,12 +1,16 @@
 package com.example.ExamSys.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +26,16 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
     @EntityGraph(attributePaths = {"questionBank","student","teacher"})
     @Query("select q from QuestionAnswer q where q.isMarked=true and q.student = (select s from Student s where s.user.login = ?1) and q.teacher is not NULL group by q.questionBank")
     List<QuestionAnswer> findAllMarkedByLogin(String login);
-
+    
+//    @Query("select q from QuestionAnswer q where q.isMarked=true and q.number=5 order by score desc limit ?1,6")
+//    List<QuestionAnswer> findAllMarkedShowByOrederNumber(Long startNumber);
+    
+    @Query(value="select q from QuestionAnswer q where q.isMarked=true and q.questiontype=2 and q.createdDate > ?1 order by q.score desc")
+    Page<QuestionAnswer> findByNumberContaining(Pageable pageable, @Param("date") Date date);
+    
+    @Query(value="select q from QuestionAnswer q where q.createdDate > ?1")
+    List<QuestionAnswer> findByNumberContaining(Date date);
+    
     @Modifying
     @Transactional
     @Query("update QuestionAnswer q set q.isMarked=?1 where q.id=?2")
