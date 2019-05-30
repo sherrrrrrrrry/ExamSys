@@ -143,12 +143,10 @@
 			
 			
 			$("#returnList").click(function() {
-				console.log(questionIndexList);
 				var questionScoreList = [];
 				$("select option:selected").each(function() {
 					questionScoreList.push($(this).text());
 				});
-				console.log(questionScoreList);
 				
 				$.ajax({　　
 					type: "POST", // 用POST方式传输

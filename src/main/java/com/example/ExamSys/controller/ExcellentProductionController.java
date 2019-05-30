@@ -40,8 +40,8 @@ public class ExcellentProductionController {
 	 * 			studentName: 该学生的login
 	 * 			production: BASE64编码的String数组
 	 */
-	@RequestMapping(value = "/getProductions", method = RequestMethod.GET)
-	public ResponseEntity<String> getProductions(@RequestParam(value = "pageNumber") int pageNumber){
+	@RequestMapping(value = "/getProductions", method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity getProductions(@RequestParam(value = "pageNumber") int pageNumber){
 		
 		Pageable pr = new PageRequest(pageNumber*6, 6);
 		
@@ -105,7 +105,7 @@ public class ExcellentProductionController {
 			jsonArr.put(jsonObj);
 		}
 		
-		return ResponseEntity.ok().body(jsonArr.toString());
+		return ResponseEntity.ok().body(jsonArr);
 	}
 	
 	

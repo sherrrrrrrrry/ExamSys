@@ -35,7 +35,7 @@
 
 				<div class="row">
 					<div id="isotope-gallery-container">
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
+						<div id="picOne" class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
 							<div class="gallery-item">
 								<div class="gallery-thumb">
 									<div class="flexslider">
@@ -54,136 +54,6 @@
 										<div class="checkboxFour">
 											<input type="checkbox" value="" id="checkboxone" name="" />
 											<label for="checkboxone"></label>
-										</div>
-										<h5 style="display: inline-block;">葛明曦</h5>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<div class="flexslider">
-										<ul class="slides">
-											<li>
-												<img src="/img/works/9.jpg" alt="" />
-											</li>
-											<li>
-												<img src="/img/works/10.jpg" alt="" />
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<div class="checkboxFour">
-											<input type="checkbox" value="" id="checkboxtwo" name="" />
-											<label for="checkboxtwo"></label>
-										</div>
-										<h5 style="display: inline-block;">葛明曦</h5>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<div class="flexslider">
-										<ul class="slides">
-											<li>
-												<img src="/img/works/9.jpg" alt="" />
-											</li>
-											<li>
-												<img src="/img/works/10.jpg" alt="" />
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<div class="checkboxFour">
-											<input type="checkbox" value="" id="checkboxthree" name="" />
-											<label for="checkboxthree"></label>
-										</div>
-										<h5 style="display: inline-block;">葛明曦</h5>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<div class="flexslider">
-										<ul class="slides">
-											<li>
-												<img src="/img/works/9.jpg" alt="" />
-											</li>
-											<li>
-												<img src="/img/works/10.jpg" alt="" />
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<div class="checkboxFour">
-											<input type="checkbox" value="" id="checkboxfour" name="" />
-											<label for="checkboxfour"></label>
-										</div>
-										<h5 style="display: inline-block;">葛明曦</h5>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<div class="flexslider">
-										<ul class="slides">
-											<li>
-												<img src="/img/works/9.jpg" alt="" />
-											</li>
-											<li>
-												<img src="/img/works/10.jpg" alt="" />
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<div class="checkboxFour">
-											<input type="checkbox" value="" id="checkboxfive" name="" />
-											<label for="checkboxfive"></label>
-										</div>
-										<h5 style="display: inline-block;">葛明曦</h5>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<div class="flexslider">
-										<ul class="slides">
-											<li>
-												<img src="/img/works/9.jpg" alt="" />
-											</li>
-											<li>
-												<img src="/img/works/10.jpg" alt="" />
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<div class="checkboxFour">
-											<input type="checkbox" value="" id="checkboxsix" name="" />
-											<label for="checkboxsix"></label>
 										</div>
 										<h5 style="display: inline-block;">葛明曦</h5>
 									</div>
@@ -243,29 +113,101 @@
 			window.onload = function() {
 				getUserAuth(username);
 			}
-
 			
+			var pageIndex = 0;
+			var picsID = [];
+			getPics(pageIndex,picsID);
+			
+			$(".headerpage").load("/header.html");
+			$(".footerpage").load("/footer.html");
+			
+			$("#lastPagePic").live("click",function(){
+				if(pageIndex>0){
+					pageIndex--;
+					getPics(pageIndex);
+				}else{
+					alert("已经是第一页了");
+				}
+			})
+			
+			$("#nextPagePic").live("click",function(){
+				if(pageIndex<5){
+					getChoosenPics(pageIndex,picsID);
+					pageIndex++;
+					getPics(pageIndex);
+				}else{
+					alert("已经是照片最后一页了");
+				}
+			})
+			
+			$("#choosePics").live("click",function(){
+				getChoosenPics(pageIndex,picsID);
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+		            url : "",
+					error: function(data) {
+						console.log("choosen pics finish error");　　
+					},
+					success: function(data) {
+						alert("照片删选成功！");
+					}
+				});
+			})
+			
+		});
+		
+		function getPics(pageIndex,picsID){
+			picsID = [];
 			$.ajax({　　
-				type : "POST", 
-				contentType:false,
-	            processData:false,
-	            url : "",
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+	            url:"/teacher/getProductions?pageNumber="+pageIndex,
 				error: function(data) {
 					console.log(data);　　
 				},
 				success: function(data) {
-					/*if(data){
-						$("#personalpic").after("<img id='pic' src='' style='width: 180px; height: 230px;' />");
-						$("#pic").attr("src","data:image/gif;base64,"+data);
-					}else{
-						$("#personalpic").after("<span>暂未填写</span>");
-					}*/
+					console.log(data);
+					console.log(data[0].studentName);
+					console.log(data[0].questionAnswerId);
+					for(var i=0;i<data.length;i++){
+						picsID.push(data[i].questionAnswerId);
+						$("#isotope-gallery-container").append('<div id="pic'+i+'" class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative"><div class="gallery-item"><div class="gallery-thumb"><div class="flexslider"><ul class="slides"></ul></div></div></div></div>');
+						for(var j=0;j<data[i].production.length;j++){
+							$("#isotope-gallery-container").children(".creative:last-child").find(".slides").append('<li><img src="data:image/gif;base64,'+data[i].production[j]+'" alt="" /></li>');
+						}
+						$("#isotope-gallery-container").children(".creative:last-child").find(".gallery-item").append('<div class="gallery-details"><div class="editContent"><div class="checkboxFour"><input type="checkbox" value="'+i+'" id="checkbox'+i+'" name="" /><label for="checkbox'+i+'"></label></div><h5 style="display: inline-block;">'+data[i].studentName+'</h5></div></div>')
+					
+					}
 				}
 			});
+		}
+		
+		function getChoosenPics(pageIndex,picsID){
+			var choosenList = [];
+			var choosenIndex = 0;
+			$("input[type='checkbox']:checkbox:checked").each(function() {
+				choosenIndex = $(this).val()
+				console.log(choosenIndex);
+				choosenList.push(picsID[choosenIndex]);
+			});
 			
-			$(".headerpage").load("/header.html");
-			$(".footerpage").load("/footer.html");
-		});
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+	            url : "",
+				error: function(data) {
+					console.log("choosen error");　　
+				},
+				success: function(data) {
+					console.log("choosen success");
+				}
+			});
+		}
+		
 	</script>
 
 </body>

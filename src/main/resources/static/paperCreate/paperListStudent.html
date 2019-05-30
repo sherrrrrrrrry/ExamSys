@@ -80,7 +80,7 @@
 			if (username != null) {
 				$(".topbarpage").load("/topbarLogin.html");
 			} else {
-				$(".topbarpage").load("/topbar.html");
+				window.location.href = "/login.html";
 			}
 			window.onload=function(){
 				getUserAuth(username);

@@ -110,15 +110,12 @@
 							data[i].paperID=i+1;
 						}
 					}
-					console.log(data);
 					MyPaperListTable(data);
 				}
 			});
 			
-			$('a#viewMyPaper').click(function() {
+			$('a#viewMyPaper').live("click",function() {
 				var data = $('#StuentsPaperList').DataTable().row($(this).parents('tr')).data();
-				console.log(data);
-				alert("查看雷达图：" + data.paperID + "," + data.paperName);
 				window.location.href = "radarPaper.html?questionbankname="+ data.paperName+"&student="+username;
 			});
 
