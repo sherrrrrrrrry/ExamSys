@@ -118,30 +118,44 @@ public class ExcellentProductionController {
 	/**
 	 * 存储老师选择的优秀作品信息
 	 * @param ids
-	 * @return
+	 * @return 200ok
 	 */
 	@Transactional
 	@RequestMapping(value = "/saveExcellentProductions", method = RequestMethod.POST, headers = "Accept=application/json")
 	public ResponseEntity<String> saveProductions(@RequestBody List<Long> ids){
 		
 		excellentProductionRepository.deleteAll();
+		try {
+		Thread.sleep(1000);
+		} catch(Exception e) {
+			
+		}
+		System.out.println("ok");
+		
 		for(Long id : ids) {
 			QuestionAnswer qa = questionAnswerRepository.findOne(id);
-						
 			ExcellentProduction ep = new ExcellentProduction();
-			ep.setQuestionAnswer(qa);
+			ep.setQuestionAnswerId(id);
 			excellentProductionRepository.save(ep);
 		}
 		
 		return ResponseEntity.ok().body(null);		
 	}
 	
+	/**
+	 * 从ExcellentProduction表里获取要展示的作品id
+	 * 从QuestionAnswer表里根据作品id，获取作品文件url
+	 * 根据url从磁盘上读取图片
+	 * @return studentName: 该学生的login
+	 * 			production: BASE64编码的String数组
+	 */
 	@RequestMapping(value = "/getExcellentProductions", method = RequestMethod.POST, headers = "Accept=application/json")
 	public ResponseEntity<String> getExcellentProductions(){
 		List<ExcellentProduction> epList = excellentProductionRepository.findAll();
 		JSONArray jsonArr = new JSONArray();
 		for(ExcellentProduction ep : epList) {
-			QuestionAnswer questionAnswer = ep.getQuestionAnswer();
+			Long questionAnswerId = ep.getQuestionAnswerId();
+			QuestionAnswer questionAnswer = questionAnswerRepository.findOne(questionAnswerId);
 			if(questionAnswer != null) {
 				JSONObject jsonObj = new JSONObject();
 				try {

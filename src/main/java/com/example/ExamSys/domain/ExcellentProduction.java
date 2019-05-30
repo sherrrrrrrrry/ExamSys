@@ -2,14 +2,11 @@ package com.example.ExamSys.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,9 +18,8 @@ public class ExcellentProduction implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-	@OneToOne(fetch=FetchType.EAGER, orphanRemoval = true)
-	@JoinColumn(unique = true)
-	private QuestionAnswer questionAnswer;
+	@Column(name="question_answer_id")
+	private Long questionAnswerId;
 
 	public Long getId() {
 		return id;
@@ -33,13 +29,12 @@ public class ExcellentProduction implements Serializable {
 		this.id = id;
 	}
 
-	public QuestionAnswer getQuestionAnswer() {
-		return questionAnswer;
+	public Long getQuestionAnswerId() {
+		return questionAnswerId;
 	}
 
-	public void setQuestionAnswer(QuestionAnswer questionAnswer) {
-		this.questionAnswer = questionAnswer;
-	}
-	
+	public void setQuestionAnswerId(Long questionAnswerId) {
+		this.questionAnswerId = questionAnswerId;
+	}	
 	
 }
