@@ -71,11 +71,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests()
 			.antMatchers("/js/**","/css/**","/img/**","/fonts/**","/**/*.png","/**/*.jpg", "/**/*.html", "/*.html", "/*.jpg", "/paperCreate/*.html","/build/**").permitAll()
-//			.antMatchers("/**").permitAll()//
-			.antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-			.antMatchers("/api/**").permitAll()
-			.antMatchers("/account/**").permitAll()
-			.antMatchers("/student/**").permitAll()
+			.antMatchers("/**").permitAll()//
+//			.antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+//			.antMatchers("/api/**").permitAll()
+//			.antMatchers("/account/**").permitAll()
+//			.antMatchers("/student/**").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
