@@ -36,7 +36,9 @@ public class ExcellentProductionController {
 	/**
 	 * 从数据库中提取30天内，得分靠前的作品展示题
 	 * @param pageNumber : 前端页码，第几页
-	 * @return
+	 * @return questionAnswerId: 该条记录在QuestionAnswer表中的id
+	 * 			studentName: 该学生的login
+	 * 			production: BASE64编码的String数组
 	 */
 	@RequestMapping(value = "/getProductions", method = RequestMethod.GET)
 	public ResponseEntity<String> getProductions(@RequestParam(value = "pageNumber") int pageNumber){
@@ -86,7 +88,15 @@ public class ExcellentProductionController {
 				}
 			}
 			try {
-				jsonObj.put("production", productions);
+				if(productions.size() > 0) {
+					StringBuilder sb = new StringBuilder(productions.get(0));
+					for(int j = 1;j<productions.size();j++) {
+						sb.append("<==>"+productions.get(j));
+					}
+					jsonObj.put("production", sb.toString());
+				} else {
+					jsonObj.put("production", "");
+				}
 			} catch(Exception e) {
 				e.printStackTrace();
 				log.info("getProductions Construct json data wrong!");
@@ -97,4 +107,6 @@ public class ExcellentProductionController {
 		
 		return ResponseEntity.ok().body(jsonArr.toString());
 	}
+	
+	
 }
