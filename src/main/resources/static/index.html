@@ -60,144 +60,6 @@
 				</div>
 				<div class="row">
 					<div id="isotope-gallery-container">
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img  src="img/works/1.jpg" class="img-responsive" alt="1st gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/1.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>1st gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper nature outside">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img src="img/works/2.jpg" class="img-responsive" alt="2nd gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/2.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>2nd gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper photography artwork">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img src="img/works/3.jpg" class="img-responsive" alt="3rd gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/3.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>3rd gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper creative nature">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img src="img/works/4.jpg" class="img-responsive" alt="4th gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/4.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>4th gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper nature">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img src="img/works/5.jpg" class="img-responsive" alt="5th gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/5.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>5th gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /.gallery-item-wrapper -->
-						<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative">
-							<div class="gallery-item">
-								<div class="gallery-thumb">
-									<img src="img/works/6.jpg" class="img-responsive" alt="6th gallery Thumb">
-									<div class="image-overlay"></div>
-									<a href="img/works/6.jpg" class="gallery-zoom">
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href="#" class="gallery-link">
-										<i class="fa fa-link"></i>
-									</a>
-								</div>
-								<div class="gallery-details">
-									<div class="editContent">
-										<h5>6th gallery Item</h5>
-									</div>
-									<div class="editContent">
-										<p>Nullam id dolor id nibh ultricies vehicula.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-
 					</div>
 				</div>
 			</div>
@@ -235,6 +97,32 @@
 			
 			$(".headerpage").load("header.html");
 			$(".footerpage").load("footer.html");
+			
+			$.ajax({　　
+				type: "POST", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+	            url:"/teacher/getExcellentProductions",
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					if(data.length>0){
+						for(var i=0;i<data.length;i++){
+							var picsUrl = data[i].production.split("<==>");
+							for(var j=0;j<picsUrl.length;j++){
+								$("#isotope-gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="data:image/gif;base64,'+picsUrl[j]+'" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>'+data[i].studentName+'</h5></div></div></div></div>');
+							}
+						}
+						$("#isotope-gallery-container").css("height","auto");
+					}else{
+						$("#isotope-gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="/img/works/noPic.jpg" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>暂无</h5></div></div></div></div>');
+					}
+					
+					
+				}
+			});
+			
 		});
 	</script>
 
