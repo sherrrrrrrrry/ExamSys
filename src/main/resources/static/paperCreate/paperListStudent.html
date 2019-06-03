@@ -98,15 +98,17 @@
 					console.log("error");　　
 				},
 				success: function(data) {
-					studentsPaper=[];
-					studentsPaper.push(data);
-					for(var i=0;i<studentsPaper.length;i++){
-						if(!studentsPaper[i].paperID){
+					if(data!=null&&data!="null"){
+						studentsPaper=[];
+						studentsPaper.push(data);
+						for(var i=0;i<studentsPaper.length;i++){
 							studentsPaper[i].paperID=i+1;
 						}
-					}
-					console.log(studentsPaper);
-					paperListTable(studentsPaper);
+						console.log(studentsPaper);
+						paperListTable(studentsPaper);
+					}else
+						paperListTable(data);
+					
 				}
 			});
 

@@ -90,8 +90,7 @@
 
 			$("#getPaperName").append('<div class="col-lg-12"><h2 class="pageTitle">'+name+'</h2></div><div class="col-md-12"><p class="pull-right"></p></div>')
 
-			getQuestion(name,index);
-			receiveAnswer(username,name,index);
+			getQuesAndAnswer(username,name,index);
 
 			$("#nextQuestion").click(function() {
                 var questionType = $(".dx_box").attr("data-t");
@@ -105,8 +104,7 @@
 				
 				$(".yd_box").empty();
 				index++;
-				getQuestion(name,index);
-				receiveAnswer(username,name,index);
+				getQuesAndAnswer(username,name,index);
 			});
 
 			$("#lastQuestionanswer").click(function(){
@@ -116,8 +114,7 @@
 					//sendAnswer(username,name,index,answer);
 					$(".yd_box").empty();
 					index--;
-					getQuestion(name,index);
-					receiveAnswer(username,name,index);
+					getQuesAndAnswer(username,name,index);
 				}
 			});
 			
@@ -154,16 +151,58 @@
             	return answer;
             }
 		}
-		function getQuestion(name,index){
+
+		function sendAnswer(username,name,index,answer){
 		    $.ajax({　　
 				type: "POST", // 用POST方式传输
 				dataType: "JSON", // 数据格式:JSON
-				data:{"name":name,"index":index},
-				url: '/questioncomposition/get_questions', // 目标地址
+				data:{"username":username,"name":name,"index":index,"answer":answer},
+				url: '/Exam/questionanswer_save', // 目标地址
 				error: function(data) {
-					console.log(data);　
+					console.log(data);
 				},
-				success: function(data) {
+				success:function(data){
+				}
+				});
+		}
+		
+		var files=[];
+		function sendFiles(username,name,index){
+			var sendFilesAll = new FormData();
+			sendFilesAll.append('username',username);
+			sendFilesAll.append('name',name);
+			sendFilesAll.append('index',index);
+			console.log(files.length);
+			for(var i=0;i<files.length;i++){
+				sendFilesAll.append('files',files[i]);
+			}
+			
+		    $.ajax({　　
+				type: "POST", // 用POST方式传输
+				contentType:false,
+	            processData:false,
+				data: sendFilesAll,
+				url: '/Exam/questionanswer_save_show', // 目标地址
+				error: function(data) {
+					console.log(data);
+				},
+				success:function(data){
+					console.log("success");
+				}
+				});
+		}
+		
+
+		function getQuesAndAnswer(username,name,index){
+			$.ajax({
+				type: "POST",
+				dataType: "JSON",
+				data:{"username":username,"name":name,"index":index},
+				url:'/Exam/questionanswer_show',
+				error: function(data){
+				},
+				success: function(data){
+					console.log(data);
 					if(data!=null&&data!="null"){
 						$("#nextQuestion").css("display","inline-block");
 						$("#submitPaper").css("display","none");
@@ -203,93 +242,54 @@
 				            var insertOption = ydbox.children(".movie_box:last-child").find("ul");
 				            insertOption.append('<li><label style="width:100%;"><textarea name="" cols="" rows="" class="input_wenbk btwen_text btwen_text_dx" style="width:100%;" value="请填写您的答案"></textarea></label></li><li><form method="post" action="" id="passForm" enctype="multipart/form-data" multipart=""><div id="Pic_pass"><p >请上传作品照片(大小不超过4M，最多5张) </p><p></p><div class="picDiv"><div class="addImages"><input type="file" class="file" id="fileInput" onchange="filesShow(this)" multiple="" accept="image/png, image/jpeg, image/gif, image/jpg"><div class="text-detail"><span>+</span><p>点击上传</p></div></div></div></div><div class="msg" style="display: none;"></div></form></li>');
 				        }
+						
+						
+						if(data.answer){
+							var answer = data.answer;
+							var questionType = $(".dx_box").attr("data-t");
+							if(questionType == "0"){
+		                 		$('.movie_box input[name="a"]').eq(answer).attr('checked',true);
+		            		}
+		            		if(questionType == "1"){
+		            			for(var i=0;i<answer.length;i++){
+		            				var oneAnswer = answer.charAt(i);
+		            				$('.movie_box input[name="option"]').eq(oneAnswer).attr('checked',true);
+		            			}
+		            		}
+		            		if (questionType == "2") {
+		            			if (answer == "T") {
+		            				$('.movie_box input[name="a"]').eq(0).attr('checked',true);
+		            			}
+		            			else{
+		            				$('.movie_box input[name="a"]').eq(1).attr('checked',true);
+		            			}
+
+		            		}
+		            		if (questionType == "3") {
+		            			$('.movie_box textarea[name=""]').text(answer);
+		            		}
+		            		if (questionType == "4") {
+		            			$('.movie_box textarea[name=""]').text(answer);
+				            	
+		            			 var picUrls = data.picture.split('<==>');
+						            console.log(picUrls.length);
+						            for(var k=0;k<picUrls.length;k++){
+						            	console.log(k);
+						            	$(".picDiv").prepend("<div class='imageDiv'><img src='data:image/gif;base64,"+picUrls[k]+"' style='display: inline-block; width: 130px; height: 130px;'/> <div class='cover'><i class='delbtn'>删除</i></div></div>");
+						            }
+		            			
+		            		}
+
+						}
+						
 					}else{
 						var ydbox = $(".yd_box");
 						ydbox.append('<div style="width:200px;height:100px;font-size:20px;margin:0 auto;text-align:center;"><span>您的试卷已全部完成！</span></div>');
 						$("#nextQuestion").css("display","none");
 						$("#submitPaper").css("display","inline-block");
 					}
-				}
-			});
-		}
+					
 
-		function sendAnswer(username,name,index,answer){
-		    $.ajax({　　
-				type: "POST", // 用POST方式传输
-				dataType: "JSON", // 数据格式:JSON
-				data:{"username":username,"name":name,"index":index,"answer":answer},
-				url: '/Exam/questionanswer_save', // 目标地址
-				error: function(data) {
-					console.log(data);
-				},
-				success:function(data){
-				}
-				});
-		}
-		
-		var files=[];
-		function sendFiles(username,name,index){
-			var sendFilesAll = new FormData();
-			sendFilesAll.append('username',username);
-			sendFilesAll.append('name',name);
-			sendFilesAll.append('index',index);
-			for(var i=0;i<files.length;i++){
-				sendFilesAll.append('files',files[i]);
-			}
-			
-			
-		    $.ajax({　　
-				type: "POST", // 用POST方式传输
-				contentType:false,
-	            processData:false,
-				data: sendFilesAll,
-				url: '/Exam/questionanswer_save_show', // 目标地址
-				error: function(data) {
-					console.log(data);
-				},
-				success:function(data){
-					console.log("success");
-				}
-				});
-		}
-		
-
-		function receiveAnswer(username,name,index){
-			$.ajax({
-				type: "POST",
-				dataType: "JSON",
-				data:{"username":username,"name":name,"index":index},
-				url:'/Exam/questionanswer_show',
-				error: function(data){
-				},
-				success: function(data){
-					if(data!=null&&data!="null"){
-						var answer = data.answer;
-						var questionType = $(".dx_box").attr("data-t");
-						if(questionType == "0"){
-	                 		$('.movie_box input[name="a"]').eq(answer).attr('checked',true);
-	            		}
-	            		if(questionType == "1"){
-	            			for(var i=0;i<answer.length;i++){
-	            				var oneAnswer = answer.charAt(i);
-	            				$('.movie_box input[name="option"]').eq(oneAnswer).attr('checked',true);
-	            			}
-	            		}
-	            		if (questionType == "2") {
-	            			if (answer == "T") {
-	            				$('.movie_box input[name="a"]').eq(0).attr('checked',true);
-	            			}
-	            			else{
-	            				$('.movie_box input[name="a"]').eq(1).attr('checked',true);
-	            			}
-
-	            		}
-	            		if (questionType == "3") {
-	            			$('.movie_box textarea[name=""]').text(answer);
-	            			return answer;
-	            		}
-
-					}
 					
 				}
 				});

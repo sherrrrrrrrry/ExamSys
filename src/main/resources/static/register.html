@@ -154,7 +154,7 @@
 											<input type="email" class="form-control" style="width: 58%; display: inline;"
 												name="email" id="email" value="" name="yzm_email" />
 											<input type="button" class="form-control" style="width: 40%; display: inline;"
-												id="addSendCode" value="获取验证码" onClick="sendAddmes()" />
+												id="addSendCodeEmail" value="获取验证码" onClick="sendAddmes()" />
 											<p class="help-block"></p>
 										</div>
 									</div>
@@ -208,6 +208,11 @@
 				var xxkjs = $(this).index();
 				$(this).addClass("on").siblings().removeClass("on");
 				$(".xxk_conn").children(".xxk_xzqh_box").eq(xxkjs).show().siblings().hide();
+				if(xxkjs==0){
+					$("#email").attr("value","");
+				}else if(xxkjs==1){
+					$("#phone").attr("value","");
+				}
 			});
 		})
 	</script>

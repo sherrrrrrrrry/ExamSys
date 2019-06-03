@@ -24,7 +24,7 @@
 			<div id="main-slider" class="flexslider">
 				<ul class="slides">
 					<li>
-						<img style="width:100%;height: auto;" src="img/slides/1.jpg" alt="" />
+						<img style="width:100%;height:40em;" src="img/slides/slide1.jpg" alt="" />
 						<div class="flex-caption">
 							<h3>Creative</h3>
 							<p>We create the opportunities</p>
@@ -32,10 +32,34 @@
 						</div>
 					</li>
 					<li>
-						<img style="width:100%;height: auto;" src="img/slides/2.jpg" alt="" />
+						<img style="width:100%;height:40em;" src="img/slides/slide2.jpg" alt="" />
 						<div class="flex-caption">
 							<h3>Solution</h3>
 							<p>Success depends on work</p>
+
+						</div>
+					</li>
+					<li>
+						<img style="width:100%;height: 40em;" src="img/slides/slide3.jpg" alt="" />
+						<div class="flex-caption">
+							<h3>Ablity</h3>
+							<p>We offer the chances</p>
+
+						</div>
+					</li>
+					<li>
+						<img style="width:100%;height:40em;" src="img/slides/slide4.jpg" alt="" />
+						<div class="flex-caption">
+							<h3>Idea</h3>
+							<p>Ideas are inspired here</p>
+
+						</div>
+					</li>
+					<li>
+						<img style="width:100%;height: 40em;" src="img/slides/slide5.jpg" alt="" />
+						<div class="flex-caption">
+							<h3>Cooperation</h3>
+							<p>Cooperation and learn together</p>
 
 						</div>
 					</li>
@@ -59,7 +83,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div id="isotope-gallery-container">
+					<div id="gallery-container">
 					</div>
 				</div>
 			</div>
@@ -111,12 +135,12 @@
 						for(var i=0;i<data.length;i++){
 							var picsUrl = data[i].production.split("<==>");
 							for(var j=0;j<picsUrl.length;j++){
-								$("#isotope-gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="data:image/gif;base64,'+picsUrl[j]+'" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>'+data[i].studentName+'</h5></div></div></div></div>');
+								$("#gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="data:image/gif;base64,'+picsUrl[j]+'" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>'+data[i].studentName+'</h5></div></div></div></div>');
 							}
 						}
-						$("#isotope-gallery-container").css("height","auto");
+						$("#gallery-container").height("auto");
 					}else{
-						$("#isotope-gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="/img/works/noPic.jpg" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>暂无</h5></div></div></div></div>');
+						$("#gallery-container").append('<div class="col-md-4 col-sm-6 col-xs-12 gallery-item-wrapper artwork creative isotope-item"><div class="gallery-item"><div class="gallery-thumb"><img src="/img/works/noPic.jpg" class="img-responsive" alt=""><div class="image-overlay"></div></div><div class="gallery-details"><div class="editContent"><h5>暂无</h5></div></div></div></div>');
 					}
 					
 					

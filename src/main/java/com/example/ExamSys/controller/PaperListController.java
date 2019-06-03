@@ -155,7 +155,7 @@ public class PaperListController {
     }
     
     
-    @RequestMapping(value = "/delete_bank", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/delete_bank", method = RequestMethod.POST)
     public ResponseEntity deleteQuestionBank(HttpServletRequest request) {
     	String bankName = request.getParameter("name");
     	

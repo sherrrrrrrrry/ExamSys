@@ -1,8 +1,10 @@
 //*********获取语音验证码*********//
 
 var AddInterValObj; // timer变量，控制时间
+var AddInterValObjEmial; // timer变量，控制时间
 var adcount = 60; // 间隔函数，1秒执行
 var addCount; // 当前剩余秒数
+var addCountEmail; // 当前剩余秒数
 var hash;
 var codeTimestamp;
 
@@ -28,15 +30,17 @@ function sendAddmes() {
 	 * if(!myreg.test($("#email").val())) { layertest('请输入有效的邮箱') return
 	 * false; }else{
 	 */
-	addCount = adcount;　　 // 设置button效果，开始计时
-	$("#addSendCode").attr("disabled", "true");
-	$("#addSendCode").val("" + addCount + "秒后重新获取").css({
-		"background-color": "#002e5b"
-	});
-	AddInterValObj = window.setInterval(SetAddnTime, 1000); // 启动计时器，1秒执行一次
+	
 	　　 // 向后台发送处理数据
 	var email = document.getElementById("email").value;
 	if(email){
+		addCountEmail = adcount;　　 // 设置button效果，开始计时
+		$("#addSendCodeEmail").attr("disabled", "true");
+		$("#addSendCodeEmail").val("" + addCountEmail + "秒后重新获取").css({
+			"background-color": "#002e5b"
+		});
+		AddInterValObjEmial = window.setInterval(SetAddnTimeEmail, 1000); // 启动计时器，1秒执行一次
+		
 		console.log(email);
 		$.ajax({　　
 			type: "POST", // 用POST方式传输
@@ -55,6 +59,14 @@ function sendAddmes() {
 	else{
 		var phoneNumber = document.getElementById("phone").value;
 		console.log(phoneNumber);
+		
+		addCount = adcount;　　 // 设置button效果，开始计时
+		$("#addSendCode").attr("disabled", "true");
+		$("#addSendCode").val("" + addCount + "秒后重新获取").css({
+			"background-color": "#002e5b"
+		});
+		AddInterValObj = window.setInterval(SetAddnTime, 1000); // 启动计时器，1秒执行一次
+		
 		$.ajax({　　
 			type: "POST", // 用POST方式传输
 			dataType: "JSON", // 数据格式:JSON
@@ -82,6 +94,21 @@ function SetAddnTime() {
 	} else {
 		addCount--;
 		$("#addSendCode").val("" + addCount + "秒后重新获取").css({
+			"background-color": "#D1D4D3"
+		});
+	}
+}
+
+function SetAddnTimeEmail() {
+	if (addCountEmail == 0) {
+		window.clearInterval(AddInterValObjEmial); // 停止计时器
+		$("#addSendCodeEmail").removeAttr("disabled"); // 启用按钮
+		$("#addSendCodeEmail").val("重新获取验证码").css({
+			"background-color": "#0097a8"
+		});
+	} else {
+		addCountEmail--;
+		$("#addSendCodeEmail").val("" + addCountEmail + "秒后重新获取").css({
 			"background-color": "#D1D4D3"
 		});
 	}

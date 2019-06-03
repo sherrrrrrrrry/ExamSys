@@ -43,6 +43,7 @@
 							<th>试卷名称</th>
 							<th>试卷等级</th>
 							<th>查看试卷</th>
+							<th>删除试卷</th>
 						</tr>
 					</thead>
 					<tfoot>
@@ -51,6 +52,7 @@
 							<th>试卷名称</th>
 							<th>试卷等级</th>
 							<th>查看试卷</th>
+							<th>删除试卷</th>
 						</tr>
 					</tfoot>
 				</table>
@@ -78,6 +80,7 @@
 	<script src="../js/jquery.params.js"></script>
 	<script src="../datatablemedia/js/jquery.dataTables.js"></script>
 	<script src="../js/all.js"></script>
+	
 
 	<script type="text/javascript">
 		$(function() {
@@ -122,6 +125,25 @@
 				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
 				window.location.href = "paperAll.html?questionName="+ data.questionName;
 			});
+			
+			$('a#deletePaper').live("click",function() {
+				var data = $('#paperList').DataTable().row($(this).parents('tr')).data();
+				
+				$.ajax({　　
+					type: "POST", // 用POST方式传输
+					dataType: "JSON", // 数据格式:JSON
+					contentType: "application/json",
+					url: '/paperListAdmin/delete_bank?name='+data.questionName, // 目标地址
+					error: function(data) {
+						console.log(data);　　
+					},
+					success: function(data) {
+						alert("试卷已删除");
+						reloadPapers();
+					}
+				});
+				
+			});
 
 
 		});
@@ -159,21 +181,53 @@
 				}, {
 					"data" : "level"
 				}, {
+					"data" : "deletePaperButton"
+				}, {
 					"data" : "viewPaperButton"
 				}],
 				"aoColumnDefs" : [//设置列的属性，此处设置第一列不排序
 				{
-					"targets" : -1,
+					"targets" : -2,
 					"class" : "but_xq",
 					"data" : null,
 					"bSortable" : false,
 					"defaultContent" : "<p><a id=\"viewPaper\" href=\"#\">查看试卷</a></p>"
+				},{
+					"targets" : -1,
+					"class" : "but_xq",
+					"data" : null,
+					"bSortable" : false,
+					"defaultContent" : "<p><a id=\"deletePaper\" href=\"#\">删除试卷</a></p>"
 				}
 
 				]
 
 			});
 		}
+		
+		function reloadPapers(){
+			var curTable= $('#paperList').DataTable();
+			
+			$.ajax({　　
+				type: "GET", // 用POST方式传输
+				dataType: "JSON", // 数据格式:JSON
+				contentType: "application/json",
+				url: '/paperListAdmin/questionbank_Name', // 目标地址
+				error: function(data) {
+					console.log(data);　　
+				},
+				success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(!data[i].paperID){
+							data[i].paperID=i+1;
+						}
+					}
+					reloadData(curTable,data);
+				}
+			});
+			
+		}
+		
 	</script>
 </body>
 </html>
