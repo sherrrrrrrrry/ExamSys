@@ -1,13 +1,21 @@
 package com.example.ExamSys.controller;
 
 
-import com.example.ExamSys.config.Constants;
-import com.example.ExamSys.dao.StudentRepository;
-import com.example.ExamSys.domain.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import com.example.ExamSys.domain.enumeration.QuestionType;
-import com.example.ExamSys.service.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,18 +24,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.example.ExamSys.config.Constants;
+import com.example.ExamSys.dao.QuestionAnswerRepository;
+import com.example.ExamSys.dao.StudentRepository;
+import com.example.ExamSys.domain.QuestionAnswer;
+import com.example.ExamSys.domain.QuestionBank;
+import com.example.ExamSys.domain.QuestionList;
+import com.example.ExamSys.domain.Student;
+import com.example.ExamSys.domain.User;
+import com.example.ExamSys.domain.enumeration.QuestionType;
+import com.example.ExamSys.service.ProductionService;
+import com.example.ExamSys.service.QuestionAnswerService;
+import com.example.ExamSys.service.QuestionBankService;
+import com.example.ExamSys.service.QuestionChoiceService;
+import com.example.ExamSys.service.QuestionListService;
+import com.example.ExamSys.service.UserService;
 
 @RestController
 @RequestMapping("/Exam")
 public class ExamAnswerController {
+	private final Logger log = LoggerFactory.getLogger(ExamAnswerController.class);
     @Autowired
     private QuestionListService questionListService;
 
@@ -48,6 +64,29 @@ public class ExamAnswerController {
 
     @Autowired
     private ProductionService productionService;
+    
+    @Autowired
+    private QuestionAnswerRepository questionAnswerRepository;
+    
+    
+    @SuppressWarnings("deprecation")
+	@RequestMapping(value="/save", method=RequestMethod.GET, headers="Accept=application/json")
+    public ResponseEntity savee(HttpServletRequest request) {
+    	HttpSession session = request.getSession();
+    	session.setAttribute("okt", "123");
+//    	System.out.println(session.getAttribute("okt").toString());
+    	return ResponseEntity.ok(null);
+    }
+    
+    @SuppressWarnings("deprecation")
+	@RequestMapping(value="/get", method=RequestMethod.GET, headers="Accept=application/json")
+    public ResponseEntity get(HttpServletRequest request) {
+    	HttpSession session = request.getSession();
+    	System.out.println(session.getMaxInactiveInterval());
+//    	session.setAttribute("okt", "123");
+    	System.out.println(session.getAttribute("okt").toString());
+    	return ResponseEntity.ok(null);
+    }
     /**
      *   备注：此方法用于选择，判断，简答。展示题用saveShow方法
      *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer
@@ -79,7 +118,8 @@ public class ExamAnswerController {
         QuestionType questionType = questionList.getType();
 
         if (questionType == QuestionType.Choice || questionType == QuestionType.Judgment) {
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, 0);
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
             if (questionAnswer==null) {//如果 在答案表里没找到对应的数据
                 String answer = "";
                 if (questionType == QuestionType.Choice) {//选择题答案
@@ -139,7 +179,9 @@ public class ExamAnswerController {
             }
         }
         else if (questionType == QuestionType.Short){
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
+
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
             if (questionAnswer==null){
                 questionAnswer = new QuestionAnswer();
                 questionAnswer.setNumber(index);//简答和展示题的题号
@@ -163,7 +205,9 @@ public class ExamAnswerController {
             }
         }
         else if (questionType == QuestionType.Show){
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
+
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
             if (questionAnswer==null){
                 questionAnswer = new QuestionAnswer();
                 questionAnswer.setNumber(index);//简答和展示题的题号
@@ -200,8 +244,6 @@ public class ExamAnswerController {
      **/
     @RequestMapping(value = "/questionanswer_save_show", method = RequestMethod.POST)
     public ResponseEntity saveShow(@RequestParam("name") String name, @RequestParam("username") String username,@RequestParam("index") int index, @RequestParam("files") MultipartFile[] files){
-    	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    	System.out.println(files.length);
         //确认考生
         Optional<User> user = userService.findOneByLogin(username);
         if (!user.isPresent()){
@@ -223,7 +265,9 @@ public class ExamAnswerController {
         }
 
 
-        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+//        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+        QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
+
         Student stu = studentRepository.findStuByUsername(username);
         if (questionAnswer==null) {
             String url = "";
@@ -359,7 +403,9 @@ public class ExamAnswerController {
         QuestionType questionType = questionList.getType();
         Map<String, String> answerMap = new HashMap<>();
         if (questionType == QuestionType.Choice || questionType == QuestionType.Judgment) {
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, 0);
+
             if (questionAnswer==null){//没找到答案
                 return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(null);
             }
@@ -376,7 +422,9 @@ public class ExamAnswerController {
             }
         }
         else if (questionType == QuestionType.Short){
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+//            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
+
             if (questionAnswer==null){//没找到答案
                 return ResponseEntity.badRequest().body(null);
             }
@@ -386,13 +434,86 @@ public class ExamAnswerController {
                     return ResponseEntity.badRequest().header("short","No such answer!").body(null);
                 }
                 else{
+                    String[] answers = answer.split("<==>");
                     answerMap.put("answer",answer);
                     return ResponseEntity.ok().body(answerMap);
                 }
             }
         }
         else if (questionType == QuestionType.Show){
-            return null;
+        	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
+        	
+        	if(questionAnswer==null) {
+        		return ResponseEntity.badRequest().body(null);
+        	}
+        	else {
+        		String answer = questionAnswer.getAnswer();
+        		if(answer == null) {
+        			return ResponseEntity.badRequest().header("show","No such answer!").body(null);
+        		}
+        		else {
+            		String[] answers = answer.split("<==>");
+            		switch(answers.length) {
+	            		case 0: answerMap.put("answer", "");
+	            				answerMap.put("picture", "");
+	            				break;
+	            		default: if(answer.substring(0, 4).equals("<==>")) {
+	            			answerMap.put("answer", "");
+	            			StringBuilder sb = new StringBuilder("");
+	            			for(int i=0;i<answers.length;i++) {
+	            				try {
+			            			File file = new File(answers[i]);
+	
+			            			FileInputStream inputStream = new FileInputStream(file);
+	
+			        				byte[] bytes = new byte[inputStream.available()];
+	
+			        				inputStream.read(bytes, 0, inputStream.available());
+			        				inputStream.close();
+			        				
+			        				String data = Base64.encodeBase64String(bytes);
+			        				sb.append(data+"<==>");
+	            				} catch(Exception e) {
+	            					e.printStackTrace();
+	            					log.info(e.toString());
+	            					continue;
+	            				}
+	            			}
+	            			if(sb.length()>=4)
+	            				sb.replace(sb.length()-4, sb.length(), "");
+	            			answerMap.put("picture", sb.toString());
+	            		} else {
+	            			answerMap.put("answer", answers[0]);
+	            			StringBuilder sb = new StringBuilder("");
+	            			for(int i=1;i<answers.length;i++) {
+	            				try {
+	            					File file = new File(answers[i]);
+	            					
+			            			FileInputStream inputStream = new FileInputStream(file);
+	
+			        				byte[] bytes = new byte[inputStream.available()];
+	
+			        				inputStream.read(bytes, 0, inputStream.available());
+			        				inputStream.close();
+			        				
+			        				String data = Base64.encodeBase64String(bytes);
+			        				sb.append(data+"<==>");
+	            				} catch(Exception e) {
+	            					e.printStackTrace();
+	            					log.info(e.toString());
+	            					continue;
+	            				}
+	            			}
+	            			if(sb.length()>=4)
+	            				sb.replace(sb.length()-4, sb.length(), "");
+	            			answerMap.put("picture", sb.toString());
+	            		}
+	            		break;
+            		}
+            		System.out.println(answers.length + "   !!!!!!!!!!!!!!");
+            		return ResponseEntity.badRequest().body(answerMap);
+        		}
+        	}
         }
         return ResponseEntity.badRequest().body(null);
     }
@@ -405,4 +526,9 @@ public class ExamAnswerController {
         return answers[index-1];
     }
 
+    public static void main(String[] args) {
+    	String s = "<==>";
+    	String[] ss = s.split("<==>");
+    	System.out.println(s.substring(s.length()-4, s.length()));
+    }
 }

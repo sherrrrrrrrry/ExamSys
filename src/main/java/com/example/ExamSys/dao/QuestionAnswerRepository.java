@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ExamSys.domain.QuestionAnswer;
+import com.example.ExamSys.domain.Student;
 import com.example.ExamSys.domain.Teacher;
 
 @Repository
@@ -22,6 +23,9 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
 
     @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and number = ?2")
     QuestionAnswer findByIDandNumber(Long id, int number);
+    
+    @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and q.student=?2 and q.number=?3")
+    QuestionAnswer findByQuestionBankAndStudentAndNumber(Long id, Student student, int number);
     
     @EntityGraph(attributePaths = {"questionBank","student","teacher"})
     @Query("select q from QuestionAnswer q where q.isMarked=true and q.student = (select s from Student s where s.user.login = ?1) and q.teacher is not NULL group by q.questionBank")
