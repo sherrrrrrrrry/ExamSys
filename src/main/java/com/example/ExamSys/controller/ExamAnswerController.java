@@ -409,7 +409,7 @@ public class ExamAnswerController {
             if (questionAnswer==null){//没找到答案
 
                 Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(question);
+                return ResponseEntity.ok().header("CorJ","No such answer!1").body(question);
                 
 //                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(null);
             }
@@ -418,7 +418,7 @@ public class ExamAnswerController {
                 String currentAnswer = getAnswer(answer,index);
                 if (currentAnswer == null){
                     Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(question);
+                    return ResponseEntity.ok().header("CorJ","No such answer!2").body(question);
                     
 //                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(null);
                 }
@@ -438,7 +438,7 @@ public class ExamAnswerController {
 
             if (questionAnswer==null){//没找到答案
             	Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-            	return ResponseEntity.badRequest().body(question);
+            	return ResponseEntity.ok().body(question);
             	
 //                return ResponseEntity.badRequest().body(null);
             }
@@ -446,7 +446,7 @@ public class ExamAnswerController {
                 String answer = questionAnswer.getAnswer();
                 if (answer == null){
                 	Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-                	return ResponseEntity.badRequest().header("short","No such answer!").body(question);
+                	return ResponseEntity.ok().header("short","No such answer!").body(question);
                 	
 //                    return ResponseEntity.badRequest().header("short","No such answer!").body(null);
                 }
@@ -465,7 +465,7 @@ public class ExamAnswerController {
         	
         	if(questionAnswer==null) {
         		Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-        		return ResponseEntity.badRequest().body(question);
+        		return ResponseEntity.ok().body(question);
         		
 //        		return ResponseEntity.badRequest().body(null);
         	}
@@ -473,7 +473,7 @@ public class ExamAnswerController {
         		String answer = questionAnswer.getAnswer();
         		if(answer == null) {
         			Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-        			return ResponseEntity.badRequest().header("show","No such answer!").body(question);
+        			return ResponseEntity.ok().header("show","No such answer!").body(question);
         			
 //        			return ResponseEntity.badRequest().header("show","No such answer!").body(null);
         		}
@@ -540,13 +540,13 @@ public class ExamAnswerController {
         			resultMap.putAll(answerMap);
         			if(question !=null)
         				resultMap.putAll(question);
-        			return ResponseEntity.badRequest().body(resultMap);
+        			return ResponseEntity.ok().body(resultMap);
 //            		return ResponseEntity.badRequest().body(answerMap);
         		}
         	}
         }
         Map<String, Object> question = questionAnswerService.getQuestions(name, index);
-        return ResponseEntity.badRequest().body(question);
+        return ResponseEntity.ok().body(question);
 //        return ResponseEntity.badRequest().body(null);
     }
 
