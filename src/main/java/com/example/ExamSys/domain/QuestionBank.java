@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,14 +33,14 @@ public class QuestionBank implements Serializable{
 	@Column(name = "level")
 	private int level;
 	
-	@ManyToMany
+	@ManyToMany(cascade={CascadeType.REMOVE})
 	@JoinTable(
 			name = "bank_choice",
 			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
 				inverseJoinColumns = {@JoinColumn(name = "question_choice_id", referencedColumnName = "id")})
 	private Set<QuestionChoice> choiceQuestions = new HashSet<>();
 
-	@ManyToMany
+	@ManyToMany(cascade={CascadeType.REMOVE})
     @JoinTable(
 	    name = "bank_judgment",
             joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
@@ -47,7 +48,7 @@ public class QuestionBank implements Serializable{
     )
     private Set<QuestionJudgment> questionJudgments = new HashSet<>();
 
-	@ManyToMany
+	@ManyToMany(cascade={CascadeType.REMOVE})
 	@JoinTable(
 			name = "bank_short",
 			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
@@ -61,14 +62,14 @@ public class QuestionBank implements Serializable{
 //				inverseJoinColumns = {@JoinColumn(name = "question_choice_multi_id", referencedColumnName = "id")})
 //	private Set<QuestionChoice_multi> multi_choiceQuestions = new HashSet<>();
 	
-	@ManyToMany
+	@ManyToMany(cascade={CascadeType.REMOVE})
 	@JoinTable(
 			name = "bank_show",
 			joinColumns = {@JoinColumn(name = "bank_id", referencedColumnName = "id")},
 				inverseJoinColumns = {@JoinColumn(name = "question_show_id", referencedColumnName = "id")})
 	private Set<QuestionShow> showQuestions = new HashSet<>();
 
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true, cascade={CascadeType.REMOVE})
 	private Set<Transcript> transcripts = new HashSet<>();
 //
 //	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
@@ -76,7 +77,7 @@ public class QuestionBank implements Serializable{
 //	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
 //	private Set<ExamAnswer_text> examAnswer_texts = new HashSet<>();
 
-	@OneToMany(mappedBy = "questionBank", orphanRemoval = true)
+	@OneToMany(mappedBy = "questionBank", orphanRemoval = true, cascade={CascadeType.REMOVE})
 	private Set<QuestionAnswer> questionAnswers = new HashSet<>();
 
 	public Long getId() {

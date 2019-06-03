@@ -1,8 +1,12 @@
 package com.example.ExamSys.controller;
 
-import com.example.ExamSys.domain.*;
-import com.example.ExamSys.domain.enumeration.QuestionType;
-import com.example.ExamSys.service.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -13,12 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.Query;
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import com.example.ExamSys.dao.QuestionBankRepository;
+import com.example.ExamSys.domain.QuestionBank;
+import com.example.ExamSys.domain.QuestionChoice;
+import com.example.ExamSys.domain.QuestionJudgment;
+import com.example.ExamSys.domain.QuestionList;
+import com.example.ExamSys.domain.QuestionShort;
+import com.example.ExamSys.domain.QuestionShow;
+import com.example.ExamSys.domain.enumeration.QuestionType;
+import com.example.ExamSys.service.QuestionBankService;
+import com.example.ExamSys.service.QuestionChoiceService;
+import com.example.ExamSys.service.QuestionJudgmentService;
+import com.example.ExamSys.service.QuestionListService;
+import com.example.ExamSys.service.QuestionShortService;
+import com.example.ExamSys.service.QuestionShowService;
 
 
 @RestController
@@ -43,6 +55,9 @@ public class PaperListController {
 
     @Autowired
     QuestionShowService questionShowService;
+    
+    @Autowired
+    QuestionBankRepository questionBankRepository;
     /**
      * 获取所有试卷名
      */
@@ -79,7 +94,6 @@ public class PaperListController {
     @RequestMapping(value = "/get_questions", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity getQuestions(HttpServletRequest request) {
         String bankName = request.getParameter("name");
-        System.out.print(bankName);
         int index = 1;//题号从第一题开始取
         QuestionList questionList = null;
         try {
@@ -138,5 +152,19 @@ public class PaperListController {
             }
         }
         return ResponseEntity.ok().header("question", "All the questions are shown!").body(questionLists);
+    }
+    
+    
+    @RequestMapping(value = "/delete_bank", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity deleteQuestionBank(HttpServletRequest request) {
+    	String bankName = request.getParameter("name");
+    	
+    	QuestionBank questionBank = questionBankRepository.findByName(bankName);
+    	if(questionBank == null)
+    		return ResponseEntity.ok().body(null);
+    	else {
+    		questionBankRepository.delete(questionBank);
+    		return ResponseEntity.ok().body(null);
+    	}
     }
 }
