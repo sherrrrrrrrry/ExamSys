@@ -392,21 +392,21 @@ public class ExamAnswerController {
         //确认考生
         Optional<User> user = userService.findOneByLogin(request.getParameter("username"));
         if (!user.isPresent()){
-            return ResponseEntity.badRequest().header("User","No such user!").body(null);
+            return ResponseEntity.ok().header("User","No such user!").body(null);
         }
         Student student = studentRepository.findStuByUser(user.get());
         if (student== null){
-            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
+            return ResponseEntity.ok().header("Student","No such student!").body(null);
         }
         //确认试卷
         QuestionBank questionBank = questionBankService.findByName(name);
         if (questionBank == null){
-            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+            return ResponseEntity.ok().header("Exam","No such examination!").body(null);
         }
         //确认试题
         QuestionList questionList = questionListService.findByNameandNumber(name,index);
         if (questionList==null){
-            return ResponseEntity.badRequest().header("Question","No such question!").body(null);
+            return ResponseEntity.ok().header("Question","No such question!").body(null);
         }
         QuestionType questionType = questionList.getType();
         Map<String, String> answerMap = new HashMap<>();
