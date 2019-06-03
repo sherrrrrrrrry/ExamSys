@@ -145,6 +145,7 @@ public class ExamAnswerController {
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
+                questionAnswer.setScore(0);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -174,6 +175,7 @@ public class ExamAnswerController {
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
+                questionAnswer.setScore(0);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
@@ -190,6 +192,7 @@ public class ExamAnswerController {
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
+                questionAnswer.setScore(0);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -216,6 +219,7 @@ public class ExamAnswerController {
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
+                questionAnswer.setScore(0);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention","new answer!").body(questionAnswer);
             }
@@ -228,6 +232,7 @@ public class ExamAnswerController {
                 questionAnswer.setStudent(student);
                 questionAnswer.setQuestionBank(questionBank);
                 questionAnswer.setMarked(false);
+                questionAnswer.setScore(0);
                 questionAnswerService.save(questionAnswer);
                 return ResponseEntity.ok().header("attention"," answer is updated!").body(questionAnswer);
             }
