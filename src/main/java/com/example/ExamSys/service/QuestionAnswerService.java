@@ -1,16 +1,23 @@
 package com.example.ExamSys.service;
 
-import com.example.ExamSys.dao.QuestionAnswerRepository;
-import com.example.ExamSys.domain.QuestionAnswer;
-import com.example.ExamSys.domain.QuestionBank;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.example.ExamSys.dao.QuestionAnswerRepository;
+import com.example.ExamSys.domain.QuestionAnswer;
+import com.example.ExamSys.domain.QuestionChoice;
+import com.example.ExamSys.domain.QuestionJudgment;
+import com.example.ExamSys.domain.QuestionList;
+import com.example.ExamSys.domain.QuestionShort;
+import com.example.ExamSys.domain.QuestionShow;
+import com.example.ExamSys.domain.enumeration.QuestionType;
 
 @Service
 public class QuestionAnswerService {
@@ -19,6 +26,21 @@ public class QuestionAnswerService {
 
     @Autowired
     private QuestionBankService questionBankService;
+    
+    @Autowired
+    private QuestionListService questionListService;
+    
+    @Autowired
+    private QuestionChoiceService questionChoiceService;
+    
+    @Autowired
+    private QuestionJudgmentService questionJudgmentService;
+    
+    @Autowired
+    private QuestionShortService questionShortService;
+    
+    @Autowired
+    private QuestionShowService questionShowService;
     @Transactional
     public QuestionAnswer findByIDandNumber(Long id, int number){
         try {
@@ -86,5 +108,47 @@ public class QuestionAnswerService {
     @Transactional
     public void updateismarked(boolean isMarked, Long bankid, Long stuid){
         
+    }
+    
+    public Map<String, Object> getQuestions(String bankName, int index){
+    	QuestionList questionList = questionListService.findByNameandNumber(bankName, index);
+    	if(questionList != null) {
+    		try {
+    			Map<String, Object> question = new HashMap<>();
+    			QuestionType type = questionList.getType();
+    			if(type == QuestionType.Choice) {
+    				QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.getQuestion_id());
+    				String questiontype = questionChoice.getChoicetype();
+    				//单选
+    				if (questiontype.equals("0") ) {
+                        question.put("type", "singlechoice");
+                    }
+                    if (questiontype.equals("1")) {
+                        question.put("type", "multichoice");
+                    }
+                    int choicenumber = questionChoice.getChoices().size();
+                    question.put("choicenumber",choicenumber);
+                    question.put("question", questionChoice);
+    			}else if (type == QuestionType.Judgment) {
+                    QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.getQuestion_id());
+                    question.put("type", "judgment");
+                    question.put("question", questionJudgment);
+                } else if (type == QuestionType.Short) {
+                    QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+                    question.put("type", "short");
+                    question.put("question", questionShort);
+                } else if (type == QuestionType.Show){
+                    QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+                    question.put("type","show");
+                    question.put("question",questionShow);
+                }
+    			return question;
+    		}catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+    	} else {
+    		return null;
+    	}
     }
 }

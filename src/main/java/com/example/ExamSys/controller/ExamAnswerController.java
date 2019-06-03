@@ -407,17 +407,28 @@ public class ExamAnswerController {
         	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, 0);
 
             if (questionAnswer==null){//没找到答案
-                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(null);
+
+                Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(question);
+                
+//                return ResponseEntity.badRequest().header("CorJ","No such answer!1").body(null);
             }
             else{
                 String answer = questionAnswer.getAnswer();
                 String currentAnswer = getAnswer(answer,index);
                 if (currentAnswer == null){
-                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(null);
+                    Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(question);
+                    
+//                    return ResponseEntity.badRequest().header("CorJ","No such answer!2").body(null);
                 }
                 else{
-                    answerMap.put("answer",currentAnswer);
-                    return ResponseEntity.ok().header("CorJ","Answer existing").body(answerMap);
+                    Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+                    question.put("answer", currentAnswer);
+                    return ResponseEntity.ok().header("CorJ","Answer existing").body(question);
+                    
+//                    answerMap.put("answer",currentAnswer);
+//                    return ResponseEntity.ok().header("CorJ","Answer existing").body(answerMap);
                 }
             }
         }
@@ -426,17 +437,26 @@ public class ExamAnswerController {
         	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
 
             if (questionAnswer==null){//没找到答案
-                return ResponseEntity.badRequest().body(null);
+            	Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+            	return ResponseEntity.badRequest().body(question);
+            	
+//                return ResponseEntity.badRequest().body(null);
             }
             else{
                 String answer = questionAnswer.getAnswer();
                 if (answer == null){
-                    return ResponseEntity.badRequest().header("short","No such answer!").body(null);
+                	Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+                	return ResponseEntity.badRequest().header("short","No such answer!").body(question);
+                	
+//                    return ResponseEntity.badRequest().header("short","No such answer!").body(null);
                 }
                 else{
-                    String[] answers = answer.split("<==>");
-                    answerMap.put("answer",answer);
-                    return ResponseEntity.ok().body(answerMap);
+//                    String[] answers = answer.split("<==>");
+                	Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+                	question.put("answer", answer);
+                	return ResponseEntity.ok().body(question);
+//                    answerMap.put("answer",answer);
+//                    return ResponseEntity.ok().body(answerMap);
                 }
             }
         }
@@ -444,12 +464,18 @@ public class ExamAnswerController {
         	QuestionAnswer questionAnswer = questionAnswerRepository.findByQuestionBankAndStudentAndNumber(questionBank.getId(), student, index);
         	
         	if(questionAnswer==null) {
-        		return ResponseEntity.badRequest().body(null);
+        		Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+        		return ResponseEntity.badRequest().body(question);
+        		
+//        		return ResponseEntity.badRequest().body(null);
         	}
         	else {
         		String answer = questionAnswer.getAnswer();
         		if(answer == null) {
-        			return ResponseEntity.badRequest().header("show","No such answer!").body(null);
+        			Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+        			return ResponseEntity.badRequest().header("show","No such answer!").body(question);
+        			
+//        			return ResponseEntity.badRequest().header("show","No such answer!").body(null);
         		}
         		else {
             		String[] answers = answer.split("<==>");
@@ -474,7 +500,6 @@ public class ExamAnswerController {
 			        				String data = Base64.encodeBase64String(bytes);
 			        				sb.append(data+"<==>");
 	            				} catch(Exception e) {
-	            					e.printStackTrace();
 	            					log.info(e.toString());
 	            					continue;
 	            				}
@@ -510,12 +535,19 @@ public class ExamAnswerController {
 	            		}
 	            		break;
             		}
-            		System.out.println(answers.length + "   !!!!!!!!!!!!!!");
-            		return ResponseEntity.badRequest().body(answerMap);
+        			Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+        			Map<String, Object> resultMap = new HashMap<String, Object>();
+        			resultMap.putAll(answerMap);
+        			if(question !=null)
+        				resultMap.putAll(question);
+        			return ResponseEntity.badRequest().body(resultMap);
+//            		return ResponseEntity.badRequest().body(answerMap);
         		}
         	}
         }
-        return ResponseEntity.badRequest().body(null);
+        Map<String, Object> question = questionAnswerService.getQuestions(name, index);
+        return ResponseEntity.badRequest().body(question);
+//        return ResponseEntity.badRequest().body(null);
     }
 
     public String getAnswer(String answer, int index){
