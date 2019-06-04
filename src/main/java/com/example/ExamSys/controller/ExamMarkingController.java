@@ -679,15 +679,8 @@ public class ExamMarkingController {
 
         	for(Transcript t:transcriptList) {
         		resultsScore += t.getScore();
+        		zongFen += t.getTotalScore();
         	}
-        	Set<QuestionChoice> choices = questionBank.getChoiceQuestions();
-        	Set<QuestionJudgment> judges = questionBank.getQuestionJudgments();
-        	Set<QuestionShort> shorts = questionBank.getShortQuestions();
-        	Set<QuestionShow> shows = questionBank.getShowQuestions();
-        	zongFen += choices.size() * 2;
-        	zongFen += judges.size() * 2;
-        	zongFen += shorts.size() * 20;
-        	zongFen += shows.size() * 20;
         	
         	if(resultsScore >= Math.floor(zongFen * 0.6)) {
         		studentRepository.updateLevelById(student.getLevel()+1, student.getId());
