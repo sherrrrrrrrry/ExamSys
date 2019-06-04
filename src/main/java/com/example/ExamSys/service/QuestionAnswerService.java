@@ -42,9 +42,9 @@ public class QuestionAnswerService {
     @Autowired
     private QuestionShowService questionShowService;
     @Transactional
-    public QuestionAnswer findByIDandNumber(Long id, int number){
+    public QuestionAnswer findByIDandNumber(Long id, int number, Long studentId){
         try {
-            return questionAnswerRepository.findByIDandNumber(id, number);
+            return questionAnswerRepository.findByIDandNumber(id, number, studentId);
         }catch (Exception e){
             return null;
         }

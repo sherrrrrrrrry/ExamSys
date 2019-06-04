@@ -68,25 +68,6 @@ public class ExamAnswerController {
     @Autowired
     private QuestionAnswerRepository questionAnswerRepository;
     
-    
-    @SuppressWarnings("deprecation")
-	@RequestMapping(value="/save", method=RequestMethod.GET, headers="Accept=application/json")
-    public ResponseEntity savee(HttpServletRequest request) {
-    	HttpSession session = request.getSession();
-    	session.setAttribute("okt", "123");
-//    	System.out.println(session.getAttribute("okt").toString());
-    	return ResponseEntity.ok(null);
-    }
-    
-    @SuppressWarnings("deprecation")
-	@RequestMapping(value="/get", method=RequestMethod.GET, headers="Accept=application/json")
-    public ResponseEntity get(HttpServletRequest request) {
-    	HttpSession session = request.getSession();
-    	System.out.println(session.getMaxInactiveInterval());
-//    	session.setAttribute("okt", "123");
-    	System.out.println(session.getAttribute("okt").toString());
-    	return ResponseEntity.ok(null);
-    }
     /**
      *   备注：此方法用于选择，判断，简答。展示题用saveShow方法
      *   保存答案 题号：index, 用户名：username, 试卷名:name, 答案：answer

@@ -125,15 +125,8 @@ public class ExcellentProductionController {
 	public ResponseEntity<String> saveProductions(@RequestBody List<Long> ids){
 		
 		excellentProductionRepository.deleteAll();
-		try {
-		Thread.sleep(1000);
-		} catch(Exception e) {
-			
-		}
-		System.out.println("ok");
 		
 		for(Long id : ids) {
-			QuestionAnswer qa = questionAnswerRepository.findOne(id);
 			ExcellentProduction ep = new ExcellentProduction();
 			ep.setQuestionAnswerId(id);
 			excellentProductionRepository.save(ep);

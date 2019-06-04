@@ -21,8 +21,8 @@ import com.example.ExamSys.domain.Teacher;
 @Repository
 public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,Long> {
 
-    @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and number = ?2")
-    QuestionAnswer findByIDandNumber(Long id, int number);
+    @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and number = ?2 and q.student.id=?3")
+    QuestionAnswer findByIDandNumber(Long id, int number, Long studentId);
     
     @Query("select q from QuestionAnswer q where q.questionBank.id=?1 and q.student=?2 and q.number=?3")
     QuestionAnswer findByQuestionBankAndStudentAndNumber(Long id, Student student, int number);
@@ -65,5 +65,10 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
     @Transactional
     @Query("update QuestionAnswer q set q.isMarked=?1, q.teacher=?2, q.score=?3 where q.id=?4")
     void updateMarkedAndTeacherAndScore(boolean isMarked, Teacher teacher, Integer score, Long id);
-
+    
+    @Modifying
+    @Transactional
+    @Query("delete from QuestionAnswer q where q.student.user=(select u from User u where u.login in (:logins))")
+    void deleteByLogins(@Param("logins") List<String> logins);
+    
 }

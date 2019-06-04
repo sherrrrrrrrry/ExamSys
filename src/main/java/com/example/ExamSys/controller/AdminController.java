@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ExamSys.dao.QuestionAnswerRepository;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TeacherRepository;
 import com.example.ExamSys.dao.UserRepository;
@@ -35,6 +36,9 @@ public class AdminController {
 	
 	@Autowired
 	TeacherRepository teacherRepository;
+	
+	@Autowired
+	QuestionAnswerRepository questionAnswerRepository;
 
 	/**
 	 * 获取未激活的账户列表
@@ -121,6 +125,7 @@ public class AdminController {
 	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
 		log.info("正在删除所选学生");
 		try {
+			questionAnswerRepository.deleteByLogins(logins);
 			studentRepository.deleteByLogins(logins);
 			userRepository.deleteByLogins(logins);
 		} catch(Exception e) {

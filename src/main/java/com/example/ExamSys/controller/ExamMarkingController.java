@@ -306,10 +306,11 @@ public class ExamMarkingController {
 
                 //确认答案
                 int index = questionList.getNumber();
-                questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+                questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index, student.getId());
                 if (questionAnswer == null){
                     return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
                 }
+
                 if (questionAnswer.isMarked()==true){
                     return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
                 }
@@ -332,7 +333,7 @@ public class ExamMarkingController {
 
                 //确认答案
                 int index = questionList.getNumber();
-                questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index);
+                questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),index, student.getId());
                 if (questionAnswer == null){
                     return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
                 }
@@ -426,7 +427,7 @@ public class ExamMarkingController {
             return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
         }
         //确认答案
-        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0, student.getId());
         if (questionAnswer == null){
             return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
         }
@@ -607,7 +608,7 @@ public class ExamMarkingController {
                 }
             }
         
-            QuestionAnswer questionAnswer1 = questionAnswerService.findByIDandNumber(questionBank.getId(), index1);
+            QuestionAnswer questionAnswer1 = questionAnswerService.findByIDandNumber(questionBank.getId(), index1, student.getId());
             questionAnswerRepository.updateMarkedAndTeacherAndScore(true, teacher, Integer.parseInt(scoreList[i]), questionAnswer1.getId());
         }
 

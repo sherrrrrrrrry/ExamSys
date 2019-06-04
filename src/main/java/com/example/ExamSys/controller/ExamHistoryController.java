@@ -31,7 +31,7 @@ import com.example.ExamSys.service.QuestionBankService;
 import com.example.ExamSys.service.UserService;
 
 @RestController
-@RequestMapping("Examhistory")
+@RequestMapping("/Examhistory")
 public class ExamHistoryController {
     private final Logger LOG = LoggerFactory.getLogger(AdminController.class);
     @Autowired
