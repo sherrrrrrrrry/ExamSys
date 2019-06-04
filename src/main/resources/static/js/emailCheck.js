@@ -184,7 +184,7 @@ function registerCheck() {
 			$.cookie('username',EmailUserDTO.login);
 			layertest('注册成功!');
 			console.log(message);
-			window.location.href = "/register.html";
+			window.location.href = "/login.html";
 		}).fail(function(err) {
 			console.log(err);
 			layertest('注册失败!');
@@ -211,7 +211,7 @@ function registerPhoneCheck() {
 			layertest('注册成功!');
 			$.cookie('username',PhoneUserDTO.login);
 			console.log(message);
-			window.location.href = "/register.html";
+			window.location.href = "/login.html";
 		}).fail(function(err) {
 			console.log(err);
 			layertest('注册失败!');
