@@ -137,17 +137,17 @@ public class ExamMarkingController {
                 String standardAnswer = questionChoice.getAnswer();//找到标准答案
                 String type = questionChoice.getType();
                 if (totalScore.get(type)==null){
-                    totalScore.put(type,1);
+                    totalScore.put(type,2);
                 }
                 else{
-                    totalScore.put(type,totalScore.get(type)+1);
+                    totalScore.put(type,totalScore.get(type)+2);
                 }
-                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+1，分数+1
+                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2，分数+2
                     if (score.get(type)==null){
                         score.put(type,1);
                     }
                     else{
-                        int Score = score.get(type)+1;
+                        int Score = score.get(type)+2;
                         score.put(type,Score);
                     }
                 }
@@ -162,17 +162,17 @@ public class ExamMarkingController {
                 String standardAnswer = questionJudgment.getAnswer();//找到标准答案
                 String type = questionJudgment.getType();
                 if (totalScore.get(type)==null){
-                    totalScore.put(type,1);
+                    totalScore.put(type,2);
                 }
                 else{
-                    totalScore.put(type,totalScore.get(type)+1);
+                    totalScore.put(type,totalScore.get(type)+2);
                 }
-                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+1
+                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2
                     if (score.get(type)==null){
                         score.put(type,1);
                     }
                     else{
-                        int Score = score.get(type)+1;
+                        int Score = score.get(type)+2;
                         score.put(type,Score);
                     }
                 }
