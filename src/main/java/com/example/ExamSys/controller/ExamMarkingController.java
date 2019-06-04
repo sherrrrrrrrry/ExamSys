@@ -2,17 +2,20 @@ package com.example.ExamSys.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.jni.Time;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,6 +30,7 @@ import com.example.ExamSys.config.Constants;
 import com.example.ExamSys.dao.QuestionAnswerRepository;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TeacherRepository;
+import com.example.ExamSys.dao.TranscriptRepository;
 import com.example.ExamSys.domain.QuestionAnswer;
 import com.example.ExamSys.domain.QuestionBank;
 import com.example.ExamSys.domain.QuestionChoice;
@@ -88,135 +92,138 @@ public class ExamMarkingController {
 
     @Autowired
     private QuestionAnswerRepository questionAnswerRepository;
+    
+    @Autowired
+    private TranscriptRepository transcriptRepository;
 
     /**
      * 选择判断自动打分 试卷名：name  用户名：username
      * **/
     @RequestMapping(value = "/Marking_cj", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity ExamMarkingSave(HttpServletRequest request){
-        String name = request.getParameter("name");
-        //确认考生
-        Optional<User> user = userService.findOneByLogin(request.getParameter("username"));
-        if (!user.isPresent()){
-            return ResponseEntity.badRequest().header("User","No such user!").body(null);
-        }
-        Student student = studentRepository.findStuByUser(user.get());
-        if (student== null){
-            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
-        }
-        //确认试卷
-        QuestionBank questionBank = questionBankService.findByName(name);
-        if (questionBank == null){
-            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
-        }
-        //确认答案
-        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
-        if (questionAnswer == null){
-            return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
-        }
-        if (questionAnswer.isMarked()==true){
-            return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
-        }
-
-        String[] stuAnswers = questionAnswer.getAnswer().split(";");//学生答案
-        List<QuestionList> questionList = questionListService.findByName(questionBank.getName());
-        if (questionList==null){
-            return ResponseEntity.badRequest().header("Question","No question is included!").body(null);
-        }
-        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
-        Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
-        int index = 0;//题号 (此处的题号区别于试卷题号，此处题号指试卷的第index个选择或判断)
-        for (int i=0; i<questionList.size(); i++){
-            QuestionType questionType = questionList.get(i).getType();
-
-            if (questionType== QuestionType.Choice){
-                if (stuAnswers.length<index){//防止取从数组取答案时越界
-                    break;
-                }
-                QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
-                String standardAnswer = questionChoice.getAnswer();//找到标准答案
-                String type = questionChoice.getType();
-                if (totalScore.get(type)==null){
-                    totalScore.put(type,2);
-                }
-                else{
-                    totalScore.put(type,totalScore.get(type)+2);
-                }
-                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2，分数+2
-                    if (score.get(type)==null){
-                        score.put(type,1);
-                    }
-                    else{
-                        int Score = score.get(type)+2;
-                        score.put(type,Score);
-                    }
-                }
-
-            }
-            else if (questionType == QuestionType.Judgment){
-
-                if (stuAnswers.length<index){//防止取从数组取答案时越界
-                    break;
-                }
-                QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
-                String standardAnswer = questionJudgment.getAnswer();//找到标准答案
-                String type = questionJudgment.getType();
-                if (totalScore.get(type)==null){
-                    totalScore.put(type,2);
-                }
-                else{
-                    totalScore.put(type,totalScore.get(type)+2);
-                }
-                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2
-                    if (score.get(type)==null){
-                        score.put(type,1);
-                    }
-                    else{
-                        int Score = score.get(type)+2;
-                        score.put(type,Score);
-                    }
-                }
-            }
-            index++;
-        }
-        //向成绩表中汇总
-        for (String key:totalScore.keySet()){
-            Optional<Transcript> transcript_o = transcriptService.findOne(questionBank.getName(),student.getName(),key);
-            if (transcript_o.isPresent()){
-                Transcript transcript = transcript_o.get();
-                transcript.setQuestionBank(questionBank);
-                transcript.setStudent(student);
-                transcript.setType(key);
-                transcript.setTotalScore(totalScore.get(key)+transcript.getTotalScore());
-                if (score.get(key)!=null){
-                    transcript.setScore(score.get(key)+transcript.getScore());
-                }
-                else
-                {
-                    transcript.setScore(0);
-                }
-
-                transcriptService.save(transcript);
-            }
-            else {
-                Transcript transcript = new Transcript();
-                transcript.setQuestionBank(questionBank);
-                transcript.setStudent(student);
-                transcript.setType(key);
-                transcript.setTotalScore(totalScore.get(key));
-                if (score.get(key)!=null){
-                    transcript.setScore(score.get(key));
-                }
-                else
-                {
-                    transcript.setScore(0);
-                }
-                transcriptService.save(transcript);
-            }
-
-        }
-        questionAnswerService.updateisModified(true,questionAnswer.getId());
-        return ResponseEntity.ok().body(score);
+//        String name = request.getParameter("name");
+//        //确认考生
+//        Optional<User> user = userService.findOneByLogin(request.getParameter("username"));
+//        if (!user.isPresent()){
+//            return ResponseEntity.badRequest().header("User","No such user!").body(null);
+//        }
+//        Student student = studentRepository.findStuByUser(user.get());
+//        if (student== null){
+//            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
+//        }
+//        //确认试卷
+//        QuestionBank questionBank = questionBankService.findByName(name);
+//        if (questionBank == null){
+//            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+//        }
+//        //确认答案
+//        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+//        if (questionAnswer == null){
+//            return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
+//        }
+//        if (questionAnswer.isMarked()==true){
+//            return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
+//        }
+//
+//        String[] stuAnswers = questionAnswer.getAnswer().split(";");//学生答案
+//        List<QuestionList> questionList = questionListService.findByName(questionBank.getName());
+//        if (questionList==null){
+//            return ResponseEntity.badRequest().header("Question","No question is included!").body(null);
+//        }
+//        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
+//        Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
+//        int index = 0;//题号 (此处的题号区别于试卷题号，此处题号指试卷的第index个选择或判断)
+//        for (int i=0; i<questionList.size(); i++){
+//            QuestionType questionType = questionList.get(i).getType();
+//
+//            if (questionType== QuestionType.Choice){
+//                if (stuAnswers.length<index){//防止取从数组取答案时越界
+//                    break;
+//                }
+//                QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
+//                String standardAnswer = questionChoice.getAnswer();//找到标准答案
+//                String type = questionChoice.getType();
+//                if (totalScore.get(type)==null){
+//                    totalScore.put(type,2);
+//                }
+//                else{
+//                    totalScore.put(type,totalScore.get(type)+2);
+//                }
+//                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2，分数+2
+//                    if (score.get(type)==null){
+//                        score.put(type,2);
+//                    }
+//                    else{
+//                        int Score = score.get(type)+2;
+//                        score.put(type,Score);
+//                    }
+//                }
+//
+//            }
+//            else if (questionType == QuestionType.Judgment){
+//
+//                if (stuAnswers.length<index){//防止取从数组取答案时越界
+//                    break;
+//                }
+//                QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
+//                String standardAnswer = questionJudgment.getAnswer();//找到标准答案
+//                String type = questionJudgment.getType();
+//                if (totalScore.get(type)==null){
+//                    totalScore.put(type,2);
+//                }
+//                else{
+//                    totalScore.put(type,totalScore.get(type)+2);
+//                }
+//                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2
+//                    if (score.get(type)==null){
+//                        score.put(type,2);
+//                    }
+//                    else{
+//                        int Score = score.get(type)+2;
+//                        score.put(type,Score);
+//                    }
+//                }
+//            }
+//            index++;
+//        }
+//        //向成绩表中汇总
+//        for (String key:totalScore.keySet()){
+//            Optional<Transcript> transcript_o = transcriptService.findOne(questionBank.getName(),student.getName(),key);
+//            if (transcript_o.isPresent()){
+//                Transcript transcript = transcript_o.get();
+//                transcript.setQuestionBank(questionBank);
+//                transcript.setStudent(student);
+//                transcript.setType(key);
+//                transcript.setTotalScore(totalScore.get(key)+transcript.getTotalScore());
+//                if (score.get(key)!=null){
+//                    transcript.setScore(score.get(key)+transcript.getScore());
+//                }
+//                else
+//                {
+//                    transcript.setScore(0);
+//                }
+//
+//                transcriptService.save(transcript);
+//            }
+//            else {
+//                Transcript transcript = new Transcript();
+//                transcript.setQuestionBank(questionBank);
+//                transcript.setStudent(student);
+//                transcript.setType(key);
+//                transcript.setTotalScore(totalScore.get(key));
+//                if (score.get(key)!=null){
+//                    transcript.setScore(score.get(key));
+//                }
+//                else
+//                {
+//                    transcript.setScore(0);
+//                }
+//                transcriptService.save(transcript);
+//            }
+//
+//        }
+//        questionAnswerService.updateisModified(true,questionAnswer.getId());
+        return ResponseEntity.ok().body(60);
     }
     /**
      * 查找所有需要阅卷的试卷*/
@@ -402,24 +409,133 @@ public class ExamMarkingController {
     @Transactional
     @RequestMapping(value = "/Marking_save", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity saveSSAnswer(HttpServletRequest request) {
+    	
         String name = request.getParameter("name");
         //确认考生
         Optional<User> user = userService.findOneByLogin(request.getParameter("studentname"));
-        if (!user.isPresent()) {
-            return ResponseEntity.badRequest().header("User", "No such student!").body(null);
+        if (!user.isPresent()){
+            return ResponseEntity.badRequest().header("User","No such user!").body(null);
         }
         Student student = studentRepository.findStuByUser(user.get());
-        Teacher teacher = teacherRepository.findOneByLogin(request.getParameter("teachername"));
-        if (student == null) {
-            return ResponseEntity.badRequest().header("Student", "No such student!").body(null);
-        }
-        if(teacher == null) {
-        	return ResponseEntity.badRequest().header("Student", "No such teacher!").body(null);
+        if (student== null){
+            return ResponseEntity.badRequest().header("Student","No such student!").body(null);
         }
         //确认试卷
         QuestionBank questionBank = questionBankService.findByName(name);
-        if (questionBank == null) {
-            return ResponseEntity.badRequest().header("Exam", "No such examination!").body(null);
+        if (questionBank == null){
+            return ResponseEntity.badRequest().header("Exam","No such examination!").body(null);
+        }
+        //确认答案
+        QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(),0);
+        if (questionAnswer == null){
+            return ResponseEntity.badRequest().header("Answer","No such answer!").body(null);
+        }
+        if (questionAnswer.isMarked()==true){
+            return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
+        }
+
+        String[] stuAnswers = questionAnswer.getAnswer().split(";");//学生答案
+        List<QuestionList> questionList = questionListService.findByName(questionBank.getName());
+        if (questionList==null){
+            return ResponseEntity.badRequest().header("Question","No question is included!").body(null);
+        }
+        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
+        Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
+        int index = 0;//题号 (此处的题号区别于试卷题号，此处题号指试卷的第index个选择或判断)
+        for (int i=0; i<questionList.size(); i++){
+            QuestionType questionType = questionList.get(i).getType();
+
+            if (questionType== QuestionType.Choice){
+                if (stuAnswers.length<index){//防止取从数组取答案时越界
+                    break;
+                }
+                QuestionChoice questionChoice = questionChoiceService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
+                String standardAnswer = questionChoice.getAnswer();//找到标准答案
+                String type = questionChoice.getType();
+                if (totalScore.get(type)==null){
+                    totalScore.put(type,2);
+                }
+                else{
+                    totalScore.put(type,totalScore.get(type)+2);
+                }
+                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2，分数+2
+                    if (score.get(type)==null){
+                        score.put(type,2);
+                    }
+                    else{
+                        int Score = score.get(type)+2;
+                        score.put(type,Score);
+                    }
+                }
+
+            }
+            else if (questionType == QuestionType.Judgment){
+
+                if (stuAnswers.length<index){//防止取从数组取答案时越界
+                    break;
+                }
+                QuestionJudgment questionJudgment = questionJudgmentService.findByIndex(questionList.get(i).getQuestion_id());//找到对应的题目
+                String standardAnswer = questionJudgment.getAnswer();//找到标准答案
+                String type = questionJudgment.getType();
+                if (totalScore.get(type)==null){
+                    totalScore.put(type,2);
+                }
+                else{
+                    totalScore.put(type,totalScore.get(type)+2);
+                }
+                if (standardAnswer.equals(stuAnswers[index])){//如果答案一致，则对应类型正确题数+2
+                    if (score.get(type)==null){
+                        score.put(type,2);
+                    }
+                    else{
+                        int Score = score.get(type)+2;
+                        score.put(type,Score);
+                    }
+                }
+            }
+            index++;
+        }
+        //向成绩表中汇总
+        for (String key:totalScore.keySet()){
+            Optional<Transcript> transcript_o = transcriptService.findOne(questionBank.getName(),student.getName(),key);
+            if (transcript_o.isPresent()){
+                Transcript transcript = transcript_o.get();
+                transcript.setQuestionBank(questionBank);
+                transcript.setStudent(student);
+                transcript.setType(key);
+                transcript.setTotalScore(totalScore.get(key)+transcript.getTotalScore());
+                if (score.get(key)!=null){
+                    transcript.setScore(score.get(key)+transcript.getScore());
+                }
+                else
+                {
+                    transcript.setScore(0);
+                }
+
+                transcriptService.save(transcript);
+            }
+            else {
+                Transcript transcript = new Transcript();
+                transcript.setQuestionBank(questionBank);
+                transcript.setStudent(student);
+                transcript.setType(key);
+                transcript.setTotalScore(totalScore.get(key));
+                if (score.get(key)!=null){
+                    transcript.setScore(score.get(key));
+                }
+                else
+                {
+                    transcript.setScore(0);
+                }
+                transcriptService.save(transcript);
+            }
+
+        }
+        questionAnswerService.updateisModified(true,questionAnswer.getId());
+        
+        Teacher teacher = teacherRepository.findOneByLogin(request.getParameter("teachername"));
+        if(teacher == null) {
+        	return ResponseEntity.badRequest().header("Student", "No such teacher!").body(null);
         }
         //找出试卷对应的题目
 
@@ -431,23 +547,23 @@ public class ExamMarkingController {
         String[] scoreList = scores.split(",");
 //        QuestionList questionList = questionListService.findByNameandNumber(name, index);
 
-        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
-        Map<String, Integer> totalScore = new HashMap<>();//存放对应类型的总分
+        score = new HashMap<>();//存放类型和对应的分数
+        totalScore = new HashMap<>();//存放对应类型的总分
         for(int i = 0; i<indexList.length; i++) {
-        	int index = 0;
+        	int index1 = 0;
         	try {
-        		index = Integer.parseInt(indexList[i]);
+        		index1 = Integer.parseInt(indexList[i]);
         	} catch(Exception e) {
         		return ResponseEntity.badRequest().header("Number", "Wrong Number!").body(null);
         	}
-        	QuestionList questionList = questionListService.findByNameandNumber(name, index);
+        	QuestionList questionList1 = questionListService.findByNameandNumber(name, index1);
         	
-            if (questionList == null) {
+            if (questionList1 == null) {
                 return ResponseEntity.badRequest().header("QuestionBank", "No questions are included!").body(null);
             }
             
-            if (questionList.getType() == QuestionType.Short) {
-                QuestionShort questionShort = questionShortService.findByIndex(questionList.getQuestion_id());
+            if (questionList1.getType() == QuestionType.Short) {
+                QuestionShort questionShort = questionShortService.findByIndex(questionList1.getQuestion_id());
                 String type = questionShort.getType();
                 if (totalScore.get(type) == null) {
                     totalScore.put(type, 20); //!!!!!默认设置简答分数为20
@@ -468,8 +584,8 @@ public class ExamMarkingController {
                 	}
                 }
             }
-            if (questionList.getType() == QuestionType.Show) {
-                QuestionShow questionShow = questionShowService.findByIndex(questionList.getQuestion_id());
+            if (questionList1.getType() == QuestionType.Show) {
+                QuestionShow questionShow = questionShowService.findByIndex(questionList1.getQuestion_id());
                 String type = questionShow.getType();
                 if (totalScore.get(type) == null) {
                     totalScore.put(type, 20); //!!!!!默认设置简答分数为20
@@ -491,8 +607,8 @@ public class ExamMarkingController {
                 }
             }
         
-            QuestionAnswer questionAnswer = questionAnswerService.findByIDandNumber(questionBank.getId(), index);
-            questionAnswerRepository.updateMarkedAndTeacherAndScore(true, teacher, Integer.parseInt(scoreList[i]), questionAnswer.getId());
+            QuestionAnswer questionAnswer1 = questionAnswerService.findByIDandNumber(questionBank.getId(), index1);
+            questionAnswerRepository.updateMarkedAndTeacherAndScore(true, teacher, Integer.parseInt(scoreList[i]), questionAnswer1.getId());
         }
 
 //        Map<String, Integer> score = new HashMap<>();//存放类型和对应的分数
@@ -526,8 +642,6 @@ public class ExamMarkingController {
 //                score.put(type, totalScore.get(type) + Integer.parseInt(request.getParameter("score")));
 //            }
 //        }
-
-
         //向成绩表中汇总
         for (String key : totalScore.keySet()) {
             Optional<Transcript> transcript_o = transcriptService.findOne(questionBank.getName(), student.getName(), key);
@@ -537,12 +651,12 @@ public class ExamMarkingController {
                 transcript.setStudent(student);
                 transcript.setType(key);
                 transcript.setTotalScore(totalScore.get(key) + transcript.getTotalScore());
-                if (score.get(key) != null) {
+                if (score.get(key) != null) {                	
                     transcript.setScore(score.get(key) + transcript.getScore());
                 } else {
                     transcript.setScore(0);
                 }
-
+                
                 transcriptService.save(transcript);
             } else {
                 Transcript transcript = new Transcript();
@@ -558,7 +672,28 @@ public class ExamMarkingController {
                 transcriptService.save(transcript);
             }
         }
+        ArrayList<Transcript> transcriptList = (ArrayList<Transcript>) transcriptRepository.findAllByQuestionBankIdAndStudentLogin(questionBank.getId(), request.getParameter("studentname"));
+        if(transcriptList != null) {
+        	int resultsScore = 0;
+        	int zongFen = 0;
 
+        	for(Transcript t:transcriptList) {
+        		resultsScore += t.getScore();
+        	}
+        	Set<QuestionChoice> choices = questionBank.getChoiceQuestions();
+        	Set<QuestionJudgment> judges = questionBank.getQuestionJudgments();
+        	Set<QuestionShort> shorts = questionBank.getShortQuestions();
+        	Set<QuestionShow> shows = questionBank.getShowQuestions();
+        	zongFen += choices.size() * 2;
+        	zongFen += judges.size() * 2;
+        	zongFen += shorts.size() * 20;
+        	zongFen += shows.size() * 20;
+        	
+        	if(resultsScore >= Math.floor(zongFen * 0.6)) {
+        		studentRepository.updateLevelById(student.getLevel()+1, student.getId());
+        	}
+        }
+        
         return ResponseEntity.ok().body(null);
     }
 

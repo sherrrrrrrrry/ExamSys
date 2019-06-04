@@ -77,6 +77,11 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	
 	@Modifying
 	@Transactional
+	@Query("update Student s set s.level=?1 where s.id=?2")
+	void updateLevelById(int level, Long id);
+	
+	@Modifying
+	@Transactional
 	@Query("update Student s set s.name=?1, s.gender=?2, s.age=?3, s.school=?4, s.schoolProvince=?5, s.schoolCity=?6, s.schoolRegion=?7, s.trainingName=?8, "
 			+ "s.motto=?9 where s.user = (select u from User u where u.login = ?10)")
 	void updateInfoByLogin(String name, Gender gender, int age, String school, String schoolProvince, String schoolCity, String schoolRegion
