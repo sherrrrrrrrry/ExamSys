@@ -158,7 +158,9 @@
 				jsondata=$.parseJSON(data);
 				$("#gender").text(jsondata.gender);
 				$("#phone").text(jsondata.phone);
-				$("#location").text(jsondata.province+jsondata.city+jsondata.town);
+				if(jsondata.province){
+					$("#location").text(jsondata.province+jsondata.city+jsondata.town);
+				}
 				$("#trainingagency").text(jsondata.trainingAgency);
 				$("#realname").text(jsondata.realname);
 				$("#age").text(jsondata.age);

@@ -275,7 +275,7 @@
 						            console.log(picUrls.length);
 						            for(var k=0;k<picUrls.length;k++){
 						            	console.log(k);
-						            	$(".picDiv").prepend("<div class='imageDiv'><img src='data:image/gif;base64,"+picUrls[k]+"' style='display: inline-block; width: 130px; height: 130px;'/> <div class='cover'><i class='delbtn'>删除</i></div></div>");
+						            	$(".picDiv").prepend("<div class='imageDiv'><img src='data:image/gif;base64,"+picUrls[k]+"' style='display: inline-block; width: 130px; height: 130px;'/> <div class='cover'></div></div>");
 						            }
 		            			
 		            		}
@@ -311,7 +311,7 @@
 			    //循环遍历
 			    for (var i = 0; i < fileList.length; i++) {
 			        //动态添加html元素
-			        var picHtml = "<div class='imageDiv' > <img id='img" + fileList[i].name + "' /> <div class='cover'><i class='delbtn'>删除</i></div></div>";
+			        var picHtml = "<div class='imageDiv' > <img id='img" + fileList[i].name + "' /> <div class='cover'></div></div>";
 			        picDiv.prepend(picHtml);
 			        //获取图片imgi的对象
 			        var imgObjPreview = document.getElementById("img" + fileList[i].name);
@@ -336,7 +336,7 @@
 			    }
 
 			    /*删除功能*/
-			    $(".delbtn").click(function() {
+			    $(".delbtn").click(function(e) {
 			        var _this = $(this);
 			        _this.parents(".imageDiv").remove();
 			        fileNum--;

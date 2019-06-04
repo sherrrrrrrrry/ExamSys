@@ -152,19 +152,6 @@
 					type: "POST", // 用POST方式传输
 					dataType: "JSON", // 数据格式:JSON
 					contentType: "application/json",
-					url: '/ExamMarking/Marking_cj?name='+questionbankname+"&username="+student, // 目标地址
-					error: function(data) {
-						console.log("Marking_cj error");　
-					},
-					success: function(data) {
-						console.log("Marking_cj success");
-					}
-				});
-				
-				$.ajax({　　
-					type: "POST", // 用POST方式传输
-					dataType: "JSON", // 数据格式:JSON
-					contentType: "application/json",
 					url: '/ExamMarking/Marking_save?name='+questionbankname+"&studentname="+student+"&index="+questionIndexList+"&score="+questionScoreList+"&teachername="+username, // 目标地址
 					error: function(data) {
 						console.log("Marking_save error");
