@@ -29,7 +29,7 @@ public class QuestionChoice implements Serializable {
 	private List<Choice> choices = new ArrayList<>();
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "choiceQuestions", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "choiceQuestions", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<QuestionBank> questionBankSet = new HashSet<>();
 
     @Column(name = "content")

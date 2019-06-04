@@ -1,9 +1,11 @@
 package com.example.ExamSys.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ExamSys.dao.QuestionBankRepository;
+import com.example.ExamSys.dao.QuestionListRepository;
+import com.example.ExamSys.domain.QuestionAnswer;
 import com.example.ExamSys.domain.QuestionBank;
 import com.example.ExamSys.domain.QuestionChoice;
 import com.example.ExamSys.domain.QuestionJudgment;
@@ -43,6 +47,9 @@ public class PaperListController {
 
     @Autowired
     QuestionListService questionListService;
+    
+    @Autowired
+    QuestionListRepository questionListRepository;
 
     @Autowired
     QuestionChoiceService questionChoiceService;
@@ -162,9 +169,22 @@ public class PaperListController {
     	QuestionBank questionBank = questionBankRepository.findByName(bankName);
     	if(questionBank == null)
     		return ResponseEntity.ok().body(null);
-    	else {
-    		questionBankRepository.delete(questionBank);
-    		return ResponseEntity.ok().body(null);
+    	Set<QuestionAnswer> questionAnswers = questionBank.getQuestionAnswers();
+    	for(QuestionAnswer qa : questionAnswers) {
+    		if(qa.getQuestiontype().equals("2")) {
+    			String[] urls = qa.getAnswer().split("<==>");
+    			for(int i=0;i<urls.length;i++) {
+    				try {
+    					File file = new File(urls[i]);
+    					file.delete();
+    				} catch(Exception e) {
+    					continue;
+    				}
+    			}
+    		}
     	}
+		questionBankRepository.delete(questionBank);
+		questionListRepository.deleteByName(questionBank.getName());
+		return ResponseEntity.ok().body(null);
     }
 }

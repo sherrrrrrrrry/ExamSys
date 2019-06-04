@@ -24,7 +24,7 @@ public class QuestionShow implements Serializable {
 	@Column(name = "type")
 	private String type;
 
-    @ManyToMany(mappedBy = "showQuestions", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "showQuestions", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<QuestionBank> questionBankSet = new HashSet<>();
 
     public Long getId() {

@@ -24,7 +24,7 @@ public class QuestionShort implements Serializable {
 	@Column(name = "type")
 	private String type;
 
-    @ManyToMany(mappedBy = "shortQuestions", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "shortQuestions", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private Set<QuestionBank> questionBankSet = new HashSet<>();
 
 

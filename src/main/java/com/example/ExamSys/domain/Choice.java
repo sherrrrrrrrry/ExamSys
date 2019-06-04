@@ -28,7 +28,7 @@ public class Choice implements Serializable {
 	 * optional = false 表示QuestionChoice不可为空
 	 */
 	@JsonBackReference
-	@ManyToOne(optional=true, fetch = FetchType.EAGER)
+	@ManyToOne(optional=true, fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
 	private QuestionChoice questionChoice;
 
 //    @ManyToOne(optional=true, fetch = FetchType.LAZY)

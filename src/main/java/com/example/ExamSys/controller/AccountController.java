@@ -110,6 +110,8 @@ public class AccountController {
 										userRepository.save(user);
 										Student student = new Student();
 										student.setUser(user);
+										student.setAge(0);
+										student.setLevel(1);
 										studentRepository.save(student);
 									} else {
 										User user = userService.createUserEmail(userDTO.getLogin(),
@@ -122,6 +124,7 @@ public class AccountController {
 										userRepository.save(user);
 										Teacher teacher = new Teacher();
 										teacher.setUser(user);
+										teacher.setAge(0);
 										teacherRepository.save(teacher);
 									}
 									return new ResponseEntity<>(HttpStatus.CREATED);

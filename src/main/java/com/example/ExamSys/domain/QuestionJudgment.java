@@ -27,7 +27,7 @@ public class QuestionJudgment implements Serializable {
     @Column(name = "answer")
     private String answer;
 
-    @ManyToMany(mappedBy = "shortQuestions", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "shortQuestions", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<QuestionBank> questionBankSet = new HashSet<>();
 
 
