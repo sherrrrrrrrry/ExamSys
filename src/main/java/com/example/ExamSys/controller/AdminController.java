@@ -1,5 +1,6 @@
 package com.example.ExamSys.controller;
 
+import java.io.File;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.ExamSys.dao.QuestionAnswerRepository;
 import com.example.ExamSys.dao.StudentRepository;
 import com.example.ExamSys.dao.TeacherRepository;
+import com.example.ExamSys.dao.TranscriptRepository;
 import com.example.ExamSys.dao.UserRepository;
 import com.example.ExamSys.domain.Student;
 import com.example.ExamSys.domain.Teacher;
@@ -39,6 +41,9 @@ public class AdminController {
 	
 	@Autowired
 	QuestionAnswerRepository questionAnswerRepository;
+	
+	@Autowired
+	TranscriptRepository transcriptRepository;
 
 	/**
 	 * 获取未激活的账户列表
@@ -125,7 +130,17 @@ public class AdminController {
 	public ResponseEntity<Boolean> deleteStudentList(@RequestBody List<String> logins){
 		log.info("正在删除所选学生");
 		try {
+			Student student = studentRepository.findOneByLogin(logins.get(0));
+			if(student.getPhotoUrl() != null) {
+				try {
+					File file = new File(student.getPhotoUrl());
+					file.delete();
+				} catch(Exception e) {
+					log.info(logins.get(0)+"个人照片删除失败");
+				}
+			}
 			questionAnswerRepository.deleteByLogins(logins);
+			transcriptRepository.deleteByLogins(logins);
 			studentRepository.deleteByLogins(logins);
 			userRepository.deleteByLogins(logins);
 		} catch(Exception e) {
@@ -147,6 +162,15 @@ public class AdminController {
 	public ResponseEntity<Boolean> deleteTeacherList(@RequestBody List<String> logins){
 		log.info("正在删除所选老师");
 		try {
+			Teacher teacher = teacherRepository.findOneByLogin(logins.get(0));
+			if(teacher.getPhotoUrl() != null) {
+				try {
+					File file = new File(teacher.getPhotoUrl());
+					file.delete();
+				} catch(Exception e) {
+					log.info(logins.get(0)+"个人照片删除失败");
+				}
+			}
 			teacherRepository.deleteByLogins(logins);
 			userRepository.deleteByLogins(logins);
 		} catch(Exception e) {

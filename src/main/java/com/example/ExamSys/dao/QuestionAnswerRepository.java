@@ -68,7 +68,7 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
     
     @Modifying
     @Transactional
-    @Query("delete from QuestionAnswer q where q.student.user=(select u from User u where u.login in (:logins))")
+    @Query("delete from QuestionAnswer q where q.student=(select s from Student s where s.user.id=(select u.id from User u where u.login in (:logins)))")
     void deleteByLogins(@Param("logins") List<String> logins);
     
 }
