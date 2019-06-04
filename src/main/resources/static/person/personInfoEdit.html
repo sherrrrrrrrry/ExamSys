@@ -8,7 +8,7 @@
 <link href="../css/flexslider.css" rel="stylesheet" />
 <link href="../css/style.css" rel="stylesheet" />
 </head>
-<body onload="setup();promptinfo();ageinfo()">
+<body>
 	<div class="topbarpage"></div>
 	<div class="headerpage"></div>
 	<section id="inner-headline" style="margin-top:90px;">
@@ -154,6 +154,9 @@
 	<script type="text/javascript">
 		var username = $.cookie('username');
 		window.onload = function() {
+			setup();
+			promptinfo();
+			ageinfo();
 			getUserAuth(username);
 			getPersonalAuth(username);
 		}
@@ -218,8 +221,6 @@
 			}).fail(function(err) {
 				console.log(err);
 			})
-			
-			return false;
 		}
 		
 		function getUserInfo(username){
