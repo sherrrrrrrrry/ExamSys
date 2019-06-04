@@ -35,7 +35,7 @@ $(document).ready(function(e) {
 	$(".movie_box").live("hover", function(event) {
 
 		if (event.type == 'mouseenter') {
-			var html_cz = "<div class='kzqy_czbut'><a href='javascript:void(0)' class='sy'>上移</a><a href='javascript:void(0)'  class='xy'>下移</a><a href='javascript:void(0)'  class='bianji'>编辑</a><a href='javascript:void(0)' class='del' >删除</a></div>"
+			var html_cz = "<div class='kzqy_czbut'><a href='javascript:void(0)' class='sy'>上移</a><a href='javascript:void(0)'  class='xy'>下移</a><a href='javascript:void(0)' class='del' >删除</a></div>"
 			$(this).css({
 				"border": "double #0058ad",
 				"border-radius":"8px"
