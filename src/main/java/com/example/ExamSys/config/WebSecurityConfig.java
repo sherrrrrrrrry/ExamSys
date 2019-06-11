@@ -1,7 +1,9 @@
 package com.example.ExamSys.config;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -154,28 +161,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 					throws IOException, ServletException {
 				// TODO Auto-generated method stub
 				
-//				resp.setContentType("application/json;charset=utf-8");
-//				PrintWriter out = resp.getWriter();
-//				resp.setStatus(401);
-//				Map<String, Object> map = new HashMap<>();
-//				map.put("status", 401);
-//				if(e instanceof LockedException) {
-//					map.put("msg", "账户被锁定，登陆失败！");
-//				} else if (e instanceof BadCredentialsException) {
-//					map.put("msg", "账户名或密码输入错误，登陆失败！");
-//				} else if (e instanceof DisabledException) {
-//					map.put("msg", "账户被禁用，登陆失败！");
-//				} else if(e instanceof AccountExpiredException) {
-//					map.put("msg", "账户已过期，登陆失败！");
-//				} else if(e instanceof CredentialsExpiredException) {
-//					map.put("msg", "密码已过期，登陆失败！");
-//				} else {
-//					map.put("msg", "登陆失败！");
-//				}
-//				ObjectMapper om = new ObjectMapper();
-//				out.write(om.writeValueAsString(map));
-//				out.flush();
-//				out.close();
+				resp.setContentType("application/json;charset=utf-8");
+				PrintWriter out = resp.getWriter();
+				resp.setStatus(401);
+				Map<String, Object> map = new HashMap<>();
+				map.put("status", 401);
+				if(e instanceof LockedException) {
+					map.put("msg", "账户被锁定，登陆失败！");
+					System.out.println("账户被锁定，登陆失败！");
+				} else if (e instanceof BadCredentialsException) {
+					map.put("msg", "账户名或密码输入错误，登陆失败！");
+					System.out.println("账户名或密码输入错误，登陆失败！");
+				} else if (e instanceof DisabledException) {
+					map.put("msg", "账户被禁用，登陆失败！");
+					System.out.println("账户被禁用，登陆失败！");
+				} else if(e instanceof AccountExpiredException) {
+					map.put("msg", "账户已过期，登陆失败！");
+					System.out.println("账户已过期，登陆失败！");
+				} else if(e instanceof CredentialsExpiredException) {
+					map.put("msg", "密码已过期，登陆失败！");
+					System.out.println("密码已过期，登陆失败！");
+				} else {
+					map.put("msg", "登陆失败！");
+				}
+				ObjectMapper om = new ObjectMapper();
+				out.write(om.writeValueAsString(map));
+				out.flush();
+				out.close();
 			}
 		};
 	}
