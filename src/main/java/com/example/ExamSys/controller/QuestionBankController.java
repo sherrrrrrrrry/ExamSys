@@ -287,6 +287,7 @@ public class QuestionBankController {
         }
     }
 
+    /**删除试题**/
     @RequestMapping(value = "deleteQuestion", method = RequestMethod.POST, headers = "Accept=application/json")
     public boolean deleteQuestion(HttpServletRequest request){
         int index = Integer.parseInt(request.getParameter("index"));
@@ -317,6 +318,8 @@ public class QuestionBankController {
                 return true;
             }
             else if (type == QuestionType.Show){
+                questionShowService.delete(id);
+                questionListService.delete(question.getId());
                 return true;
             }
             else
