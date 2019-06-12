@@ -168,6 +168,7 @@ function loading(content) {
 }
 
 function passwordForgetCheck() {
+	var email = document.getElementById("email").value;
 	var verificationCode = document.getElementById("verificationCodeEmail").value;
 	var emailNewPassword = document.getElementById("emailNewPassword").value;
 	if ($('.emailerror').length > 0) {
@@ -178,7 +179,7 @@ function passwordForgetCheck() {
 			type: "POST", // 用POST方式传输
 			dataType: "JSON", // 数据格式:JSON
 			contentType: "application/json",
-			url: "/account/verifyforget?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode + "&newPassword=" + emailNewPassword,
+			url: "/account/verifyforgetemail?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode + "&newPassword=" + emailNewPassword  + "&email=" + email,
 		}).success(function(message) {
 			layertest('密码修改成功!');
 			console.log(message);
@@ -192,6 +193,7 @@ function passwordForgetCheck() {
 }
 
 function passwordForgetPhoneCheck() {
+	var phoneNumber = document.getElementById("phone").value;
 	var verificationCode = document.getElementById("verificationCodePhone").value;
 	var phoneNewPassword = document.getElementById("phoneNewPassword").value;
 	if ($('.phoneerror').length > 0) {
@@ -202,7 +204,7 @@ function passwordForgetPhoneCheck() {
 			type: "POST", // 用POST方式传输
 			dataType: "JSON", // 数据格式:JSON
 			contentType: "application/json",
-			url: "/account/registerphone?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode + "&newPassword=" + phoneNewPassword,
+			url: "/account/verifyforgetphone?hash=" + hash + "&time=" + codeTimestamp + "&verificationCode=" + verificationCode + "&newPassword=" + phoneNewPassword + "&phoneNumber=" + phoneNumber,
 		}).success(function(message) {
 			layertest('密码修改成功!');
 			console.log(message);
