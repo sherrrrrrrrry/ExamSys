@@ -50,8 +50,11 @@
 					<div class="col-md-12">
 						<p class="pull-right">
 							<i class="fa fa-sign-in" style="color: #fdd428;"></i>
-							<a href="register.html">用户注册</a>
+							<a href="/register.html">用户注册</a>
+							<span>&nbsp/&nbsp</span> <i class="fa fa-user" style="color: #fdd428;"></i>
+							<a href="/passwordForget.html">忘记密码</a>
 						</p>
+						
 					</div>
 				</div>
 			</div>
@@ -105,13 +108,15 @@
 				contentType : "application/json",
 				url : "/login?username="+username+"&password="+password,
 			}).success(function(message) {
+				console.log(message);
 				if(message != null && message != "null"){
 					$.cookie('username', username);
 					window.location.href = "index.html";
 				}
 				
 			}).fail(function(err) {
-				console.log(err);
+				var responseText = JSON.parse(err.responseText);
+				alert(responseText.msg);
 			})
 		}
 	</script>
