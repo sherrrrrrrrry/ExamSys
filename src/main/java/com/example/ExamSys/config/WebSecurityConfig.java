@@ -174,7 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 					System.out.println("账户名或密码输入错误，登陆失败！");
 				} else if (e instanceof DisabledException) {
 					map.put("msg", "账户被禁用，登陆失败！");
-					System.out.println("账户被禁用，登陆失败！");
+					System.out.println("账户尚未通过审核，登陆失败！");
 				} else if(e instanceof AccountExpiredException) {
 					map.put("msg", "账户已过期，登陆失败！");
 					System.out.println("账户已过期，登陆失败！");

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,11 +133,11 @@ public class AccountController {
 								);
 			} else {
 				//验证码不正确，校验失败
-				return new ResponseEntity<>("verify incorrect", textPlainHeaders, HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>("验证码错误", textPlainHeaders, HttpStatus.BAD_REQUEST);
 			}
 		} else {
 			// 超时
-			return new ResponseEntity<>("verify time out", textPlainHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("验证码超时", textPlainHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -198,11 +199,11 @@ public class AccountController {
 								);
 			} else {
 				//验证码不正确，校验失败
-				return new ResponseEntity<>("verify incorrect", textPlainHeaders, HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>("验证码错误", textPlainHeaders, HttpStatus.BAD_REQUEST);
 			}
 		} else {
 			// 超时
-			return new ResponseEntity<>("verify time out", textPlainHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("验证码超时", textPlainHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -212,7 +213,7 @@ public class AccountController {
 	 */
 	@RequestMapping(value = "/verifyforget", method = RequestMethod.POST)
 	public ResponseEntity<String> verifyForget(@RequestParam(value = "hash") String hash, 
-			@RequestParam(value = "time") String time, @RequestParam(value="verificationCode") String verificationCode){
+			@RequestParam(value = "time") String time, @RequestParam(value="verificationCode") String verificationCode, @RequestParam(value="newPassword") String newPassword, @RequestParam(value="login") String login){
 		
 		HttpHeaders textPlainHeaders = new HttpHeaders();
 		
@@ -220,12 +221,16 @@ public class AccountController {
 		String hashNow = MD5Utils.getMD5Code(KEY + "@" + time + "@" + verificationCode);
 		if(time.compareTo(currentTime) > 0) {
 			if(hash.equalsIgnoreCase(hashNow)) {
+				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+				String encodePassword = encoder.encode(newPassword);
+				userRepository.updatePasswordByLogin(encodePassword, login);
+				
 				return ResponseEntity.ok().body("");
 			} else {
-				return new ResponseEntity<>("verify incorrect", textPlainHeaders, HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>("验证码错误", textPlainHeaders, HttpStatus.BAD_REQUEST);
 			}
 		} else {
-			return new ResponseEntity<>("verify time out", textPlainHeaders, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("验证码超时", textPlainHeaders, HttpStatus.BAD_REQUEST);
 		}
 	}
 		
