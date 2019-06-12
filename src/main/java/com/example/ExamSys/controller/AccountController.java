@@ -210,10 +210,12 @@ public class AccountController {
 	
 	/**
 	 * 忘记密码时，验证验证码
+	 * 邮箱
 	 */
-	@RequestMapping(value = "/verifyforget", method = RequestMethod.POST)
-	public ResponseEntity<String> verifyForget(@RequestParam(value = "hash") String hash, 
-			@RequestParam(value = "time") String time, @RequestParam(value="verificationCode") String verificationCode, @RequestParam(value="newPassword") String newPassword, @RequestParam(value="login") String login){
+	@RequestMapping(value = "/verifyforgetemail", method = RequestMethod.POST)
+	public ResponseEntity<String> verifyForgetEmail(@RequestParam(value = "hash") String hash, 
+			@RequestParam(value = "time") String time, @RequestParam(value="verificationCode") String verificationCode,
+			@RequestParam(value="newPassword") String newPassword, @RequestParam(value="email") String email){
 		
 		HttpHeaders textPlainHeaders = new HttpHeaders();
 		
@@ -221,11 +223,49 @@ public class AccountController {
 		String hashNow = MD5Utils.getMD5Code(KEY + "@" + time + "@" + verificationCode);
 		if(time.compareTo(currentTime) > 0) {
 			if(hash.equalsIgnoreCase(hashNow)) {
-				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-				String encodePassword = encoder.encode(newPassword);
-				userRepository.updatePasswordByLogin(encodePassword, login);
+				Optional<User> userOpt = userRepository.findOneByEmail(email);
+				if(!userOpt.isPresent()) {
+					return new ResponseEntity<>("该账户并未注册", textPlainHeaders, HttpStatus.BAD_REQUEST);
+				} else {
+					BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+					String encodePassword = encoder.encode(newPassword);
+					userRepository.updatePasswordByEmail(encodePassword, email);
+					return ResponseEntity.ok().body("");
+				}
 				
-				return ResponseEntity.ok().body("");
+			} else {
+				return new ResponseEntity<>("验证码错误", textPlainHeaders, HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			return new ResponseEntity<>("验证码超时", textPlainHeaders, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	/**
+	 * 忘记密码时，验证验证码
+	 * 手机
+	 */
+	@RequestMapping(value = "/verifyforgetphone", method = RequestMethod.POST)
+	public ResponseEntity<String> verifyForgetPhone(@RequestParam(value = "hash") String hash, 
+			@RequestParam(value = "time") String time, @RequestParam(value="verificationCode") String verificationCode,
+			@RequestParam(value="newPassword") String newPassword, @RequestParam(value="phoneNumber") String phoneNumber){
+		
+		HttpHeaders textPlainHeaders = new HttpHeaders();
+		
+		String currentTime = verifyService.getCurrentTime();
+		String hashNow = MD5Utils.getMD5Code(KEY + "@" + time + "@" + verificationCode);
+		if(time.compareTo(currentTime) > 0) {
+			if(hash.equalsIgnoreCase(hashNow)) {
+				Optional<User> userOpt = userRepository.findOneByPhoneNumber(phoneNumber);
+				if(!userOpt.isPresent()) {
+					return new ResponseEntity<>("该账户并未注册", textPlainHeaders, HttpStatus.BAD_REQUEST);
+				} else {
+					BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+					String encodePassword = encoder.encode(newPassword);
+					userRepository.updatePasswordByPhoneNumber(encodePassword, phoneNumber);
+					return ResponseEntity.ok().body("");
+				}
+				
 			} else {
 				return new ResponseEntity<>("验证码错误", textPlainHeaders, HttpStatus.BAD_REQUEST);
 			}
