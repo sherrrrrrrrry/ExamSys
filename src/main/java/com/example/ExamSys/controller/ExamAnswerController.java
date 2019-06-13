@@ -547,9 +547,4 @@ public class ExamAnswerController {
         return answers[index-1];
     }
 
-    public static void main(String[] args) {
-    	String s = "<==>";
-    	String[] ss = s.split("<==>");
-    	System.out.println(s.substring(s.length()-4, s.length()));
-    }
 }

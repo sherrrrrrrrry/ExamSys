@@ -545,6 +545,9 @@ public class ExamMarkingController {
         String indexs = request.getParameter("index");
         String[] indexList = indexs.split(",");
         String scores = request.getParameter("score");
+        if (scores==""){
+            return ResponseEntity.ok().body("无简答和作品展示，无需阅卷");
+        }
         String[] scoreList = scores.split(",");
 //        QuestionList questionList = questionListService.findByNameandNumber(name, index);
 
