@@ -434,6 +434,10 @@ public class ExamMarkingController {
         if (questionAnswer.isMarked()==true){
             return ResponseEntity.badRequest().header("Marking","The marking is already finished").body(null);
         }
+        Teacher teacher = teacherRepository.findOneByLogin(request.getParameter("teachername"));
+        if(teacher == null) {
+        	return ResponseEntity.badRequest().header("Student", "No such teacher!").body(null);
+        }
 
         String[] stuAnswers = questionAnswer.getAnswer().split(";");//学生答案
         List<QuestionList> questionList = questionListService.findByName(questionBank.getName());
@@ -532,12 +536,9 @@ public class ExamMarkingController {
             }
 
         }
-        questionAnswerService.updateisModified(true,questionAnswer.getId());
+//        questionAnswerService.updateisModified(true,questionAnswer.getId());
+        questionAnswerRepository.updateisModifiedAndTeacher(true, teacher, questionAnswer.getId());
         
-        Teacher teacher = teacherRepository.findOneByLogin(request.getParameter("teachername"));
-        if(teacher == null) {
-        	return ResponseEntity.badRequest().header("Student", "No such teacher!").body(null);
-        }
         //找出试卷对应的题目
 
 //      int index = Integer.parseInt(request.getParameter("index"));
@@ -546,7 +547,7 @@ public class ExamMarkingController {
         String[] indexList = indexs.split(",");
         String scores = request.getParameter("score");
         if (scores==""){
-            return ResponseEntity.ok().body("无简答和作品展示，无需阅卷");
+            return ResponseEntity.ok().body(null);
         }
         String[] scoreList = scores.split(",");
 //        QuestionList questionList = questionListService.findByNameandNumber(name, index);

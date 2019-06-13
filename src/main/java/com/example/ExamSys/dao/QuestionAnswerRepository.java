@@ -63,6 +63,11 @@ public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer,L
     
     @Modifying
     @Transactional
+    @Query("update QuestionAnswer q set q.isMarked=?1, q.teacher=?2 where q.id=?3")
+    void updateisModifiedAndTeacher(boolean isMarked, Teacher teacher, Long qaId);
+    
+    @Modifying
+    @Transactional
     @Query("update QuestionAnswer q set q.isMarked=?1, q.teacher=?2, q.score=?3 where q.id=?4")
     void updateMarkedAndTeacherAndScore(boolean isMarked, Teacher teacher, Integer score, Long id);
     
